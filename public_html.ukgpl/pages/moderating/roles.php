@@ -1,0 +1,51 @@
+<?php include("pages/moderating/index.php"); ?>
+
+<H1 ALIGN="CENTER">Roles and Responsibilities</H1>
+
+<P>There is a private forum for use by the moderators. The moderator's forum is essential for administering the league and reviewing race results and incidents. The assistant moderators do not need to be members of the moderator's forum. It is the moderators responsibility to ensure any tasks delegated to an assistant moderator are acceptable.</P>
+
+<H2>Moderator - Tasks</H2>
+
+<P>A moderator is assigned to each division in the league. Ideally each moderator will have one or two assistants. The various tasks the moderator carries out are listed below:
+
+</P>
+
+<ul>
+  <li><b><font size="4">Race Announcements</font></b>  The moderator prepares a race announcement two or three days prior to every race so that each driver in the division is aware of the start time, race length, practice times, server to be used and any particular restrictions for the race. These restrictions may be pit stop times or allowable car choice etc, it all depends on the specific division. The <a href="../../files/pit_stop_calculator.zip">Pit Stop Calculator</a> can be used to calculate the pit stop times for each division.  The times can be exported to a text file complete with the formatting necessary to display the times as a table on the <a href="http://www.simracing.org.uk">SRou</a> forums.  The race announcements are made via the dedicated <a href="http://www.simracing.org.uk/smf/index.php?board=53.0">forum</a>.  The specific details on how to post race announcements can be found <a href="http://www.simracing.org.uk/smf/index.php?topic=3366.0">here</a>.</li>
+  <li><b><font size="4">Race Password</font></b> The moderator will decide on a password for the race.  The password automatically appears on the race announcement topic 24 hours before the start of the race.  Only the drivers eligible to enter the race will be able to see the password.</li>
+  <li><b><font size="4">Starting the Race Server </font></b>The procedure for starting the server is quite straightforward but the details will not be listed here. There are several things that can go wrong but rarely do. In the unlikely event of a problem occurring there is a server team who can sort out most issues and the worst thing that can happen is that a race has to be postponed or re-run. In order to lessen the chance of a pile-up at the start, the server should be configured with loose grids. On VROC this is should be instigated by a parameter in the server set up but it does depend on the loose grids patch being applied to the circuits on the server. This rarely works so loose grids, if they are available, are usually installed as defaults. For some divisions the race length needs to be altered. This is done by changing the Grand Prix race distance in the 67season.ini file. The race length that must be entered is available in the <a href="../../files/pit_stop_calculator.zip">Pit Stop Calculator</a>.  If necessary the moderator can change the race length before the starting the server. On 1.UKGPL this must be done on the day of race (by remotely logging into 1.UKGPL using VNC) since the 67season.ini file is restored every night.  Note: There may be several versions of the 67season.ini file on the server for backup/restore purposes so it is important to ensure it is the file in the seasons subdirectory that is changed and no other.</li>
+  <li><b><font size="4">Publishing the Results of a Race </font></b>This involves uploading the results file, which should be automatically saved by the server, onto the UKGPL website. This does require some additional skills in using the "LEAGUE MANAGER 2" application administered by our webmaster. Details can be found <a href="http://www.simracing.org.uk/smf/index.php?topic=362.msg3959#msg3959">here</a>. Occasionally a driver will be dropped from the server and the results file will have to be edited to reinstate the driver to his rightful finishing position.  It is probably easier to do this before the results are imported into LM2.  However, provided all the drivers appear in the export, it is possible to edit the result post-race. Go into LM2 and find the Entries page under Reference Data.  It is much better to import the results from a server replay rather than a client replay.  Ideally both the GPLRA Complete.txt file generated from the server replay and GPL's HTML export should be imported - that way all the available data is retrieved.</li>
+  <li><b><font size="4">Collating Driver's Incident Reports </font></b>The drivers are obliged to submit a report after each race (using the incident report form on the event's results page) detailing the incidents they were involved in. The moderator collates these reports, and any client replays the drivers may have provided, ready for reference when the race is moderated.</li>
+  <li><b><font size="4">Moderating a Race</font></b><b><font size="4"> </font></b>This can be the most time consuming aspect of the moderators job. However, the task is an off-line activity so it can be completed at the moderators convenience. Details of how to moderate a race can be found <a href="moderatingarace">here</a>.</li>
+  <li><b><font size="4">Checking a Moderated Race </font></b>In order to maintain some consistency throughout the league moderators generally ask for comments on a race report from other moderators via the moderator's forum. A moderator may or may not decide to amend his report but in principle each moderator would be expected to respect the consensus of the group.</li>
+  <li><b><font size="4">Publishing the Moderated Race Report </font></b>This involves editing the published results to take into account time penalties etc. It also involves adding incident reports and a race summary to the results page on the website. Again this does require some additional skills in using the "LEAGUE MANAGER 2" application administered by our webmaster.  Details can be found <a href="http://www.simracing.org.uk/smf/index.php?topic=362.msg3959#msg3959">here</a>.</li>
+  <li><font size="4"><b>Managing Driver's Appeals </b></font>Very occasionally a driver may appeal against a moderator's decision. Normally this wouldn't arise because contentious incidents are checked by the other moderators before being released. The procedure for dealing with appeals is defined in the rules section. </li>
+</ul>
+
+<H2>Deputy Moderator - Tasks</H2>
+
+<p>The deputy moderator has the same authority as the moderator and can carry out any of the tasks required of the moderator.  Normally a new moderator will be assigned a post as a deputy for their first season.  This would allow them to get up to speed with the "hustle and bussle" of the moderator's forum without the pressure of running a division.</p>
+
+
+<H2>Assistant Moderator - Tasks</H2>
+
+<p>The moderator is free to perform most of their tasks at a time convenient to themselves. However, starting the race server must obviously be done at a specific time. If the moderator is not available to start the server (due to holidays. work etc), then a deputy has to be found. To date this has generally been another moderator but with the moderating team shrinking in recent years this is proving to be more difficult to arrange. Consequently the primary role of the assistant moderator will be to ensure the races can go ahead as planned.  It is expected that the assistant moderator will be a driver in the division they are assistant moderator for, so starting the server should not be an onerous task. The assistant moderator may be called upon to perform the following tasks:</p>
+
+<ul>
+  <li><font size="4"><b>Starting the Race Server </b></font>In the absence of the moderator the assistant moderator may be required to start the server. The process is as described above and the necessary IP addresses, port numbers and passwords will be provided. However the assistant moderator will not be able to change the race length since they will not have access to the VNC password. </li>
+  <li><font size="4"><b>Other Tasks </b></font>From time to time the moderator and the assistant may agree to share the workload. The tasks that could be delegated if both parties agree are: </li>
+  <ul>  
+  <li><b><font size="4">Race Announcements </font></b>Amendments to the race announcement can be posted on the appropriate race announcement topic.</li>
+  <li><font size="4"><b>Moderating a Race </b></font>Some aspects of moderating a race, such as checking pit stop times and identifying incidents using GPL Replay Analyser, can be delegated. However, the moderator must retain the responsibility of assessing incidents. This role cannot be delegated. </li>
+  </ul>
+  No other tasks should be delegated to the assistant.</li>
+</ul>
+
+<H2>Membership Secretary - Tasks</H2>
+
+<p>The Membership Secretary is a member of the Moderator’s Forum and acts as the first point of contact for anybody wanting to join UKGPL.  New drivers would normally contact the Membership Secretary for advice on the league structure, race formats and rules.  Much of this information is already available on-line so the advice might simply entail directing the prospective member to the UKGPL website and SRou forum. The SRou forums operate an automatic registration system so there is no need for the Membership Secretary to be involved in the registration process for new members.  However the Membership Secretary would be expected to advise and guide the new members in order that they apply to join a division commensurate with their abilities.  Finally the Membership Secretary should actively promote UKGPL whenever possible to encourage a steady flow of new members.  In summary, the Membership Secretary carries out the following tasks:</p>
+<ul>
+  <li><font size="4"><b>New Members </b></font>Advise new members on the choice of race formats and ability based divisions in UKGPL.</li>
+  <li><font size="4"><b>Web Site </b></font>Periodically review the UKGPL web site to make sure the advice to new members is up-to-date.  This need not entail editing the web site content.</li>
+  <li><font size="4"><b>Publicity </b></font>Maintain a presence on the plethora of sim racing forums (other than SRou) in order to promote UKGPL.</li>
+</ul>

@@ -1,0 +1,31 @@
+RewriteEngine on
+
+RewriteCond %{HTTP_HOST} ^simracing.org.uk$ [OR]
+RewriteCond %{HTTP_HOST} ^srou.davegymer.org$ [OR]
+RewriteCond %{HTTP_HOST} ^www.srou.davegymer.org$
+RewriteRule ^(.*)$ "http://www.simracing.org.uk/$1" [R=301,L]
+
+# Rules
+RewriteCond %{REQUEST_URI} =/index.php
+RewriteCond %{QUERY_STRING} =pid=7
+RewriteRule ^(.*)$ http://www.simracing.org.uk/smf/index.php?topic=3349.0 [R=301,L]
+
+# Links
+RewriteCond %{REQUEST_URI} =/index.php
+RewriteCond %{QUERY_STRING} =pid=5
+RewriteRule ^(.*)$ http://www.simracing.org.uk/smf/index.php?topic=3354.0 [R=301,L]
+
+# Downloads
+RewriteCond %{REQUEST_URI} =/index.php
+RewriteCond %{QUERY_STRING} =pid=27
+RewriteRule ^(.*)$ http://www.simracing.org.uk/smf/index.php?board=41.0 [R=301,L]
+
+# Teams
+RewriteCond %{REQUEST_URI} =/index.php
+RewriteCond %{QUERY_STRING} =ind=lm2&teams=null
+RewriteRule ^(.*)$ http://www.simracing.org.uk/smf/index.php?action=LM2R&team=* [R=301,L]
+
+# Circuits
+RewriteCond %{REQUEST_URI} =/index.php
+RewriteCond %{QUERY_STRING} =ind=lm2&circuit=*
+RewriteRule ^(.*)$ http://www.simracing.org.uk/smf/index.php?action=LM2R&circuit=* [R=301,L]
