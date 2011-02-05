@@ -1,0 +1,14 @@
+
+RewriteEngine on
+RewriteCond %{HTTP_HOST} ^ukgtr.simracing.org.uk$ [OR]
+RewriteCond %{HTTP_HOST} ^www.ukgtr.simracing.org.uk$
+RewriteRule ^(.*)$ http://replays.simracing.org.uk/ [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^ukrf.simracing.org.uk$ [OR]
+RewriteCond %{HTTP_HOST} ^www.ukrf.simracing.org.uk$
+RewriteRule ^(.*)$ http://replays.simracing.org.uk/ [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^ukgtl.simracing.org.uk$ [OR]
+RewriteCond %{HTTP_HOST} ^www.ukgtl.simracing.org.uk$
+RewriteRule ^(.*)$ http://replays.simracing.org.uk/ [R=301,L]
+
