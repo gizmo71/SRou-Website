@@ -1,16 +1,21 @@
 <?php
 global $boardurl;
 
-$quarterlyCost = 30;
-$balance = 0;
-$topicId = 7341;
+$quarterlyCost = 150;
+$balance = 117;
+$topicId = 7555;
 ?>
 
 <?php
 if ($balance < 0) {
 ?>
 	<TD ALIGN='RIGHT' VALIGN='MIDDLE'>
-		Money money money
+		<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+		<input type="hidden" name="cmd" value="_s-xclick">
+		<input type="hidden" name="hosted_button_id" value="MQCV58CB2PGSW">
+		<input type="image" src="https://www.paypal.com/en_GB/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online.">
+		<img alt="" border="0" src="https://www.paypal.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+</form>
 	</TD>
 <?php
 }
