@@ -709,23 +709,33 @@ class StandingsGenerator {
 		// Note that we cannot avoid a temporary table of some sort (even if it's implicit) because MySQL cannot update a table which is used in the FROM clause of a subquery.
 
 		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries SET penalty_points = NULL WHERE NOT is_protected_c", __FILE__, __LINE__);
+		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}totting_penalties
+			(INDEX (penalty_group, member), INDEX (totting_active_from))
+			AS SELECT member
+			, penalty_group
+			, CASE penalty_type WHEN 'P' THEN 2 WHEN 'W' THEN 1 WHEN 'C' THEN 0 ELSE NULL END AS totting_ycp
+			, report_published AS totting_active_from
+			FROM {$this->lm2_db_prefix}penalties
+			JOIN {$this->lm2_db_prefix}event_entries ON id_event_entry = event_entry
+			JOIN {$this->lm2_db_prefix}events ON id_event = event
+			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
+			WHERE event_status IN ('O', 'H')
+			AND IFNULL(victim_report, 'Y') = 'Y'
+			", __FILE__, __LINE__);
 		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}active_penalty_points
 			(UNIQUE (event_entry))
-			AS SELECT ee1.id_event_entry AS event_entry
-			, SUM($penalty_points_clause) AS active
-			FROM {$this->lm2_db_prefix}event_entries AS ee1
-			JOIN {$this->lm2_db_prefix}events AS e1 ON e1.id_event = ee1.event
-			JOIN {$this->lm2_db_prefix}event_groups AS eg1 ON eg1.id_event_group = e1.event_group
+			SELECT id_event_entry AS event_entry
+			, SUM(totting_ycp) AS active
+			FROM {$this->lm2_db_prefix}event_entries
+			JOIN {$this->lm2_db_prefix}events ON id_event = event
+			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
 			JOIN {$this->lm2_db_prefix}penalty_groups USING (penalty_group)
-			JOIN {$this->lm2_db_prefix}events AS e2 ON e2.event_status IN ('O', 'H')
-			AND e2.report_published >= DATE_SUB(e1.event_date, INTERVAL penalty_group_months MONTH) AND e2.report_published < e1.event_date
-			JOIN {$this->lm2_db_prefix}event_entries AS ee2 ON ee1.member = ee2.member AND e2.id_event = ee2.event
-			JOIN {$this->lm2_db_prefix}event_groups AS eg2 ON eg2.id_event_group = e2.event_group
-			JOIN {$this->lm2_db_prefix}penalties AS p ON ee2.id_event_entry = p.event_entry AND IFNULL(victim_report, 'Y') = 'Y'
-			WHERE NOT ee1.is_protected_c
-			AND eg1.penalty_group = eg2.penalty_group
-			GROUP BY ee1.id_event_entry
+			JOIN {$this->temp_db_prefix}totting_penalties USING (penalty_group, member)
+			WHERE NOT is_protected_c
+			AND totting_active_from < event_date AND totting_active_from >= DATE_SUB(event_date, INTERVAL penalty_group_months MONTH)
+			GROUP BY id_event_entry
 			", __FILE__, __LINE__);
+		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}totting_penalties", __FILE__, __LINE__);
 		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries
 			JOIN {$this->temp_db_prefix}active_penalty_points ON id_event_entry = event_entry
 			SET penalty_points = active
@@ -773,7 +783,7 @@ class StandingsGenerator {
 			GROUP BY id_championship, event_group, scoring_scheme
 			", __FILE__, __LINE__)) || die("failed to read championships");
 		while ($row = mysql_fetch_assoc($query)) {
-//**/		echo "<P><I>" . print_r($row, true) . "</I></P>\n";
+/**/		echo "<P><I>" . print_r($row, true) . "</I></P>\n";
 			$this->ukgplS18tokensForOneGroup($regression, $row['id_championship'], $row['event_group'], $row['scoring_scheme'], $row['events']);
 		}
 		mysql_free_result($query);
@@ -782,6 +792,7 @@ class StandingsGenerator {
 	function ukgplS18tokensForOneGroup($regression, $championship, $event_group, $scoring_scheme, $events) {
 		global $guest_member_id;
 
+/**/		printf("%f events, halved to %g", $events, $events / 2);
 		$eventId = null;
 		$eventIndex = 0;
 		$balances = array();
@@ -800,7 +811,7 @@ class StandingsGenerator {
 		while ($row = mysql_fetch_assoc($query)) {
 			if ($eventId != $row['id_event']) {
 				$eventId = $row['id_event'];
-//**/				echo "<BR/><B>Round " . ++$eventIndex . "</B>";
+/**/				echo "<BR/><B>Round " . ++$eventIndex . "</B>";
 			}
 
 			if (!array_key_exists($row['member'], $balances)) {
@@ -825,7 +836,7 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 				}
 			}
 
-//**/			echo "<br/><tt>" . print_r($row, true) . "</tt>\n";
+/**/			echo "<br/><tt>" . print_r($row, true) . "</tt>\n";
 		}
 		mysql_free_result($query);
 		echo "</P>\n";

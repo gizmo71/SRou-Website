@@ -20,18 +20,19 @@ function sqlString($s, $emptyIfNull = false) { return lm2SqlString($s, $emptyIfN
 function rebuild_driver_cache() {
 	global $lm2_db_prefix, $db_prefix;
 
-	lm2_query("INSERT INTO {$lm2_db_prefix}drivers"
-		. " (driver_member, driver_name)"
-		. " SELECT id_member, realName"
-		. " FROM {$db_prefix}members"
-		. " LEFT JOIN {$lm2_db_prefix}drivers ON driver_member = id_member"
-		. " WHERE driver_member IS NULL"
-		, __FILE__, __LINE__);
-	lm2_query("UPDATE {$lm2_db_prefix}drivers, {$db_prefix}members"
-		. " SET driver_name = realName"
-		. " WHERE driver_member = id_member"
-		. " AND IFNULL(driver_name <> realName, 1)"
-		, __FILE__, __LINE__);
+	lm2_query("
+		INSERT INTO {$lm2_db_prefix}drivers
+		(driver_member, driver_name)
+		SELECT id_member, realName
+		FROM {$db_prefix}members
+		WHERE id_member NOT IN (SELECT driver_member FROM {$lm2_db_prefix}drivers)
+		", __FILE__, __LINE__);
+	lm2_query("
+		UPDATE {$lm2_db_prefix}drivers, {$db_prefix}members
+		SET driver_name = realName
+		WHERE driver_member = id_member
+		AND IFNULL(driver_name <> realName, 1)
+		", __FILE__, __LINE__);
 }
 
 //TODO: remove and use the SMF ones.
