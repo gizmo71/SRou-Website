@@ -1,6 +1,7 @@
 #!/bin/bash
 
 TZ=GMT0BST
+export TZ
 
 echo "Content-Type: text/plain"
 echo
