@@ -73,8 +73,7 @@ function template_init()
 
 	$settings['srou_downloads_topic'] = null;
 
-	//XXX: affiliates programme?
-	$settings['srou_footer_html'] = "<a href=\"http://www.arvixe.com\" target=\"_blank\">Web Hosting</a>\nBy Arvixe";
+	$settings['srou_footer_html'] = 'Hosted by <A HREF="http://davegymer.com/"><TT>DaveGymer.com</TT></A>';
 
 	srou_template_init();
 }
