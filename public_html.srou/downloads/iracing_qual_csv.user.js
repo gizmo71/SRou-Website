@@ -6,7 +6,7 @@
 // ==/UserScript==
 
 // Author: Dave Gymer
-// Created: 2011/01/31
+// Created: 2011/02/14
 
 // Test against http://members.iracing.com/membersite/member/EventResult.do?subsessionid=1375489
 // and http://members.iracing.com/membersite/member/EventResult.do?&subsessionid=1331681&custid=17509
@@ -57,6 +57,7 @@ for (var i = 0; i < 999; ++i) {
 		result.resultset_race.push(resultOBJ);
 		break;
 	}
+//result.date
 	for (var prop in resultOBJ) {
 		if (fields.indexOf(prop) == -1
 			&& prop != 'isOfficial'
@@ -126,8 +127,28 @@ button.value = 'Download';
 form.appendChild(button);
 
 for each (var img in document.getElementsByTagName('img')) {
-	if (img.src == 'http://membersmedia.iracing.com/member_images/titles/table_titles/qualify_results.gif') {
+	if (img.src == unsafeWindow.imageserver + '/member_images/titles/table_titles/qualify_results.gif') {
 		img.parentNode.insertBefore(form, img);
 		break;
+	} else if (false && img.src == unsafeWindow.imageserver + '/member_images/titles/table_titles/race_results.gif') {
+		var fred = document.createElement('textarea');
+		fred.value += unsafeWindow.load(unsafeWindow.contextpath + '/member/GetEventResultsAsCSV', {
+			'subsessionid': result.subsessionid
+			});
+		img.parentNode.insertBefore(fred, img);
+	}
+}
+
+var lapsRE = /^javascript:getLaps\((\d+),(-?\d+)\);$/;
+for each (var a in document.getElementsByTagName('a')) {
+	var matches = lapsRE.exec(a.href);
+	if (false && matches && matches[2] == '0') {
+		var fred = unsafeWindow.load(unsafeWindow.contextpath + "/member/GetLaps", {
+			'subsessionid': result.subsessionid,
+			'custid': matches[1],
+			'simsesnum': matches[2]
+			}).replace(/\+/g, " ");
+  		var ajax_response = eval('(' + fred + ')');
+		a.title = !ajax_response.laps || !ajax_response.laps.length ? "no laps" : "laps: " + ajax_response.laps.length;
 	}
 }
