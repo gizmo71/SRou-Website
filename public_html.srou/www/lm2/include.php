@@ -5,8 +5,6 @@ $guest_member_id = $lm2_guest_member_id;
 $ukgtrModsGroup = $lm2_mods_group;
 $incidentReportForum = $lm2_incident_report_forum;
 
-$is_firefox = strpos($_SERVER['HTTP_USER_AGENT'], 'MSIE') === FALSE;
-
 require_once("$sourcedir/Subs-LM2.php");
 
 set_magic_quotes_runtime(0);
