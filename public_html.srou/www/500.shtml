@@ -1,0 +1,13 @@
+Something  bad has happened. :-(
+<PRE>
+<!--#echo var="HTTP_REFERER" -->
+<!--#echo var="REMOTE_ADDR" -->
+<!--#echo var="REQUEST_URI" -->
+<!--#echo var="HTTP_HOST" -->
+<!--#echo var="HTTP_USER_AGENT" -->
+<!--#echo var="REDIRECT_STATUS" -->
+<!--#echo var="HTTP_COOKIE" -->
+<!--#exec cmd="/usr/bin/uptime" -->
+</PRE>
+
+<IFRAME WIDTH=500 HEIGHT=350 SRC="http://stats.lark.arvixe.com/" />

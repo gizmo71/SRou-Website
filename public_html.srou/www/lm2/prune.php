@@ -18,6 +18,8 @@ if ($membersToDelete = $_REQUEST['memberToDelete']) {
 	<TH>Last Login</TH>
 	<TH>Posts</TH>
 	<TH>Events</TH>
+	<TH>Sent</TH>
+	<TH>Recv</TH>
 </TR>
 <?php
 $query = lm2_query("
@@ -29,6 +31,8 @@ $query = lm2_query("
 	, (SELECT IF(COUNT(*) = 0, NULL, COUNT(*)) FROM {$lm2_db_prefix}event_entries WHERE member = id_member) AS events
 	, FROM_UNIXTIME(dateRegistered) AS dateRegistered
 	, IF(lastLogin = 0, NULL, FROM_UNIXTIME(lastLogin)) AS lastLogin
+	, (SELECT IF(COUNT(*) = 0, NULL, COUNT(*)) FROM {$db_prefix}personal_messages WHERE id_member_from = id_member) AS pm_sent
+	, (SELECT IF(COUNT(*) = 0, NULL, COUNT(*)) FROM {$db_prefix}pm_recipients WHERE {$db_prefix}members.id_member = {$db_prefix}pm_recipients.id_member) AS pm_recv
 	FROM {$db_prefix}members
 	WHERE ((is_activated = 0 OR lastLogin = 0) AND FROM_UNIXTIME(dateRegistered) < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 2 MONTH))
 	   OR (lastLogin > 0 AND FROM_UNIXTIME(lastLogin) < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 12 MONTH) AND posts = 0)
@@ -47,6 +51,8 @@ while ($row = mysql_fetch_assoc($query)) {
 		<TD>{$row['lastLogin']}</TD>
 		<TD ALIGN=RIGHT>{$row['posts']}</TD>
 		<TD ALIGN=RIGHT>{$row['events']}</TD>
+		<TD ALIGN=RIGHT>{$row['pm_sent']}</TD>
+		<TD ALIGN=RIGHT>{$row['pm_recv']}</TD>
 		</TR>\n";
 }
 mysql_free_result($query);
