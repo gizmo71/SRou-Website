@@ -1,5 +1,5 @@
 <?php
-// Version: 1.1; index
+// Version: 1.1.5; index
 
 /*	This template is, perhaps, the most important template in the theme. It
 	contains the main template layer that displays the header and footer of
@@ -137,7 +137,10 @@ function template_main_above()
 
 	// We'll have to use the cookie to remember the header...
 	if ($context['user']['is_guest'])
+	{
 		$options['collapse_header'] = !empty($_COOKIE['upshrink']);
+		$options['collapse_header_ic'] = !empty($_COOKIE['upshrinkIC']);
+	}
 
 	// Output any remaining HTML headers. (from mods, maybe?)
 	echo $context['html_headers'], '
@@ -484,7 +487,23 @@ function template_main_below()
 
 	// The following will be used to let the user know that some AJAX process is running
 	echo '
-	<div id="ajax_in_progress" style="display: none;', $context['browser']['is_ie'] && !$context['browser']['is_ie7'] ? 'position: absolute;' : '', '">', $txt['ajax_in_progress'], '</div>
+      <div id="ajax_in_progress" style="display: none;', $context['browser']['is_ie'] && !$context['browser']['is_ie7'] ? 'position: absolute;' : '', '">', $txt['ajax_in_progress'], '</div>';
+
+      /*****************
+      ** httpBL START **
+      *****************/
+      global $sourcedir, $modSettings;
+      if ($modSettings['httpBL_enable'])
+      {
+              require_once($sourcedir . '/httpBL_Subs.php');
+              $honeyLink = httpBL_honeylink($modSettings['httpBL_honeyPot_link'], $modSettings['httpBL_honeyPot_word']);
+              echo $honeyLink;
+      }
+      /*****************
+      **  httpBL END  **
+      *****************/
+
+      echo '
 </body></html>';
 }
 
@@ -536,6 +555,10 @@ function template_menu()
 		$current_action = 'search';
 	if ($context['current_action'] == 'theme')
 		$current_action = isset($_REQUEST['sa']) && $_REQUEST['sa'] == 'pick' ? 'profile' : 'admin';
+
+	if ($context['current_action'] == 'httpBL')
+		$current_action = 'admin';
+
 	if (lm2ArrayValue($_REQUEST, 'action') == 'LM2R') {
 		if (lm2ArrayValue($_REQUEST, 'circuit') == '*')
 			$current_action = 'LM2Circuits';

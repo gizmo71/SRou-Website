@@ -4,8 +4,8 @@ require_once("$sourcedir/Subs-LM2.php");
 
 /* Replacement front page, post-MkPortal. */
 
-if ($_REQUEST['ind'] == 'lm2') {
-	if ($driver = $_REQUEST['driver']) {
+if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
+	if ($driver = lm2ArrayValue($_REQUEST, 'driver')) {
 		if ($driver == 'self') {
 			$driver = $ID_MEMBER;
 		}
@@ -25,16 +25,16 @@ if ($_REQUEST['ind'] == 'lm2') {
 
 		header("Location: $boardurl/index.php?action=profile&u=$u&sa=racing_history&driver=$driver");
 		exit;
-	} else if ($team = $_REQUEST['team']) {
+	} else if ($team = lm2ArrayValue($_REQUEST, 'team')) {
 		header("Location: $boardurl/index.php?action=LM2R&team=$team");
 		exit;
-	} else if ($teams = $_REQUEST['teams']) {
+	} else if ($teams = lm2ArrayValue($_REQUEST, 'teams')) {
 		header("Location: $boardurl/index.php?action=LM2R&team=*");
 		exit;
-	} else if ($group = $_REQUEST['group']) {
+	} else if ($group = lm2ArrayValue($_REQUEST, 'group')) {
 		header("Location: $boardurl/index.php?action=LM2R&group=$group");
 		exit;
-	} else if ($event = $_REQUEST['event']) {
+	} else if ($event = lm2ArrayValue($_REQUEST, 'event')) {
 		$query = db_query("SELECT event_group, smf_topic FROM {$lm2_db_prefix}events WHERE id_event = $event", __FILE__, __LINE__);
 		$row = mysql_fetch_assoc($query);
 		mysql_free_result($query);
@@ -44,7 +44,7 @@ if ($_REQUEST['ind'] == 'lm2') {
 		}
 		//$page_title = "Unknown or published event $event";
 		unset($_REQUEST['event']); // Stop the results block dying.
-	} else if (($circuit = $_REQUEST['circuit']) || ($location = $_REQUEST['location'])) {
+	} else if (($circuit = lm2ArrayValue($_REQUEST, 'circuit')) || ($location = lm2ArrayValue($_REQUEST, 'location'))) {
 		if ($circuit == "*") {
 			header("Location: $boardurl/index.php?action=LM2R&circuit=*");
 			exit;
