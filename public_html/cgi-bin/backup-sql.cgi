@@ -13,6 +13,8 @@ set -x
 date
 cd ~/public_ftp/backup || exit 1
 
+crontab -l >arvixe-crontab.log
+
 SHARED_OPTIONS="--user=gizmo71_backup --password=ju5t1nca5e"
 BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
