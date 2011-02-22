@@ -1,6 +1,6 @@
 <?php
 $ssi_theme = 6;
-require_once("../public_html.srou/www/smf/SSI.php");
+require_once(dirname(dirname(__FILE__)) . "/public_html.srou/www/smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
 
 $default_inc_file = "pages/about.php";

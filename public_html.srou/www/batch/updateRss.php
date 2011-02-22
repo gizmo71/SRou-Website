@@ -1,6 +1,5 @@
-#!/usr/bin/php
 <?php
-require('../../public_html.srou/www/smf/SSI.php');
+require_once('../smf/SSI.php');
 
 header('Content-Type: text/plain');
 
