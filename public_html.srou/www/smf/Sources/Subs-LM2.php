@@ -1630,7 +1630,7 @@ function LM2R() {
 		$context['page_title'] = "Registered Teams";
 		$context['sub_template'] = 'teams';
 	} else if (!is_null($team)) {
-		$team = mysql_real_escape_string($team);
+		is_numeric($team) || die("$team is not numeric");
 		$query = db_query("SELECT * FROM {$lm2_db_prefix}teams WHERE id_team = $team", __FILE__, __LINE__);
 		($context['lm2']['team'] = mysql_fetch_assoc($query)) || die("unknown team $team");
 		mysql_fetch_assoc($query) && die("ambiguous team $team");
@@ -1641,8 +1641,8 @@ function LM2R() {
 		$context['sub_template'] = 'circuits';
 		$context['page_title'] = "Circuits";
 	} else if (!is_null($circuit) && !is_null($location = lm2ArrayValue($_REQUEST, 'location'))) {
-		$circuit = mysql_real_escape_string($circuit);
-		$location = mysql_real_escape_string($location);
+		is_numeric($circuit) || die("$circuit is not numeric");
+		is_numeric($location) || die("$location is not numeric");
 		$context['sub_template'] = 'circuit';
 
 		global $colsep;
