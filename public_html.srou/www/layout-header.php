@@ -4,7 +4,6 @@ function makeSrouLayoutHeader() {
 
 	$theme = $settings['srou_layout_header'];
 
-echo "<!-- XXX $lm2_db_prefix, $boardurl -->\n";
 	echo "
 <TABLE ALIGN='CENTER' CLASS='windowbg' WIDTH='100%' CELLSPACING='0' CELLPADDING='0'><TR>
 	<TD VALIGN='BOTTOM' ALIGN='RIGHT'
@@ -34,7 +33,7 @@ echo "<!-- XXX $lm2_db_prefix, $boardurl -->\n";
 		</TD>" : "") . "
 	<TD ALIGN='RIGHT' VALIGN='MIDDLE' WIDTH='1'>
 		<A HREF='$boardurl/index.php?topic=754.0'><IMG SRC='/lm2/donations.php?balance=$balance' WIDTH='80' HEIGHT='43' BORDER='0' />
-		<SMALL><BR/><NOBR>Quarterly&nbsp;cost: &#163;330</NOBR></SMALL></A>
+		<SMALL><BR/><NOBR>Quarterly&nbsp;cost: &#163;220</NOBR></SMALL></A>
 	</TD>
 		";
 	} else if ($theme['ads'] !== false) {
