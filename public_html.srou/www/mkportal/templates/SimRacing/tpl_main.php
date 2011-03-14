@@ -63,7 +63,7 @@ function view_logo() {
 global $mklib;
 
 ob_start();
-include('/home/davegyme/public_html.srou/www/layout-header.html'); //FIXME: find a way to use a relative path.
+include('/home/gizmo71/public_html.srou/www/layout-header.php'); //FIXME: find a way to use a relative path.
 $banner = ob_get_clean();
 if ($banner)
 	return "<tr><td width='100%'>$banner</td></tr>";

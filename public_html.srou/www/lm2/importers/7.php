@@ -13,7 +13,7 @@ function showFileChoosers() {
 
 function check_sim_header($simName, $version, $isRace) {
 	($simName == 'RACE 07') || die("Not a recognised Race '07 import $simName");
-	$versions = array('1.0.1.6', '1.0.2.0', '1.0.2.1', '1.1.0.3', '1.1.0.4', '1.2.1.2');
+	$versions = array('1.0.1.6', '1.0.2.0', '1.0.2.1', '1.1.0.3', '1.1.0.4', '1.2.1.2', '1.2.1.4');
 	(array_search($version, $versions) !== false) || die("Race '07 importer supports only: " . implode(', ', $versions));
 }
 
