@@ -457,6 +457,68 @@ class SimCars extends RefData {
 	}
 }
 
+class Classification extends RefData {
+	function getName() { return "Classification"; }
+	function getTable() { return "{$this->lm2_db_prefix}car_classification"; }
+
+	function getFields() {
+		return Array(
+			new RefDataFieldID("id_car_classification", true),
+			new RefDataFieldFK("event_group", $GLOBALS['eventGroupRefDataFieldFKsql']),
+			new RefDataFieldFK("car", $GLOBALS['carRefDataFieldFKSQL']),
+			new RefDataFieldFK("car_class", "
+				SELECT id_class AS id, class_description AS description, display_sequence < 0 AS hide
+				FROM {$this->lm2_db_prefix}classes
+				ORDER BY display_sequence"),
+		);
+	}
+
+	function addRow() {
+		return array();
+	}
+
+	function getDefaultSortOrder() {
+		return "U1";
+	}
+
+	function getFilters() {
+		$filters = array(
+			'l'=>array('name'=>'Class', 'nested'=>array()),
+			'g'=>array('name'=>'Group', 'nested'=>array()),
+			'c'=>array('name'=>'Car', 'nested'=>array())
+		);
+
+		$query = lm2_query("
+			SELECT DISTINCT id_class AS id, class_description AS description
+			FROM {$this->lm2_db_prefix}classes
+			JOIN {$this->lm2_db_prefix}cars ON id_class = class
+			ORDER BY display_sequence
+			", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'], predicate=>"car_class = " . sqlString($row['id']));
+		}
+		mysql_free_result($query);
+
+		$query = lm2_query("
+			SELECT DISTINCT id_event_group AS id, short_desc AS description
+			FROM {$this->lm2_db_prefix}event_groups
+			WHERE id_event_group IN (SELECT event_group FROM {$this->lm2_db_prefix}car_classification) OR NOT is_protected
+			ORDER BY description", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$filters['g']['nested']["g{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf("event_group = %d", $row['id']));
+		}
+		mysql_free_result($query);
+
+		$query = lm2_query($GLOBALS['carRefDataFieldFKSQL'], __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"car = " . sqlString($row['id']));
+		}
+		mysql_free_result($query);
+
+		return $filters;
+	}
+}
+
 class Classes extends RefData {
 	function getName() { return "Classes"; }
 	function getTable() { return "{$this->lm2_db_prefix}classes"; }
@@ -1750,6 +1812,7 @@ $refDatas = Array(
 //	'tst'=>new Test(),
 	'mfc'=>array('refData'=>new Manufacturers(), 'groups'=>array($lm2_mods_group_refdata)),
 	'cls'=>array('refData'=>new Classes(), 'groups'=>array($lm2_mods_group_refdata)),
+	'clf'=>array('refData'=>new Classification(), 'groups'=>array($lm2_mods_group_refdata)),
 	'car'=>array('refData'=>new Cars(), 'groups'=>array($lm2_mods_group_refdata)),
 	'scr'=>array('refData'=>new SimCars(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_server, $lm2_mods_group_ukgpl)),
 	'tyr'=>array('refData'=>new Tyres(), 'groups'=>array($lm2_mods_group_refdata)),
