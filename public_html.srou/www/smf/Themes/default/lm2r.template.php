@@ -239,7 +239,7 @@ function template_group() {
 		global $lm2_db_prefix;
 
 		$query = db_query("
-			SELECT scoring_scheme, champ_type, max_rank, best, rounds, class, ballast_bonus, minimum_distance
+			SELECT scoring_scheme, champ_type, max_rank, best, rounds, class, ballast_bonus, minimum_distance, event_group
 			, scoring_type, free_car_changes, car_change_penalty, single_car_penalty, max_tokens, overspend_penalty
 			FROM {$lm2_db_prefix}championships
 			JOIN {$lm2_db_prefix}scoring_schemes ON id_championship = $champ AND id_scoring_scheme = scoring_scheme
@@ -259,6 +259,7 @@ function template_group() {
 			$max_tokens = $row['max_tokens'];
 			$overspend_penalty = $row['overspend_penalty'];
 			$minimum_distance = $row['minimum_distance'];
+			$event_group = $row['event_group'];
 		}
 		mysql_free_result($query);
 
@@ -337,14 +338,24 @@ function template_group() {
 		if ($showRatings) {
 			$html .= "<TABLE ALIGN=\"CENTER\">\n";
 
+//TODO: consider showing eligible cars for non-rated championships...
+			// Note that the car classifications can be set up in such a way as to fool this. But please don't.
 			$query = db_query("
 				SELECT $lm2_class_style_clause, class_description, CONCAT(manuf_name, ' ', car_name) AS car_desc, rating
 				FROM {$lm2_db_prefix}cars
+				JOIN {$lm2_db_prefix}car_classification ON id_car_classification = (
+					SELECT id_car_classification
+					FROM {$lm2_db_prefix}car_classification
+					JOIN {$lm2_db_prefix}event_group_tree ON event_group = container
+					WHERE id_car = car AND $event_group = contained
+					ORDER BY depth
+					LIMIT 1
+				)
 				JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
-				JOIN {$lm2_db_prefix}classes ON id_class = class
+				JOIN {$lm2_db_prefix}classes ON id_class = car_class
 				JOIN {$lm2_db_prefix}car_ratings ON id_car = rated_car AND rating_scoring_scheme = $scoring_scheme
-				WHERE class REGEXP CONCAT('^('," . lm2SqlString($class) . ",')\$')
-				ORDER BY rating DESC, display_sequence, class, car_name
+				WHERE id_class REGEXP CONCAT('^('," . lm2SqlString($class) . ",')\$')
+				ORDER BY rating DESC, display_sequence, car_class, car_name
 				", __FILE__, __LINE__);
 			while ($row = mysql_fetch_assoc($query)) {
 				$html .= "<TR><TD{$row['class_style']}>{$row['class_description']}</TD><TD>{$row['car_desc']}</TD><TD ALIGN=\"RIGHT\">{$row['rating']}</TD></TR>\n";

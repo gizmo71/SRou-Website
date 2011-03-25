@@ -248,7 +248,7 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 			$query2 = db_query("SELECT MIN(qual_best_lap_time) AS best_qual_time
 				FROM {$lm2_db_prefix}event_entries
 				WHERE event = {$row['id_event']}
-			"/* . " AND class = id_class"*/, __FILE__, __LINE__);
+			"/* . " AND car_class_c = id_class"*/, __FILE__, __LINE__);
 			$row['best_qual_time'] = null; //FIXME: qualifying best per class?
 			while ($row2 = mysql_fetch_assoc($query2)) {
 				$row['best_qual_time'] = $row2['best_qual_time'];
@@ -260,7 +260,7 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 			echo "<P ID='post_event_password'>" . lm2_make_password_link($row);
 			$practiceWording = "practice";
 			$preRaceWording = "";
-			if ($row['sim'] == 9) { // iRacing doesn't have practice servers per sé.
+			if ($row['sim'] == 9) { // iRacing doesn't have practice servers per sÃ©.
 				$practiceWording = "hosted practice sessions";
 				$preRaceWording = "; the actual event hosted session will use the above password";
 			}
@@ -590,7 +590,7 @@ function lm2_show_event($event) {
 		LEFT JOIN {$lm2_db_prefix}retirement_reasons USING (retirement_reason)  
 		JOIN {$lm2_db_prefix}sim_cars ON sim_car = id_sim_car
 		JOIN {$lm2_db_prefix}cars ON id_car = {$lm2_db_prefix}sim_cars.car
-		JOIN {$lm2_db_prefix}classes ON class = id_class
+		JOIN {$lm2_db_prefix}classes ON car_class_c = id_class
 		JOIN {$lm2_db_prefix}tyres ON id_tyre = tyres
 		JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
 		JOIN {$lm2_db_prefix}drivers ON driver_member = {$lm2_db_prefix}event_entries.member
@@ -1539,42 +1539,23 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 		" . ($id_circuit ? "" : ", $lm2_circuit_link_clause AS circuit_link, id_event_group") . "
 		, {$lm2_db_prefix}sims.sim_name
 		FROM {$lm2_db_prefix}event_entries
-		, {$lm2_db_prefix}events
-		, {$lm2_db_prefix}cars
-		, {$lm2_db_prefix}sim_cars
-		, {$lm2_db_prefix}classes
-		, {$lm2_db_prefix}lap_records
-		, {$lm2_db_prefix}sim_circuits
-		, {$lm2_db_prefix}circuits
-		, {$lm2_db_prefix}circuit_locations
-		, {$lm2_db_prefix}event_groups
-		, {$lm2_db_prefix}sims
-		, {$lm2_db_prefix}drivers
-		, {$lm2_db_prefix}manufacturers
-		WHERE id_event = event
-		" . ($id_event ? " AND id_event = $id_event" : "")
-		. " AND id_event_group = event_group"
-		. " AND id_sim_circuit = {$lm2_db_prefix}events.sim_circuit"
-		. " AND id_circuit = {$lm2_db_prefix}sim_circuits.circuit"
-		. " AND id_circuit_location = circuit_location"
-		. ($id_circuit ? " AND id_circuit = $id_circuit" : "")
-		. " AND id_circuit = record_circuit"
-		. ($id_sim ? " AND id_sim = $id_sim" : "")
-		. " AND id_sim = {$lm2_db_prefix}events.sim"
-		. " AND id_sim = {$lm2_db_prefix}lap_records.sim"
-		. " AND id_sim_car = sim_car"
-		. " AND id_car = car"
-		. " AND id_manuf = manuf"
-		. " AND class = record_class"
-		. " AND id_class = class"
-		. " AND id_class = record_class"
-		. ($id_team ? " AND $id_team = {$lm2_db_prefix}event_entries.team" : "")
-		. ($id_driver ? " AND $id_driver = driver_member" : "")
-		. " AND member = driver_member"
-		. " AND $lm2_lap_record_clause"
-		. " GROUP BY brief_name, lap_record_type, class_description, sim_name"
-		. " ORDER BY brief_name, display_sequence, lap_record_type, sim_name, record_lap_time, event_date
-	", __FILE__, __LINE__);
+		JOIN {$lm2_db_prefix}events ON id_event = event" . ($id_event ? " AND id_event = $id_event" : ""). "
+		JOIN {$lm2_db_prefix}sim_cars ON id_sim_car = sim_car
+		JOIN {$lm2_db_prefix}cars ON id_car = car
+		JOIN {$lm2_db_prefix}classes ON id_class = car_class_c
+		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = {$lm2_db_prefix}events.sim_circuit
+		JOIN {$lm2_db_prefix}circuits ON id_circuit = {$lm2_db_prefix}sim_circuits.circuit" . ($id_circuit ? " AND id_circuit = $id_circuit" : "") . "
+		JOIN {$lm2_db_prefix}lap_records ON id_class = record_class AND id_circuit = record_circuit
+		JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
+		JOIN {$lm2_db_prefix}event_groups ON id_event_group = event_group
+		JOIN {$lm2_db_prefix}sims ON id_sim = {$lm2_db_prefix}events.sim AND id_sim = {$lm2_db_prefix}lap_records.sim
+		" . ($id_sim ? " AND id_sim = $id_sim" : "") . "
+		JOIN {$lm2_db_prefix}drivers ON member = driver_member" . ($id_driver ? " AND $id_driver = driver_member" : "") . "
+		JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
+		WHERE $lm2_lap_record_clause" . ($id_team ? " AND $id_team = {$lm2_db_prefix}event_entries.team" : "") . "
+		GROUP BY brief_name, lap_record_type, class_description, sim_name
+		ORDER BY brief_name, display_sequence, lap_record_type, sim_name, record_lap_time, event_date
+		", __FILE__, __LINE__);
 	$sep = $opening;
 	$closer = '';
 	while ($row = mysql_fetch_assoc($query)) {

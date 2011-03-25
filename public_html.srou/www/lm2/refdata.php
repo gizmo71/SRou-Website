@@ -198,10 +198,10 @@ function moderatorRefDataFieldFKSQL(/*$group...*/) {
 	";
 }
 
-$carRefDataFieldFKSQL = "SELECT id_car AS id, CONCAT(manuf_name, ' ', car_name, ' (', class_description, ')') AS description"
-	. " FROM {$lm2_db_prefix}manufacturers, {$lm2_db_prefix}cars, {$lm2_db_prefix}classes"
-	. " WHERE id_class = class AND id_manuf = manuf"
-	. " ORDER BY description, display_sequence";
+$carRefDataFieldFKSQL = "SELECT id_car AS id, CONCAT(manuf_name, ' ', car_name) AS description
+	FROM {$lm2_db_prefix}manufacturers
+	JOIN {$lm2_db_prefix}cars ON id_manuf = manuf
+	ORDER BY description";
 
 // Base class for all editable reference data tables.
 
@@ -251,33 +251,17 @@ class Cars extends RefData {
 				. " FROM {$this->lm2_db_prefix}manufacturers"
 				. " ORDER BY description"),
 			new RefDataFieldEdit("car_name", 70),
-			new RefDataFieldFK("class",
-				"SELECT id_class AS id, class_description AS description, display_sequence < 0 AS hide"
-				. " FROM {$this->lm2_db_prefix}classes"
-				. " ORDER BY display_sequence"),
 		);
 	}
 
 	function addRow() {
 		global $filterId;
-		$defaultClass = substr($filterId, 0, 1) == 'c' ? substr($filterId, 1) : '-';
 		$defaultManuf = substr($filterId, 0, 1) == 'm' ? substr($filterId, 1) : -1;
-		return array('class'=>$defaultClass, manuf=>$defaultManuf);
+		return array(manuf=>$defaultManuf);
 	}
 
 	function getFilters() {
-		$filters = array('c'=>array('name'=>'Classes', 'nested'=>array()), 'm'=>array('name'=>'Manufacturers', 'nested'=>array()));
-
-		$query = lm2_query("
-			SELECT DISTINCT id_class AS id, class_description AS description
-			FROM {$this->lm2_db_prefix}classes, {$this->lm2_db_prefix}cars
-			WHERE id_class = class
-			ORDER BY display_sequence
-			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
-			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"class = " . sqlString($row['id']));
-		}
-		mysql_free_result($query);
+		$filters = array('m'=>array('name'=>'Manufacturers', 'nested'=>array()));
 
 		$query = lm2_query("
 			SELECT DISTINCT id_manuf, manuf_name
@@ -400,7 +384,6 @@ class SimCars extends RefData {
 			'u'=>array('name'=>'Unmapped', 'predicate'=>"car = -1 OR sim = -1 OR tyres = '-'"),
 			's'=>array('name'=>'Sim', 'nested'=>array()),
 			'c'=>array('name'=>'Car', 'nested'=>array()),
-			'z'=>array('name'=>'Class', 'nested'=>array()),
 			'o'=>array('name'=>'Sim/Mod', 'nested'=>array()),
 		);
 
@@ -430,15 +413,6 @@ class SimCars extends RefData {
 		$query = lm2_query($GLOBALS['carRefDataFieldFKSQL'], __FILE__, __LINE__);
 		while ($row = mysql_fetch_assoc($query)) {
 			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"car = " . sqlString($row['id']));
-		}
-		mysql_free_result($query);
-
-		$query = lm2_query("
-			SELECT DISTINCT id_class AS id, class_description AS description
-			FROM {$this->lm2_db_prefix}classes
-			ORDER BY display_sequence, description", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
-			$filters['z']['nested']["z{$row['id']}"] = array('name'=>$row['description'], predicate=>"class = " . sqlString($row['id']));
 		}
 		mysql_free_result($query);
 
@@ -491,7 +465,7 @@ class Classification extends RefData {
 		$query = lm2_query("
 			SELECT DISTINCT id_class AS id, class_description AS description
 			FROM {$this->lm2_db_prefix}classes
-			JOIN {$this->lm2_db_prefix}cars ON id_class = class
+			JOIN {$this->lm2_db_prefix}car_classification ON id_class = car_class
 			ORDER BY display_sequence
 			", __FILE__, __LINE__);
 		while ($row = mysql_fetch_assoc($query)) {
@@ -516,6 +490,34 @@ class Classification extends RefData {
 		mysql_free_result($query);
 
 		return $filters;
+	}
+
+	function show_notes() {
+//XXX: this isn't really the right place to do it - we want to be in rebuild() - but get called all the time...
+		$query = lm2_query("
+			SELECT DISTINCT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
+			FROM {$this->lm2_db_prefix}event_entries
+			JOIN {$this->lm2_db_prefix}events ON id_event = event
+			JOIN {$this->lm2_db_prefix}sim_cars ON id_sim_car = sim_car
+			JOIN {$this->lm2_db_prefix}car_classification ON id_car_classification = (
+				SELECT id_car_classification
+				FROM {$this->lm2_db_prefix}car_classification
+				JOIN {$this->lm2_db_prefix}event_group_tree ON {$this->lm2_db_prefix}car_classification.event_group = container
+				WHERE {$this->lm2_db_prefix}car_classification.car = {$this->lm2_db_prefix}sim_cars.car
+				AND {$this->lm2_db_prefix}events.event_group = contained
+				ORDER BY depth
+				LIMIT 1
+			)
+			JOIN {$this->lm2_db_prefix}event_groups eg_c ON id_event_group = {$this->lm2_db_prefix}car_classification.event_group
+			JOIN {$this->lm2_db_prefix}event_groups eg_e ON eg_e.id_event_group = {$this->lm2_db_prefix}events.event_group
+			WHERE car_class_c <> car_class
+			ORDER BY 2, 1", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			echo "<PRE>" . print_r($row, true) . "</PRE>\n";
+		}
+		mysql_free_result($query);
+
+		//TODO: Do we also want to show cars with no mappings?
 	}
 }
 
@@ -550,9 +552,9 @@ class Classes extends RefData {
 
 	function makeSql($what, $from, $where) {
 		return "
-			SELECT COUNT(id_car) + COUNT(id_championship) AS entries, $what FROM ($from)
-			LEFT JOIN {$this->lm2_db_prefix}cars ON id_class = {$this->lm2_db_prefix}cars.class
-			LEFT JOIN {$this->lm2_db_prefix}championships ON id_class = {$this->lm2_db_prefix}championships.class
+			SELECT COUNT(id_car_classification) + COUNT(id_championship) AS entries, $what FROM ($from)
+			LEFT JOIN {$this->lm2_db_prefix}car_classification ON id_class = car_class
+			LEFT JOIN {$this->lm2_db_prefix}championships ON id_class REGEXP CONCAT('^(',class,')\$') AND NOT 'utter bogosity catch all test' REGEXP CONCAT('^(',class,')\$')
 			WHERE $where
 			GROUP BY id_class";
 	}
@@ -1128,7 +1130,10 @@ class EventEntries extends RefData {
 				WHERE class_code IS NOT NULL
 				ORDER BY description
 			", true, "4em"), 
-			new RefDataFieldReadOnlySql("sim_car", false, "SELECT vehicle FROM {$this->lm2_db_prefix}sim_cars WHERE sim_car = id_sim_car", 13),
+			new RefDataFieldReadOnlySql("sim_car", false, "
+				CONCAT((SELECT vehicle FROM {$this->lm2_db_prefix}sim_cars WHERE sim_car = id_sim_car)
+				, ' (', (SELECT class_description FROM {$this->lm2_db_prefix}classes WHERE car_class_c = id_class)
+				, ')')", 13),
 			new RefDataFieldEdit("qual_best_lap_time", 7, 9),
 			new RefDataFieldEdit("qual_pos", 2),
 			//new RefDataFieldReadOnly("qual_pos_class"),

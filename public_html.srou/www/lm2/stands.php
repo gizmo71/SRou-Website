@@ -82,24 +82,21 @@ class StandingsGenerator {
 		}
 		$this->ukgplS18tokens($this->regression_test);
 		if (!$this->regression_test) {
-			reset_unadjusted_positions(null); 
+			reset_unadjusted_positions(null);
 			$this->set_positions_lost();
-			$this->set_class_positions();
+			$this->set_class_positions(); //XXX: drag this into the regression test...
 		}
 
 		// At this point, we've finished doing updates the events and entries and are ready to start on the points.
 
 		echo "<P>Making temporary points tables...</P>\n";
 
-		//XXX: drive this off the regression table list...
-		lm2_query("
-			CREATE TEMPORARY TABLE {$this->temp_db_prefix}championship_points
-			LIKE {$this->lm2_db_prefix}championship_points
-			" , __FILE__, __LINE__);
-		lm2_query("
-			CREATE TEMPORARY TABLE {$this->temp_db_prefix}event_points
-			LIKE {$this->lm2_db_prefix}event_points
-			" , __FILE__, __LINE__);
+		foreach ($this->regression_tables as $table => $fields) {
+			lm2_query("
+				CREATE TEMPORARY TABLE {$this->temp_db_prefix}$table
+				LIKE {$this->lm2_db_prefix}$table
+				" , __FILE__, __LINE__);
+		}
 		db_query("ALTER TABLE {$this->temp_db_prefix}event_points ADD (champ_points_lost DECIMAL(6,1), tokens DECIMAL(4,1))" , __FILE__, __LINE__);
 		//XXX: do we need to drop any unwanted indexes?
 
@@ -145,7 +142,7 @@ class StandingsGenerator {
 			WHERE member <> $guest_member_id AND driver_type IS NULL
 			AND IFNULL(round_no, 1) <= IFNULL(rounds, 1)
 			AND {$this->champ_id_clause} IS NOT NULL
-			AND {$this->lm2_db_prefix}cars.class REGEXP CONCAT('^(',{$this->lm2_db_prefix}championships.class,')\$')
+			AND car_class_c REGEXP CONCAT('^(',{$this->lm2_db_prefix}championships.class,')\$')
 			AND IFNULL(reg_class,'') REGEXP CONCAT('^(',IFNULL(reg_class_regexp,''),')\$')
 			" . ($this->regression_test ? "" : " AND NOT is_protected_c") . "
 			", __FILE__, __LINE__);
@@ -895,45 +892,55 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 	}
 
 	function set_class_positions() {
-		echo "<P>Updating class positions...</P>\n";
+		echo "<P>Updating classes and class positions...</P>\n";
 
 		//XXX: strongly consider moving the protection flag from event_groups to championships, and keying event_entries updates off event status.
-		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries"
-			. " SET qual_pos_class = NULL"
-			. ", race_pos_class = NULL"
-			. " WHERE NOT is_protected_c"
-			, __FILE__, __LINE__);
+		lm2_query("
+			UPDATE {$this->lm2_db_prefix}event_entries
+			SET qual_pos_class = NULL
+			, race_pos_class = NULL
+			, car_class_c = IFNULL((
+				SELECT car_class
+				FROM {$this->lm2_db_prefix}car_classification
+				JOIN {$this->lm2_db_prefix}sim_cars USING (car)
+				JOIN {$this->lm2_db_prefix}event_group_tree ON event_group = container
+				WHERE id_sim_car = sim_car
+				AND (SELECT event_group FROM {$this->lm2_db_prefix}events WHERE id_event = event) = contained
+				ORDER BY depth
+				LIMIT 1
+			), '-')
+			WHERE NOT is_protected_c
+			", __FILE__, __LINE__);
 		//FIXME: consider restricting this to championship classes only...
-		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}class_positions"
-			. " (UNIQUE (event_entry))"
-			. " AS SELECT id_event_entry AS event_entry"
-			. ", start_pos * 0 AS start_pos_class"
-			. ", start_pos"
-			. ", qual_pos * 0 AS qual_pos_class"
-			. ", qual_pos"
-			. ", race_pos * 0 AS race_pos_class"
-			. ", race_pos"
-			. ", race_best_lap_pos * 0 AS race_best_lap_pos_class"
-			. ", race_best_lap_pos"
-			. ", class"
-			. ", event"
-			. " FROM {$this->lm2_db_prefix}event_entries"
-			. ", {$this->lm2_db_prefix}cars"
-			. ", {$this->lm2_db_prefix}sim_cars"
-			. " WHERE id_car = car AND id_sim_car = sim_car"
-			. " AND NOT is_protected_c"
-			, __FILE__, __LINE__);
+		lm2_query("
+			CREATE TEMPORARY TABLE {$this->temp_db_prefix}class_positions
+			(UNIQUE (event_entry))
+			AS SELECT id_event_entry AS event_entry
+			, start_pos * 0 AS start_pos_class
+			, start_pos
+			, qual_pos * 0 AS qual_pos_class
+			, qual_pos
+			, race_pos * 0 AS race_pos_class
+			, race_pos
+			, race_best_lap_pos * 0 AS race_best_lap_pos_class
+			, race_best_lap_pos
+			, car_class_c AS class
+			, event
+			FROM {$this->lm2_db_prefix}event_entries
+			WHERE NOT is_protected_c
+			", __FILE__, __LINE__);
 		$this->class_rank('race');
 		$this->class_rank('race_best_lap');
 		$this->class_rank('qual');
 		$this->class_rank('start');
-		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries, {$this->temp_db_prefix}class_positions"
-			. " SET " . $this->class_pos_copy('qual_pos_class')
-			. ", " . $this->class_pos_copy('start_pos_class')
-			. ", " . $this->class_pos_copy('race_pos_class')
-			. ", " . $this->class_pos_copy('race_best_lap_pos_class')
-			. " WHERE id_event_entry = event_entry",
-			__FILE__, __LINE__);
+		lm2_query("
+			UPDATE {$this->lm2_db_prefix}event_entries, {$this->temp_db_prefix}class_positions
+			SET " . $this->class_pos_copy('qual_pos_class') . "
+			, " . $this->class_pos_copy('start_pos_class') . "
+			, " . $this->class_pos_copy('race_pos_class') . "
+			, " . $this->class_pos_copy('race_best_lap_pos_class') . "
+			WHERE id_event_entry = event_entry
+			", __FILE__, __LINE__);
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}class_positions", __FILE__, __LINE__);
 	}
 
@@ -952,9 +959,10 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 	function make_lap_records($time_field, $rec_type) {
 		global $guest_member_id;
 
+//XXX: consider whether to record records with the {unknown} class...
 		lm2_query("INSERT INTO {$this->lm2_db_prefix}lap_records"
 			. " (record_class, sim, record_lap_time, record_circuit, record_mph, lap_record_type)"
-			. " SELECT class AS record_class"
+			. " SELECT car_class_c AS record_class"
 			. ", {$this->lm2_db_prefix}events.sim"
 			. ", MIN($time_field)"
 			. ", {$this->lm2_db_prefix}sim_circuits.circuit"
@@ -962,15 +970,15 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 			. ", " . sqlString($rec_type)
 			. " FROM {$this->lm2_db_prefix}event_entries"
 			. ", {$this->lm2_db_prefix}events"
-			. ", {$this->lm2_db_prefix}cars"
-			. ", {$this->lm2_db_prefix}sim_cars"
+//			. ", {$this->lm2_db_prefix}cars"
+//			. ", {$this->lm2_db_prefix}sim_cars"
 			. ", {$this->lm2_db_prefix}sim_circuits"
 			. " WHERE id_event = event"
 			. " AND id_sim_circuit = sim_circuit"
-			. " AND id_car = car AND id_sim_car = sim_car"
+//			. " AND id_car = car AND id_sim_car = sim_car"
 			. " AND member <> $guest_member_id AND driver_type IS NULL"
 			. " AND event_type <> 'F'"
-			. " GROUP BY class, sim, circuit",
+			. " GROUP BY car_class_c, sim, circuit",
 			__FILE__, __LINE__);
 	}
 
@@ -988,9 +996,11 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 				JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = {$this->lm2_db_prefix}championships.event_group
 				JOIN {$this->lm2_db_prefix}event_group_tree ON {$this->lm2_db_prefix}championships.event_group = {$this->lm2_db_prefix}event_group_tree.container
 				JOIN {$this->lm2_db_prefix}events ON {$this->lm2_db_prefix}event_group_tree.contained = {$this->lm2_db_prefix}events.event_group
-				JOIN {$this->lm2_db_prefix}event_entries ON id_event = event AND IFNULL(reg_class,'') REGEXP CONCAT('^(',IFNULL(reg_class_regexp,''),')\$')
+				JOIN {$this->lm2_db_prefix}event_entries
+					ON id_event = event AND IFNULL(reg_class,'') REGEXP CONCAT('^(',IFNULL(reg_class_regexp,''),')\$')
+					AND car_class_c REGEXP CONCAT('^(',{$this->lm2_db_prefix}championships.class,')\$')
 				JOIN {$this->lm2_db_prefix}sim_cars ON id_sim_car = sim_car
-				JOIN {$this->lm2_db_prefix}cars ON id_car = car AND {$this->lm2_db_prefix}cars.class REGEXP CONCAT('^(',{$this->lm2_db_prefix}championships.class,')\$')
+				JOIN {$this->lm2_db_prefix}cars ON id_car = car
 				WHERE {$this->champ_id_clause} = id
 				GROUP BY championship, position, id
 			"; // Kept seperate for EXPLAIN purposes.
