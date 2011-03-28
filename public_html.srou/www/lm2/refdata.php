@@ -177,12 +177,16 @@ $simRefDataFieldFKReadOnly = new RefDataFieldFK("sim",
 	"SELECT id_sim AS id, sim_name AS description, 1 AS hide"
 	. " FROM {$lm2_db_prefix}sims"
 	. " ORDER BY description");
-$eventGroupRefDataFieldFKsql = "SELECT id_event_group AS id
-	, short_desc AS description
-	, (is_protected = 1) AS hide
-	FROM {$lm2_db_prefix}event_groups
-	ORDER BY short_desc";
 $eventTypeRefDataFieldFK = new RefDataFieldFK("event_type", array('C'=>'Champ', 'N'=>'Non-Ch', 'F'=>'Fun'), false);
+
+function eventGroupRefDataFieldFKsql($hidePredicate = "is_protected = 1") {
+	global $lm2_db_prefix;
+	return "SELECT id_event_group AS id
+		, short_desc AS description
+		, ($hidePredicate) AS hide
+		FROM {$lm2_db_prefix}event_groups
+		ORDER BY short_desc";
+}
 
 function moderatorRefDataFieldFKSQL(/*$group...*/) {
 	func_num_args() || die("moderatorRefDataFieldFKSQL must be called with a list of membergroup IDs");
@@ -438,7 +442,7 @@ class Classification extends RefData {
 	function getFields() {
 		return Array(
 			new RefDataFieldID("id_car_classification", true),
-			new RefDataFieldFK("event_group", $GLOBALS['eventGroupRefDataFieldFKsql']),
+			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql("is_protected = 1 AND parent IS NOT NULL")),
 			new RefDataFieldFK("car", $GLOBALS['carRefDataFieldFKSQL']),
 			new RefDataFieldFK("car_class", "
 				SELECT id_class AS id, class_description AS description, display_sequence < 0 AS hide
@@ -448,7 +452,12 @@ class Classification extends RefData {
 	}
 
 	function addRow() {
-		return array();
+		global $filterId;
+		return array(
+			event_group=>substr($filterId, 0, 1) == 'g' ? substr($filterId, 1) : -1,
+			car=>substr($filterId, 0, 1) == 'c' ? substr($filterId, 1) : -1,
+			car_class=>substr($filterId, 0, 1) == 'l' ? substr($filterId, 1) : '-'
+		);
 	}
 
 	function getDefaultSortOrder() {
@@ -493,13 +502,14 @@ class Classification extends RefData {
 	}
 
 	function show_notes() {
-//XXX: this isn't really the right place to do it - we want to be in rebuild() - but get called all the time...
 		$query = lm2_query("
-			SELECT DISTINCT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
+			SELECT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
+			, GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name)) AS car
 			FROM {$this->lm2_db_prefix}event_entries
 			JOIN {$this->lm2_db_prefix}events ON id_event = event
+			JOIN {$this->lm2_db_prefix}event_groups eg_e ON id_event_group = event_group
 			JOIN {$this->lm2_db_prefix}sim_cars ON id_sim_car = sim_car
-			JOIN {$this->lm2_db_prefix}car_classification ON id_car_classification = (
+			LEFT JOIN {$this->lm2_db_prefix}car_classification ON id_car_classification = (
 				SELECT id_car_classification
 				FROM {$this->lm2_db_prefix}car_classification
 				JOIN {$this->lm2_db_prefix}event_group_tree ON {$this->lm2_db_prefix}car_classification.event_group = container
@@ -508,16 +518,16 @@ class Classification extends RefData {
 				ORDER BY depth
 				LIMIT 1
 			)
-			JOIN {$this->lm2_db_prefix}event_groups eg_c ON id_event_group = {$this->lm2_db_prefix}car_classification.event_group
-			JOIN {$this->lm2_db_prefix}event_groups eg_e ON eg_e.id_event_group = {$this->lm2_db_prefix}events.event_group
-			WHERE car_class_c <> car_class
-			ORDER BY 2, 1", __FILE__, __LINE__);
+			LEFT JOIN {$this->lm2_db_prefix}event_groups eg_c ON eg_c.id_event_group = {$this->lm2_db_prefix}car_classification.event_group
+			LEFT JOIN {$this->lm2_db_prefix}cars ON id_car = {$this->lm2_db_prefix}sim_cars.car
+			LEFT JOIN {$this->lm2_db_prefix}manufacturers ON id_manuf = manuf
+			WHERE car_class_c <> car_class OR (car_class_c <> '-' AND car_class IS NULL)
+			GROUP BY car_class_c, car_class, eg_c.short_desc, eg_e.short_desc
+			", __FILE__, __LINE__);
 		while ($row = mysql_fetch_assoc($query)) {
-			echo "<PRE>" . print_r($row, true) . "</PRE>\n";
+			echo "<BR/>Mismatch? " . htmlentities(print_r($row, true), ENT_QUOTES) . "\n";
 		}
 		mysql_free_result($query);
-
-		//TODO: Do we also want to show cars with no mappings?
 	}
 }
 
@@ -834,7 +844,7 @@ class Championships extends RefData {
 			", true, "6em"), 
 			new RefDataFieldEdit("champ_class_desc", 15),
 			new RefDataFieldEdit("champ_sequence", 2),
-			new RefDataFieldFK("event_group", $GLOBALS['eventGroupRefDataFieldFKsql']),
+			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql()),
 			new RefDataFieldFK("champ_type", array('D'=>'Drivers', 'T'=>'Teams', 'M'=>'Manufacturers'), false),
 			new RefDataFieldFK("champ_master", "
 				SELECT id_championship AS id, CONCAT(short_desc, '/', champ_type) AS description, is_protected OR champ_type <> 'D' AS hide
@@ -993,7 +1003,7 @@ class Events extends RefData {
 		global $lm2_mods_group_server, $lm2_mods_group_ukgpl, $lm2_mods_group_court;
 		return Array(
 			new RefDataFieldID("id_event", '$row["event_type"] == "F" || $row["entries_c"] == 0'), // Cascading takes care of entries.
-			new RefDataFieldFK("event_group", $GLOBALS['eventGroupRefDataFieldFKsql']),
+			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql()),
 			new RefDataFieldFK("sim_circuit",
 				"SELECT id_sim_circuit AS id"
 				. ", CONCAT(IF(sim = -1,'',CONCAT(id_sim_circuit,': ')),$circuit_html_clause) AS description"
@@ -1289,7 +1299,7 @@ class EventBoards extends RefData {
 	function getFields() {
 		return Array(
 			new RefDataFieldID("id_event_board", true),
-			new RefDataFieldFK("event_group", $GLOBALS['eventGroupRefDataFieldFKsql'], true),
+			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql(), true),
 			$GLOBALS['eventTypeRefDataFieldFK'],
 			new RefDataFieldFK("smf_board", "
 				SELECT id_board AS id, name AS description
@@ -1900,12 +1910,6 @@ if (!is_null($refData)) {
 }
 echo "</SMALL></P>\n";
 
-if ($refData) {
-	$refData->show_notes();
-}
-
-echo "<TABLE>\n";
-
 function rowSorter($row1, $row2) {
 	global $sortDir, $sortField;
 	$order = $sortField->compare($row1[$sortField->getName()], $row2[$sortField->getName()]);
@@ -1925,7 +1929,7 @@ function makeSortLink($i, $dirUrlPrefix, $dirHtml) {
 
 if (!is_null($refData)) {
 	// Update any rows passed.
-	
+
 	$rownum = 0;
 	while ($id = $_REQUEST["id$rownum"]) {
 		$where = null;
@@ -1975,8 +1979,11 @@ if (!is_null($refData)) {
 		echo "</I></P>\n";
 	}
 
+	$refData->show_notes();
+
 	// Generate table contents for page.
 
+	echo "<TABLE>\n";
 	$sep = "";
 	echo "<TR>\n";
 	$sql = "";
@@ -2031,6 +2038,8 @@ echo "\n<!-- XXX $sql -->\n";
 		}
 	}
 	mysql_free_result($query);
+
+	echo "</TABLE>\n";
 }
 
 function make_row($row, $refData, $rownum) {
@@ -2040,8 +2049,6 @@ function make_row($row, $refData, $rownum) {
 		}
 		echo "</TR>\n";
 }
-
-echo "</TABLE>\n";
 
 if (!is_null($refData)) {
 	echo "<INPUT TYPE=SUBMIT VALUE='Update'>\n";
