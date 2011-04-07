@@ -39,10 +39,10 @@ class RefDataFieldID extends RefDataField {
 
 // Shared field definitions.
 
-$carRefDataFieldFKSQL = "SELECT id_car AS id, CONCAT(manuf_name, ' ', car_name, ' (', class_description, ')') AS description"
-	. " FROM {$lm2_db_prefix}manufacturers, {$lm2_db_prefix}cars, {$lm2_db_prefix}classes"
-	. " WHERE id_class = class AND id_manuf = manuf"
-	. " ORDER BY description, display_sequence";
+$carRefDataFieldFKSQL = "SELECT id_car AS id, CONCAT(manuf_name, ' ', car_name) AS description
+	FROM {$lm2_db_prefix}cars
+	JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
+	ORDER BY description";
 
 function driverRefDataFieldFKSQL($live) {
 	global $lm2_db_prefix, $db_prefix, $guest_member_id;
