@@ -521,7 +521,7 @@ function template_group() {
 		$comp_type = $scoring_type == 'C' ? 'Ranking' : 'Championship';
 		echo "<TR><TH COLSPAN='$fullWidth' ID='ch$champ_id' TITLE='$champ_id'" . lm2ArrayValue($row, 'class_style') . ">"
 			. "{$row['champ_class_desc']} - {$lm2_champ_types[$champ_type]} $comp_type"
-			. " <SMALL>(" . lm2MakeEventGroupLink("$group&scoring=$champ_id", "scoring", $settings['theme_id'], "ch$champ_id") . ")</SMALL></TH></TR>\n";
+			. " <SMALL>(" . lm2MakeEventGroupLink($group, "scoring", $settings['theme_id'], "ch$champ_id", "&scoring=$champ_id") . ")</SMALL></TH></TR>\n";
 		if ($row['is_protected'] != 2) {
 			show_championship($champ_id, $champ_type, $group, $events, $event_headers, $fullWidth, $penalty_group, $penalty_group_months);
 		}

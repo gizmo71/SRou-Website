@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /*TODO: move more stuff from include.php - might need to rename carefully...
  * Using a convention that externally access stuff is lm2CamelCase and internal is lm2_under_scores.
  */
@@ -367,7 +367,10 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		, event_date
 		, SUM(id_event_entry) AS entries
 		, IFNULL(server_starter_override, server_starter) AS server_starter
+		, full_desc AS event_group_full
+		, {$lm2_db_prefix}sims.sim_name AS sim_desc
 		FROM {$lm2_db_prefix}events
+		JOIN {$lm2_db_prefix}sims ON sim = id_sim
 		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
 		JOIN {$lm2_db_prefix}circuits ON id_circuit = {$lm2_db_prefix}sim_circuits.circuit
 		JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
@@ -403,7 +406,7 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		if ($event == $row['id_event'] || $topic == $row['smf_topic']) {
 			$link_html = "<B>$link_html</B>";
 		}
-		$content .= "<SPAN TITLE='{$row['event_date']}'>$link<NOBR>$link_html</NOBR></A></SPAN>";
+		$content .= "<SPAN TITLE='{$row['sim_desc']} - {$row['event_date']} - {$row['event_group_full']}'>$link<NOBR>$link_html</NOBR></A></SPAN>";
 
 		$events[$row['entries'] ? "recent" : "coming"][] = $content;
 	}
@@ -484,7 +487,7 @@ function lm2MakeSmfCalendarEvents($low_date, $high_date, &$events) {
 	global $lm2_db_prefix;
 
 	$result = db_query("
-		SELECT DATE(event_date) AS event_date, short_desc, brief_name, smf_topic
+		SELECT DISTINCT DATE(event_date) AS event_date, short_desc, brief_name, smf_topic
 		FROM {$lm2_db_prefix}events
 		JOIN {$lm2_db_prefix}event_groups ON event_group = id_event_group
 		JOIN {$lm2_db_prefix}sim_circuits ON sim_circuit = id_sim_circuit
@@ -1490,10 +1493,13 @@ function lm2MakeEventGroupLink($group, $text = null, $theme = null, $anchor = nu
 	global $boardurl;
 	if (is_null($text)) {
 		$text = lm2FullEventGroupName($group);
+		$title = "";
+	} else {
+		$title = ' TITLE="' . lm2FullEventGroupName($group) . '"';
 	}
 	$theme = "&theme=" . (is_null($theme) ? 4 : $theme);
 	$anchor = is_null($anchor) ? '' : "#$anchor";
-	return "<A HREF='$boardurl/index.php?action=LM2R&group=$group$theme$anchor$extraParams'>$text</A>";
+	return "<A HREF='$boardurl/index.php?action=LM2R&group=$group$theme$extraParams$anchor'$title>$text</A>";
 }
 
 function lm2_make_ballast_number($ballastExp) {
