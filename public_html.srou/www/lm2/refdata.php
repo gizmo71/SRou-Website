@@ -583,6 +583,7 @@ class SimCircuits extends RefData {
 				. " ORDER BY description"),
 			$GLOBALS['simRefDataFieldFKReadOnly'],
 			new RefDataFieldEdit("sim_name", 30, 100),
+			new RefDataFieldEdit("iracing_track_id", 6), //TODO: INT(6)
 			new RefDataFieldEdit("length_metres", 10), //TODO: DECIMAL(9,4)
 		);
 	}
@@ -597,7 +598,7 @@ class SimCircuits extends RefData {
 			''=>array('name'=>'None', 'predicate'=>'1'),
 			's'=>array('name'=>'Sim', 'nested'=>array()),
 			'l'=>array('name'=>'Location', 'nested'=>array()),
-			'i'=>array('name'=>'iRacing no data', 'predicate'=>'sim = 9 AND (length_metres IS NULL OR sim_name IS NULL)'),
+			'i'=>array('name'=>'iRacing no data', 'predicate'=>'sim = 9 AND (length_metres IS NULL OR iracing_track_id IS NULL)'),
 		);
 
 		$query = lm2_query("SELECT id_sim AS id, sim_name AS description"

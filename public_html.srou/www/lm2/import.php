@@ -51,15 +51,12 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 	$entries = array();
 	$fatal_errors = array();
 
-	// Consider adding sims in too and loading parser from that.
 	$query = db_query("
 		SELECT id_sim_circuit
 		, circuit
-		, length_metres
-		, sim_name
 		, {$lm2_db_prefix}events.sim AS id_sim
 		, {$lm2_db_prefix}sim_circuits.sim AS sim
-		, IFNULL((SELECT count(*) FROM {$lm2_db_prefix}event_entries WHERE event = $id_event), 0) AS entries_c
+		, (SELECT count(*) FROM {$lm2_db_prefix}event_entries WHERE event = $id_event) AS entries_c
 		FROM {$lm2_db_prefix}events
 		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
 		WHERE id_event = $id_event
@@ -67,12 +64,10 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 	($current_circuit = mysql_fetch_assoc($query)) || die("can't find event or circuits for $id_event!");
 	mysql_fetch_assoc($query) && die("ambiguous event $id_event!");
 	mysql_free_result($query);
-	($sim == $current_circuit['id_sim'] && ($sim == $current_circuit['sim'] || $current_circuit['sim'] == -1))
-		|| die("sims for event and sim_circuit don't match");
-
-	if ($current_circuit['entries_c'] != 0) {
-		die("suspected double import");
-	}
+	($current_circuit['id_sim_circuit'] == -1) && die("cannot import for an event that has no location");
+	($current_circuit['sim'] == -1) || die("cannot import for an event that is already locked to a physical circuit");
+	($current_circuit['id_sim'] == $sim) || die("sims for event and import don't match"); // Should never get here!
+	($current_circuit['entries_c'] == 0) || die("suspected double import");
 
 	include("importers/{$sim}.php");
 	doImport();
@@ -82,57 +77,35 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 		$entry['simCarId'] = lookup_car($entry);
 	}
 
-	is_null($location) && $sim != 9 && die("no location");
+	is_null($location) && die("no location");
 
-	if ($current_circuit['id_sim_circuit'] == -1
-		|| $current_circuit['sim'] == -1
-		|| (!is_null($current_circuit['length_metres']) && $current_circuit['length_metres'] != $track_length)
-		|| (!is_null($location) && !is_null($current_circuit['sim_name']) && $current_circuit['sim_name'] != $location))
-	{
-		$query = db_query("
-			SELECT id_sim_circuit, circuit, length_metres, sim_name
-			FROM {$lm2_db_prefix}sim_circuits
-			WHERE " . ($sim == 9
-				? "circuit = {$current_circuit['circuit']}"
-				: "IFNULL(length_metres, -1) = IFNULL(" . nullIfNull($track_length) . ", -1) AND sim_name = " . sqlString($location)) . "
-			AND sim = $sim
-			", __FILE__, __LINE__);
-		if ($row = mysql_fetch_assoc($query)) {
-			mysql_fetch_assoc($query) && die("ambiguous circuit matches!");
-			($row['circuit'] == $current_circuit['circuit']) || die("circuit mapping found but for wrong track");
-			$current_circuit = $row;
+	$query = db_query("
+		SELECT id_sim_circuit, circuit, length_metres, sim_name
+		FROM {$lm2_db_prefix}sim_circuits
+		WHERE sim = $sim
+		" . ($sim == 9 ? "" : "IFNULL(length_metres, -1) = IFNULL(" . nullIfNull($track_length) . ", -1)") . "
+		AND sim_name = " . sqlString($location) . "
+		", __FILE__, __LINE__);
+	if ($row = mysql_fetch_assoc($query)) {
+		mysql_fetch_assoc($query) && die("ambiguous circuit matches!");
+		($row['circuit'] == $current_circuit['circuit']) || die("circuit mapping found but for wrong track");
+		$current_circuit = $row;
+	} else {
+		if ($_REQUEST['simulate'] == '1') {
+			echo "<P>Wants to make a new sim_circuit, location '$location', length '$track_length'
+				from id_sim_circuit {$current_circuit['id_sim_circuit']}</P>\n";
 		} else {
-			if ($_REQUEST['simulate'] == '1') {
-				echo "<P>Wants to make a new sim_circuit, location '$location', length '$track_length'"
-					. " from id_s_c {$current_circuit['id_sim_circuit']}, sim {$current_circuit['sim']}</P>\n";
-			} else {
-				db_query("
-					INSERT INTO {$lm2_db_prefix}sim_circuits
-					(circuit, sim, sim_name, length_metres)
-					VALUES ({$current_circuit['circuit']}, $sim, " . sqlString($location) . "
-					, " . nullIfNull($track_length) . ")
-					", __FILE__, __LINE__);
-				$current_circuit['id_sim_circuit'] = db_insert_id();
-				echo "<P>Note: location '$location' added with length '$track_length' for sim $sim as {$current_circuit['id_sim_circuit']}</P>\n";
-			}
-		}
-		mysql_free_result($query);
-	} else { // Errr... can we ever get in here? I think not...
-		if (is_null($current_circuit['sim_name']) && !is_null($location)) {
-			db_query("UPDATE {$lm2_db_prefix}sim_circuits"
-				. " SET sim_name = " . sqlString($location)
-				. " WHERE id_sim_circuit = {$current_circuit['id_sim_circuit']}",
-				__FILE__, __LINE__);
-			echo "<P>Note: updated sim_name to $location for sim $sim</P>\n";
-		}
-		if (is_null($current_circuit['length_metres']) && !is_null($track_length)) {
-			db_query("UPDATE {$lm2_db_prefix}sim_circuits"
-				. " SET length_metres = $track_length"
-				. " WHERE id_sim_circuit = {$current_circuit['id_sim_circuit']}",
-				__FILE__, __LINE__);
-			echo "<P>Note: updated length_metres to $track_length for sim $sim</P>\n";
+			db_query("
+				INSERT INTO {$lm2_db_prefix}sim_circuits
+				(circuit, sim, sim_name, length_metres)
+				VALUES ({$current_circuit['circuit']}, $sim, " . sqlString($location) . "
+				, " . nullIfNull($track_length) . ")
+				", __FILE__, __LINE__);
+			$current_circuit['id_sim_circuit'] = db_insert_id();
+			echo "<P>Note: location '$location' added with length '$track_length' for sim $sim as {$current_circuit['id_sim_circuit']}</P>\n";
 		}
 	}
+	mysql_free_result($query);
 
 	//echo "<PRE>entries: " . print_r($entries, true) . "</PRE>\n";
 

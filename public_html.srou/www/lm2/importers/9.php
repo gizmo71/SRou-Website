@@ -4,14 +4,45 @@
 function showFileChoosers() {
 	global $lm2_db_prefix;
 ?>
-    <TR><TD COLSPAN="4"><I>Please see <A HREF="/smf/index.php?topic=7006">this topic</A> for details of how to get the Greasemonkey script required for the qualifying export.</I></TD></TR>
+    <TR><TD COLSPAN="4"><I>Please do not use the old GreaseMonkey script for the qualifying results!</I></TD></TR>
     <TR><TD><B>Race</B> CSV</TD><TD><INPUT size="120" name="rcsv" type="file" /></TD></TR>
     <TR><TD>Qualifying CSV</TD><TD><INPUT size="120" name="qcsv" type="file" /></TD></TR>
 <?php
 }
 
+function readIndex2Name($handle, $maybeHeader = true) {
+	($index2Name = fgetcsv($handle)) || die("can't read header row");
+	count($index2Name) || die("no fields!");
+	$trackIndex = null;
+	foreach ($index2Name as $index=>$fieldName) {
+		if ($fieldName == 'Track') {
+			$trackIndex = $index;
+			break;
+		}
+	}
+
+	if ($maybeHeader && !is_null($trackIndex)) {
+		global $location;
+
+		$row = fgetcsv($handle);
+		(count($row) == count($index2Name)) || die("bad session data row <PRE>" . print_r($row, true) . "</PRE>");
+		$track = $row[$trackIndex];
+		if (is_null($location)) {
+			$location = $track;
+		} else if ($location != $track) {
+			die("Tracks $track doesn't match $location");
+		}
+
+		$row = fgetcsv($handle);
+		(count($row) == 1 && $row[0] == '') || die("suspicious separator row ". print_r($row, true));
+		return readIndex2Name($handle, false);
+	}
+
+	return $index2Name;
+}
+
 function doImport() {
-	global $fatal_errors, $iracing_subsession;
+	global $fatal_errors, $iracing_subsession, $location;
 
 	// Race results
 
@@ -28,23 +59,22 @@ function doImport() {
 	
 	$file = $_FILES["rcsv"];
 
-	if (preg_match('/\D(\d+)\.csv$/i', $file['name'], $matches)) {
+	if (preg_match('/\D(\d+)\D*\.csv$/i', $file['name'], $matches)) {
 		$iracing_subsession = $matches[1];
 		echo "<P>Acquired subsession ID from filename: $iracing_subsession</P>\n";
 	} else {
-		echo '<P STYLE="color: red">Failed to acquired subsession ID from filename '.$file['name'].'; please enter it manually in the <A HREF="index.php?action=refdata&refData=evt&rdFilt=s9&sortOrder=-3">events list</A>.</P>\n';
+		echo '<P STYLE="color: red">Failed to acquired subsession ID from filename '.$file['name'].'; please enter it manually in the <A HREF="index.php?action=refdata&refData=evt&rdFilt=s9&sortOrder=-3">events list</A>.</P>';
 	}
 
 	($handle = fopen($file['tmp_name'], "r")) || die("can't open {$file['tmp_name']}");
-	($index2Name = fgetcsv($handle)) || die("can't read header row");
-	count($index2Name) || die("no fields!");
-	count(array_diff(array_keys($fieldNameMap), $index2Name)) && die("some fields missing from " . print_r($fieldNameMap, true));
+	$index2Name = readIndex2Name($handle);
+	count(array_diff(array_keys($fieldNameMap), $index2Name)) && die("some fields missing from " . print_r($fieldNameMap, true) . "<BR/> with indices " . print_r($index2Name, true));
 	//echo "<PRE>indices " . print_r($index2Name, true) . "</PRE>\n";
 	$finPos = 0;
 	$winnerLapsComp = null;
 	$winnerRaceTime = null;
 	while ($row = fgetcsv($handle)) {
-		(count($row) == count($index2Name)) || die("bad row <PRE>" . print_r($row, row) . "</PRE>");
+		(count($row) == count($index2Name)) || die("bad row <PRE>" . print_r($row, true) . "</PRE>");
 		$slot = array();
 		foreach ($index2Name as $index=>$fieldName) {
 			if (array_key_exists($fieldName, $fieldNameMap)) {
@@ -77,21 +107,14 @@ function doImport() {
 
 	// Qualifying results
 
-	$fieldNameMap = array(
-		'displayName' => "Driver",
-		"custid" => "Lobby Username",
-		"carnum" => "#",
-	);
-
 	$file = $_FILES["qcsv"];
 
 	($handle = fopen($file['tmp_name'], "r")) || die("can't open {$file['tmp_name']}");
-	($index2Name = fgetcsv($handle)) || die("can't read qually header row");
-	count($index2Name) || die("no qually fields!");
-	count(array_diff(array_keys($fieldNameMap), $index2Name)) && die("some fields missing from " . print_r($fieldNameMap, true));
+	$index2Name = readIndex2Name($handle);
+	count(array_diff(array_keys($fieldNameMap), $index2Name)) && die("some fields missing from " . print_r($fieldNameMap, true) . "<BR/> with indices " . print_r($index2Name, true));
 
 	while ($row = fgetcsv($handle)) {
-		(count($row) == count($index2Name)) || die("bad row <PRE>" . print_r($row, row) . "</PRE>");
+		(count($row) == count($index2Name)) || die("bad row <PRE>" . print_r($row, true) . "</PRE>");
 		$slot = array();
 		foreach ($index2Name as $index=>$fieldName) {
 			if (array_key_exists($fieldName, $fieldNameMap)) {
@@ -100,16 +123,17 @@ function doImport() {
 			$slot[$fieldName] = emptyToNull($row, $index);
 		}
 		$entry = &lookup_entry($slot, true, true);
-		if (($entry["qualBestLapNo"] = emptyToNull($slot, "fastestlapnum")) === '-') {
+		if (($entry["qualBestLapNo"] = emptyToNull($slot, "Fast Lap#")) === '-') {
 			$entry["qualBestLapNo"] = null;
 		}
-		$entry["qualBestLapTime"] = parseTime(emptyToNull($slot, "fastestlaptime"), "fastestlaptime");
-		is_null($entry["qualLaps"] = emptyToNull($slot, "lapscomplete")) && die("no lapscomplete");
+		$entry["qualBestLapTime"] = parseTime(emptyToNull($slot, "Fastest Lap Time"), "Fastest Lap Time");
+		is_null($entry["qualLaps"] = emptyToNull($slot, "Laps Comp")) && die("no Laps Comp");
 //echo "<PRE>QSlot: " . print_r($slot, true) . "Entry: " . print_r($entry, true) . "</PRE>\n";
 	}
 	fclose($handle);
 
-	//array_push($fatal_errors, "not written yet!");
+//	global $entries;
+//	array_push($fatal_errors, "under construction!<PRE>" . print_r($entries, true) . "</PRE>Location: $location");
 }
 
 function emptyToNull(&$slot, $fieldName) {
