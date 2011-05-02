@@ -83,7 +83,7 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 		SELECT id_sim_circuit, circuit, length_metres, sim_name
 		FROM {$lm2_db_prefix}sim_circuits
 		WHERE sim = $sim
-		" . ($sim == 9 ? "" : "IFNULL(length_metres, -1) = IFNULL(" . nullIfNull($track_length) . ", -1)") . "
+		" . ($sim == 9 ? "" : "AND IFNULL(length_metres, -1) = IFNULL(" . nullIfNull($track_length) . ", -1)") . "
 		AND sim_name = " . sqlString($location) . "
 		", __FILE__, __LINE__);
 	if ($row = mysql_fetch_assoc($query)) {
