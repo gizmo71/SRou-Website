@@ -1006,14 +1006,13 @@ class Events extends RefData {
 			new RefDataFieldID("id_event", '$row["event_type"] == "F" || $row["entries_c"] == 0'), // Cascading takes care of entries.
 			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql()),
 			new RefDataFieldFK("sim_circuit",
-				"SELECT id_sim_circuit AS id"
-				. ", CONCAT(IF(sim = -1,'',CONCAT(id_sim_circuit,': ')),$circuit_html_clause) AS description"
-				. ", sim <> -1 AS hide"
-				. " FROM {$this->lm2_db_prefix}sim_circuits"
-				. ", {$this->lm2_db_prefix}circuits"
-				. ", {$this->lm2_db_prefix}circuit_locations"
-				. " WHERE circuit = id_circuit AND id_circuit_location = circuit_location"
-				. " ORDER BY sim, description", false, "12em"),
+				"SELECT id_sim_circuit AS id
+				, CONCAT(IF(sim = -1,'',CONCAT(id_sim_circuit,': ')),$circuit_html_clause) AS description
+				, sim <> -1 AS hide
+				FROM {$this->lm2_db_prefix}sim_circuits
+				JOIN {$this->lm2_db_prefix}circuits ON circuit = id_circuit
+				JOIN {$this->lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
+				ORDER BY sim, description", false, "12em"),
 			new RefDataFieldDate("event_date"),
 			new RefDataFieldEdit("event_seconds", 5),
 			new RefDataFieldReadOnly("event_status"),
@@ -1055,6 +1054,7 @@ class Events extends RefData {
 			's'=>array('name'=>'Sim',    'nested'=>array()),
 			'g'=>array('name'=>'Group',  'nested'=>array()),
 			'p'=>array('name'=>'Parent', 'nested'=>array()),
+			't'=>array('name'=>'Circuits',  'nested'=>array()),
 		);
 
 		$query = lm2_query("
@@ -1089,6 +1089,19 @@ class Events extends RefData {
 		while ($row = mysql_fetch_assoc($query)) {
 			$filters['p']['nested']["p{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf(
 				"(event_group = %d OR event_group IN (SELECT id_event_group FROM {$this->lm2_db_prefix}event_groups WHERE parent = %d))", $row['id'], $row['id']));
+		}
+		mysql_free_result($query);
+
+		global $circuit_html_clause;
+		$query = db_query("
+			SELECT id_circuit AS id, $circuit_html_clause AS description
+			FROM {$this->lm2_db_prefix}circuits
+			JOIN {$this->lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
+			ORDER BY description
+			", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$filters['t']['nested']["lt{$row['id']}"] = array(name=>$row['description'],
+				predicate=>sprintf("sim_circuit IN (SELECT id_sim_circuit FROM {$this->lm2_db_prefix}sim_circuits WHERE circuit = %d)", $row['id']));
 		}
 		mysql_free_result($query);
 
