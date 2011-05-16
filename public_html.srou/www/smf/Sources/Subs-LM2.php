@@ -230,13 +230,12 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 			}
 			echo $closer;
 
-			if ($row['sim'] != 4) {
-				//FIXME: support ballast in other sims, especially Race '07 with the PD thing...
-			} else if ($row['got_ballasts']) {
+			if ($row['got_ballasts']) {
 				echo "<P>You must drive the race using the name <B><BIG><TT>{$row['eb_name']}</TT></BIG></B>.</P>\n";
 				// <BR/>You will carry handicap ballast of <B>{$row['eb_ballast']}kg</B>.
-			} elseif ($row['eb_name']) {
-				echo "<P>You are registered to drive under the name <B><BIG><TT>{$row['eb_name']}</TT></BIG></B><!-- with a handicap ballast of <B>{$row['eb_ballast']}kg</B> -->.
+			} else if ($row['eb_name']) {
+				echo "<P>You are registered to drive under the name <B><BIG><TT>{$row['eb_name']}</TT></BIG></B>
+					" . ($row['eb_ballast'] ? "<!-- with a handicap ballast of <B>{$row['eb_ballast']}kg</B> -->" : "") . ".
 					<BR/>To change this click <A HREF='$boardurl/index.php?action=profile;sa=driver_info'>here</A>.</P>\n";
 			}
 		} else { // Get some entries.
