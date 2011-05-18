@@ -5,3 +5,7 @@ RewriteCond %{HTTP_HOST} ^ukgpl.com$ [OR]
 RewriteCond %{HTTP_HOST} ^www.ukgpl.davegymer.org$
 RewriteRule ^(.*)$ "http://www.ukgpl.com/$1" [R=301,L]
 
+# Spammers and TalkTalk robot
+RewriteCond %{REQUEST_URI} =/sorted [OR]
+RewriteCond %{REQUEST_URI} =/detail.cfm
+RewriteRule ^(.*)$ http://www.simracing.org.uk/frequent.php [R=301,L]

@@ -3,7 +3,7 @@
 TZ=GMT0BST
 export TZ
 
-LOG=/home/gizmo71/tmp/500.log
+LOG=/home/gizmo71/tmp/500/$(date '+%Y%m%d-%H%M%S-'$$).log
 
 echo "Content-Type: text/plain"
 echo
