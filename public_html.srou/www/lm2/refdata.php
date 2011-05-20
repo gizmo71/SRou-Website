@@ -1789,7 +1789,7 @@ class Money extends RefData {
 	function getFilters() {
 		$filters = array(
 			'N'=>array('name'=>'None - please respect privacy', 'predicate'=>"0"),
-			'3'=>array('name'=>'Last 3 months', 'predicate'=>"money_date >= DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 1 MONTH)"),
+			'3'=>array('name'=>'Last 3 months', 'predicate'=>"money_date >= DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 3 MONTH)"),
 			'd'=>array('name'=>'Donations', 'predicate'=>"amount > 0"),
 			's'=>array('name'=>'Spending', 'predicate'=>"amount < 0"),
 		);
@@ -1797,7 +1797,7 @@ class Money extends RefData {
 	}
 
 	function getDefaultSortOrder() {
-		return "D2";
+		return "-1";
 	}
 
 	function addRow() {

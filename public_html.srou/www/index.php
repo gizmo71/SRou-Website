@@ -113,6 +113,10 @@ echo lm2_table_open("UKiR Announcements");
 ssi_boardNews(77, 2, null, 150);
 echo lm2_table_close();
 
+echo lm2_table_open("Race '07 Announcements");
+ssi_boardNews(92, 2, null, 150);
+echo lm2_table_close();
+
 echo lm2_table_open("Recent Event Moderation Reports");
 ssi_boardNews(39, 2, null, 150);
 echo lm2_table_close();
