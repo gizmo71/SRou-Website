@@ -34,11 +34,17 @@ RewriteCond %{REQUEST_URI} =/index.php
 RewriteCond %{QUERY_STRING} =ind=lm2&circuit=*
 RewriteRule ^(.*)$ http://www.simracing.org.uk/smf/index.php?action=LM2R&circuit=* [R=301,L]
 
+# Stupid Apple crap - why can't they just use favicon.ico like everybody else?!
+RewriteCond %{REQUEST_URI} ^/apple-touch-icon.*.png
+RewriteRule ^(.*)$ http://www.simracing.org.uk/favicon.ico [R=301,L]
+
 # Spammers and TalkTalk robot
 RewriteCond %{REQUEST_URI} =/contenido [OR]
 RewriteCond %{REQUEST_URI} =/detail.cfm [OR]
 RewriteCond %{REQUEST_URI} =/contact.php [OR]
 RewriteCond %{REQUEST_URI} =/logging.php [OR]
 RewriteCond %{REQUEST_URI} =/register.php [OR]
+RewriteCond %{REQUEST_URI} =/admin [OR]
+RewriteCond %{REQUEST_URI} =/function.include [OR]
 RewriteCond %{REQUEST_URI} ^/smf/themes/
 RewriteRule ^(.*)$ http://www.simracing.org.uk/frequent.php [R=301,L]

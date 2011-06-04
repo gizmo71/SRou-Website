@@ -865,7 +865,7 @@ class Championships extends RefData {
 	function addRow() {
 		global $filterId;
 		$eventGroup = substr($filterId, 0, 1) == 'g' ? substr($filterId, 1) : -1;
-		return array('scoring_scheme'=>-1, 'tie_break_mode'=>'S', 'event_group'=>$eventGroup);
+		return array('scoring_scheme'=>-1, 'tie_break_mode'=>'S', 'event_group'=>$eventGroup, 'slave_to_race_pos'=>'0');
 	}
 
 	function getFilters() {
