@@ -82,6 +82,7 @@ function doImport() {
 			}
 			$slot[$fieldName] = emptyToNull($row, $index);
 		}
+		$slot['#'] = "#{$slot['#']}"; // iRacing allows numbers that differ only in leading zeros. So force it to be a string.
 		$entry = &lookup_entry($slot, true, true);
 		lookup_driver($entry, $entry['Driver'], $entry['LobbyName']);
 		is_null($entry["RacePos"] = emptyToNull($slot, "Fin Pos")) && die("no RacePos");
@@ -122,6 +123,7 @@ function doImport() {
 			}
 			$slot[$fieldName] = emptyToNull($row, $index);
 		}
+		$slot['#'] = "#{$slot['#']}"; // iRacing allows numbers that differ only in leading zeros. So force it to be a string.
 		$entry = &lookup_entry($slot, true, true);
 		if (($entry["qualBestLapNo"] = emptyToNull($slot, "Fast Lap#")) === '-') {
 			$entry["qualBestLapNo"] = null;
