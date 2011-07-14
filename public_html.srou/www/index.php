@@ -6,7 +6,7 @@ require_once("$sourcedir/Subs-LM2.php");
 
 if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 	if ($driver = lm2ArrayValue($_REQUEST, 'driver')) {
-		if ($driver == 'self') {
+		if ($driver == 'self' || !is_numeric($driver)) {
 			$driver = $ID_MEMBER;
 		}
 		$u = $driver;
@@ -25,16 +25,17 @@ if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 
 		header("Location: $boardurl/index.php?action=profile&u=$u&sa=racing_history&driver=$driver");
 		exit;
-	} else if ($team = lm2ArrayValue($_REQUEST, 'team')) {
+	} else if (($team = lm2ArrayValue($_REQUEST, 'team')) && is_numeric($team)) {
 		header("Location: $boardurl/index.php?action=LM2R&team=$team");
 		exit;
 	} else if ($teams = lm2ArrayValue($_REQUEST, 'teams')) {
 		header("Location: $boardurl/index.php?action=LM2R&team=*");
 		exit;
-	} else if ($group = lm2ArrayValue($_REQUEST, 'group')) {
+	} else if (($group = lm2ArrayValue($_REQUEST, 'group')) && is_numeric($group)) {
 		header("Location: $boardurl/index.php?action=LM2R&group=$group");
 		exit;
-	} else if ($event = lm2ArrayValue($_REQUEST, 'event')) {
+	} else if (($event = lm2ArrayValue($_REQUEST, 'event'))) {
+		is_numeric($event) || die("non-numeric event $event");
 		$query = db_query("SELECT event_group, smf_topic FROM {$lm2_db_prefix}events WHERE id_event = $event", __FILE__, __LINE__);
 		$row = mysql_fetch_assoc($query);
 		mysql_free_result($query);
@@ -45,7 +46,7 @@ if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 		//$page_title = "Unknown or published event $event";
 		unset($_REQUEST['event']); // Stop the results block dying.
 	} else if (($circuit = lm2ArrayValue($_REQUEST, 'circuit')) || ($location = lm2ArrayValue($_REQUEST, 'location'))) {
-		if ($circuit == "*") {
+		if (!is_numeric($circuit) && !is_numeric($location)) {
 			header("Location: $boardurl/index.php?action=LM2R&circuit=*");
 			exit;
 		} else {
