@@ -5,20 +5,9 @@ function showFileChoosers() {
 	global $lm2_db_prefix;
 ?>
     <TR><TD COLSPAN="4"><I>Please report any problems via <A HREF="/smf/index.php?board=49.0">UKGPL2</A>.</I></TD></TR>
-    <TR><TD>Mod/class</TD><TD><SELECT name="mod" onSelect="alert('foo\n' + form.submit_button);">
-    	<OPTION VALUE="" SELECTED>Please select a mod...</OPTION>
 <?php
-	$query = db_query("
-		SELECT type, mod_desc
-		FROM {$lm2_db_prefix}sim_mods
-		WHERE id_sim = 8
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		print "<OPTION VALUE='${row['type']}'>${row['mod_desc']}</OPTION>\n";
-	}
-	mysql_free_result($query);
+	show_mod_selector();
 ?>
-    </SELECT> <SPAN STYLE="color: red">You <B>must</B> select a mod before proceeding!</SPAN></TD></TR>
     <TR><TD>HTML Export</TD><TD><INPUT size="120" name="export" type="file" /></TD></TR>
     <TR><TD>GPLRA Report</TD><TD><INPUT size="120" name="report" type="file" /></TD></TR>
     <TR><TD COLSPAN="4" ALIGN="RIGHT">Please use both files wherever possible.</TD></TR>

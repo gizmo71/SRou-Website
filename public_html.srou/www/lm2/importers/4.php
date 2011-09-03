@@ -3,21 +3,8 @@
 
 function showFileChoosers() {
 	global $lm2_db_prefix;
+	show_mod_selector();
 ?>
-    <TR><TD>Mod/class</TD><TD><SELECT name="mod" onSelect="alert('foo\n' + form.submit_button);">
-    	<OPTION VALUE="" SELECTED>Please select a mod...</OPTION>
-<?php
-	$query = db_query("
-		SELECT type, mod_desc
-		FROM {$lm2_db_prefix}sim_mods
-		WHERE id_sim = 4
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		print "<OPTION VALUE='${row['type']}'>${row['mod_desc']}</OPTION>\n";
-	}
-	mysql_free_result($query);
-?>
-    </SELECT> <SPAN STYLE="color: red">You <B>must</B> select a mod before proceeding!</SPAN></TD></TR>
     <TR><TD>Race</TD><TD><INPUT size="120" name="race" type="file" /></TD></TR>
 <?php
 }

@@ -142,6 +142,27 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 	}
 }
 
+// Used by some of the importers.
+function show_mod_selector() {
+	global $lm2_db_prefix, $sim;
+?>
+    <TR><TD>Mod/class</TD><TD><SELECT name="mod" onSelect="alert('foo\n' + form.submit_button);">
+    	<OPTION VALUE="" SELECTED>Please select a mod...</OPTION>
+<?php
+	$query = db_query("
+		SELECT type, mod_desc
+		FROM {$lm2_db_prefix}sim_mods
+		WHERE id_sim = $sim
+		", __FILE__, __LINE__);
+	while ($row = mysql_fetch_assoc($query)) {
+		print "<OPTION VALUE='${row['type']}'>${row['mod_desc']}</OPTION>\n";
+	}
+	mysql_free_result($query);
+?>
+    </SELECT> <SPAN STYLE="color: red">You <B>must</B> select a mod before proceeding!</SPAN></TD></TR>
+<?php
+}
+
 function show_event_selector() {
 	global $circuit_html_clause, $lm2_db_prefix;
 ?>

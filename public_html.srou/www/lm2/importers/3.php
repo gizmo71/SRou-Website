@@ -2,6 +2,7 @@
 // Importer for GT Legends
 
 function showFileChoosers() {
+	show_mod_selector();
 ?>
     <TR><TD>Qual</TD><TD><INPUT size="120" name="qual" type="file" /></TD></TR>
     <TR><TD><B>Race</B></TD><TD><INPUT size="120" name="race" type="file" /></TD></TR>
