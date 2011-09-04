@@ -502,32 +502,41 @@ class Classification extends RefData {
 	}
 
 	function show_notes() {
+		$temp_db_prefix = "{$this->lm2_db_prefix}TEMP_"; //XXX: factor out of here and stands.php and into settings...
+		lm2_query("CREATE TEMPORARY TABLE {$temp_db_prefix}classifications
+			ENGINE = MEMORY
+			AS SELECT id_event_entry, (
+				SELECT id_car_classification
+				FROM {$this->lm2_db_prefix}car_classification
+				JOIN {$this->lm2_db_prefix}sim_cars USING (car)
+				JOIN {$this->lm2_db_prefix}event_group_tree ON event_group = container
+				WHERE id_sim_car = sim_car AND {$this->lm2_db_prefix}events.event_group = contained
+				ORDER BY depth
+				LIMIT 1
+			) AS id_car_classification
+			FROM {$this->lm2_db_prefix}event_entries
+			JOIN {$this->lm2_db_prefix}events ON id_event = event
+			", __FILE__, __LINE__);
 		$query = lm2_query("
 			SELECT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
 			, GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name)) AS car
-			FROM {$this->lm2_db_prefix}event_entries
+			FROM {$temp_db_prefix}classifications
+			JOIN {$this->lm2_db_prefix}event_entries USING (id_event_entry)
 			JOIN {$this->lm2_db_prefix}events ON id_event = event
 			JOIN {$this->lm2_db_prefix}event_groups eg_e ON id_event_group = event_group
 			JOIN {$this->lm2_db_prefix}sim_cars ON id_sim_car = sim_car
-			LEFT JOIN {$this->lm2_db_prefix}car_classification ON id_car_classification = (
-				SELECT id_car_classification
-				FROM {$this->lm2_db_prefix}car_classification
-				JOIN {$this->lm2_db_prefix}event_group_tree ON {$this->lm2_db_prefix}car_classification.event_group = container
-				WHERE {$this->lm2_db_prefix}car_classification.car = {$this->lm2_db_prefix}sim_cars.car
-				AND {$this->lm2_db_prefix}events.event_group = contained
-				ORDER BY depth
-				LIMIT 1
-			)
+			JOIN {$this->lm2_db_prefix}cars ON id_car = {$this->lm2_db_prefix}sim_cars.car
+			JOIN {$this->lm2_db_prefix}manufacturers ON id_manuf = manuf
+			LEFT JOIN {$this->lm2_db_prefix}car_classification USING (id_car_classification)
 			LEFT JOIN {$this->lm2_db_prefix}event_groups eg_c ON eg_c.id_event_group = {$this->lm2_db_prefix}car_classification.event_group
-			LEFT JOIN {$this->lm2_db_prefix}cars ON id_car = {$this->lm2_db_prefix}sim_cars.car
-			LEFT JOIN {$this->lm2_db_prefix}manufacturers ON id_manuf = manuf
-			WHERE car_class_c <> car_class OR (car_class_c <> '-' AND car_class IS NULL)
+			WHERE car_class_c <> IFNULL(car_class, '-')
 			GROUP BY car_class_c, car_class, eg_c.short_desc, eg_e.short_desc
 			", __FILE__, __LINE__);
 		while ($row = mysql_fetch_assoc($query)) {
 			echo "<BR/>Mismatch? " . htmlentities(print_r($row, true), ENT_QUOTES) . "\n";
 		}
 		mysql_free_result($query);
+		lm2_query("DROP TEMPORARY TABLE {$temp_db_prefix}classifications", __FILE__, __LINE__);
 	}
 }
 
