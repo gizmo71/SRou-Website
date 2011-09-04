@@ -895,6 +895,7 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 		echo "<P>Updating classes and class positions...</P>\n";
 
 		//XXX: strongly consider moving the protection flag from event_groups to championships, and keying event_entries updates off event status.
+		//XXX: use the new lm2_classifications view instead of the subselect.
 		lm2_query("
 			UPDATE {$this->lm2_db_prefix}event_entries
 			SET qual_pos_class = NULL
