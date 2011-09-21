@@ -58,6 +58,7 @@ if ($ID_MEMBER <= 0) {
 	exit;
 }
 
+$dryRun = ($_REQUEST['run'] == 'dry');
 //$bucket = 'johnsmith';
 ($bucket = $_REQUEST['bucket']) || ($bucket = 'awsdownloads.simracing.org.uk');
 //$key = '/photos/puppy.jpg';
@@ -73,6 +74,7 @@ $url = sprintf('http://%s%s?AWSAccessKeyId=%s&Signature=%s&Expires=%d',
         $bucket, $key, $accessKey,
         rawurlencode(base64_encode(hash_hmac('sha1', $canonical, $secretKey, true))),
         $expires);
-//printf('<pre>%s</pre>', $url);
-header("Location: $url");
+header("Content-Type: text/plain");
+printf('%s', $url);
+$dryRun || header("Location: $url");
 ?>

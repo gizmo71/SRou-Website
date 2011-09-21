@@ -385,7 +385,8 @@ class SimCars extends RefData {
 
 	function getFilters() {
 		$filters = array(
-			'u'=>array('name'=>'Unmapped', 'predicate'=>"car = -1 OR sim = -1 OR tyres = '-'"),
+			'u'=>array('name'=>'Unmapped', 'predicate'=>"car = -1 OR sim = -1"),
+			't'=>array('name'=>'No Tyres', 'predicate'=>"tyres = '-'"),
 			's'=>array('name'=>'Sim', 'nested'=>array()),
 			'c'=>array('name'=>'Car', 'nested'=>array()),
 			'o'=>array('name'=>'Sim/Mod', 'nested'=>array()),
