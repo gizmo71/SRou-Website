@@ -1493,7 +1493,7 @@ function lm2MakeEventGroupLink($group, $text = null, $theme = null, $anchor = nu
 	if (is_null($text)) {
 		$text = lm2FullEventGroupName($group);
 		$title = "";
-	} else {
+	} else if ($group) {
 		$title = ' TITLE="' . lm2FullEventGroupName($group) . '"';
 	}
 	$theme = "&theme=" . (is_null($theme) ? 4 : $theme);
