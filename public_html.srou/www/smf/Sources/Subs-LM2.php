@@ -1495,6 +1495,8 @@ function lm2MakeEventGroupLink($group, $text = null, $theme = null, $anchor = nu
 		$title = "";
 	} else if ($group) {
 		$title = ' TITLE="' . lm2FullEventGroupName($group) . '"';
+	} else {
+		$title = '';
 	}
 	$theme = "&theme=" . (is_null($theme) ? 4 : $theme);
 	$anchor = is_null($anchor) ? '' : "#$anchor";
