@@ -59,16 +59,13 @@ if ($ID_MEMBER <= 0) {
 }
 
 $dryRun = ($_REQUEST['run'] == 'dry');
-//$bucket = 'johnsmith';
 ($bucket = $_REQUEST['bucket']) || ($bucket = 'awsdownloads.simracing.org.uk');
-//$key = '/photos/puppy.jpg';
 $key = $_SERVER['PATH_INFO'];
+$key = urlencode($key);
+$key = str_replace("%2F", "/", $key);
 $accessKey = 'AKIAIDZC5AXVTT6EVF2A';
-//$accessKey = '0PN5J17HBGZHT7JJ3X82'; // Amazon example
 $secretKey = 'RBXzg3VXxItqMd3h9fYRoqbdkvhd0cUgIXiNWEqf';
-//$secretKey = 'uV3F3YluFJax1cknvbcGwgjvx4QpvB+leU8dUj2o'; // Amazon example
 $expires = time() + 86400;
-//$expires = 1175139620;
 $canonical = "GET\n\n\n$expires\n/$bucket$key";
 $url = sprintf('http://%s%s?AWSAccessKeyId=%s&Signature=%s&Expires=%d',
         $bucket, $key, $accessKey,
