@@ -169,12 +169,14 @@ if ($body = get_request_param('body')) {
 } else {
 	echo "<H1>Submit Incident Report</H1>\n";
 
+	$DEFAULT_SUMMARY = 'PLEASE ENTER A BRIEF SUMMARY OF THE INCIDENT';
+
 	if ($report) {
 		$event && die("cannot specify both event and report");
-		$query = db_query("SELECT report_event AS event, report_summary AS summary"
-			. " FROM {$lm2_db_prefix}reports"
-			. " WHERE id_report = $report"
-			, __FILE__, __LINE__);
+		$query = db_query("SELECT report_event AS event, report_summary AS summary
+			FROM {$lm2_db_prefix}reports
+			WHERE id_report = $report
+			", __FILE__, __LINE__);
 		($row = mysql_fetch_assoc($query)) || die("can't find report $report!");
 		$event = $row['event']; 
 		$summary = htmlentities($row['summary'], ENT_QUOTES);
@@ -185,7 +187,7 @@ if ($body = get_request_param('body')) {
 			. "<BR/>To report a <I>different</I> incident, <A HREF='index.php?action=increp&event=$event'>click here</A>.</B></P>\n";
 	} else {
 		$report = 0;
-		$summary = 'PLEASE ENTER A BRIEF SUMMARY OF THE INCIDENT';
+		$summary = $DEFAULT_SUMMARY;
 	}
 
 	$query = db_query("
@@ -243,8 +245,9 @@ if ($body = get_request_param('body')) {
 	}
 
 	//FIXME: is there any way to get the usual SMF message editing box here?
+	$DEFAULT_REPORT = 'PLEASE ENTER YOUR REPORT HERE';
 	echo  "</P>
-		<P>Description of incident (sent only to the moderators):<BR /><TEXTAREA ROWS=\"8\" COLS=\"80\" NAME=\"body\">PLEASE ENTER YOUR REPORT HERE</TEXTAREA></P>
+		<P>Description of incident (sent only to the moderators):<BR /><TEXTAREA ROWS=\"8\" COLS=\"80\" NAME=\"body\">$DEFAULT_REPORT</TEXTAREA></P>
 		<P><INPUT TYPE='CHECKBOX' NAME='unrep' VALUE='$bekind'$def />$bekind</P>
 		<P>Drivers involved (please tick any driver who might wish to submit a report):";
 
@@ -280,7 +283,23 @@ if ($body = get_request_param('body')) {
 		echo "<P>Replay clip (please Zip it!): <INPUT size='120' name='replay' type='file' /> (maximum size {$modSettings['attachmentSizeLimit']}k)</P>\n";
 	}
 
-	echo "<INPUT TYPE='SUBMIT' VALUE='Submit Report' />\n</FORM>\n";
+?>
+<SCRIPT>
+function checkForm(form) {
+	if (form.summary.value == '' || form.summary.value == '<?php echo $DEFAULT_SUMMARY; ?>') {
+		alert("You must enter your own text into the Summary field");
+		return false;
+	}
+	if (form.body.value == '' || form.body.value == '<?php echo $DEFAULT_REPORT; ?>') {
+		alert("You must enter your own text into the Description field");
+		return false;
+	}
+	return true;
+}
+</SCRIPT>
+	<INPUT TYPE='SUBMIT' VALUE='Submit Report' onClick='return checkForm(form)' />
+</FORM>
+<?php
 }
 
 function sendAndLogPM($recipients, $subject, $message, $store_outbox, $from) {

@@ -1197,6 +1197,7 @@ class EventEntries extends RefData {
 			't'=>array('name'=>'Wrong driver type', 'nested'=>array()),
 			'e'=>array('name'=>'Event',  'nested'=>array()),
 			'd'=>array('name'=>'Driver', 'nested'=>array()),
+			'c'=>array('name'=>'Car', 'nested'=>array()),
 		);
 		if ($ID_MEMBER == 1) {
 			$filters['s'] = array('name'=>'SimDriver', 'nested'=>array());
@@ -1278,6 +1279,18 @@ class EventEntries extends RefData {
 			}
 			mysql_free_result($query);
 		}
+
+		$query = lm2_query("
+			SELECT DISTINCT id_car AS id, CONCAT(manuf_name, ' ', car_name) AS description
+			FROM {$this->lm2_db_prefix}cars
+			JOIN  {$this->lm2_db_prefix}manufacturers ON id_manuf = manuf
+			WHERE id_car IN (SELECT car FROM {$this->lm2_db_prefix}sim_cars JOIN {$this->lm2_db_prefix}event_entries ON id_sim_car = sim_car)
+			ORDER BY description
+			", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"sim_car IN (SELECT id_sim_car FROM {$this->lm2_db_prefix}sim_cars WHERE car = {$row['id']})");
+		}
+		mysql_free_result($query);
 
 		return $filters;
 	}
