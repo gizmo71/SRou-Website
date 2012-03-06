@@ -65,6 +65,12 @@ $bucket = rawurlencode($bucket);
 $accessKey = 'AKIAIDZC5AXVTT6EVF2A';
 $secretKey = 'RBXzg3VXxItqMd3h9fYRoqbdkvhd0cUgIXiNWEqf';
 
+function encodeKey($key) {
+	$key = rawurlencode($key);
+	$key = str_replace("%2F", "/", $key);
+	return $key;
+}
+
 switch ($_REQUEST['run']) {
 case 'upload1':
 	$expires = strftime("%FT%T.000Z", $expires);
@@ -88,7 +94,7 @@ EOF
 	$signature = base64_encode(hash_hmac('sha1', $policy, $secretKey, true));
 ?>
 	<form action="http://<?php echo $bucket; ?>" method="post" enctype="multipart/form-data">
-	Key <input type="text" size="100" name="key" value="gtr2/tracks/${filename}" /><br/>
+	Key <input type="text" size="100" name="key" value="gtr2/cars/templates/${filename}" /><br/>
 	<input type="hidden" name="AWSAccessKeyId" value="<?php echo $accessKey; ?>" />
 	<input type="hidden" name="Content-Disposition" value="attachment; filename=&quot;${filename}&quot;">
 	<input type="hidden" name="success_action_redirect" value="<?php echo htmlentities($redirect, ENT_QUOTES); ?>" />
@@ -102,15 +108,13 @@ EOF
 	break;
 case 'uploaded':
 	header("Content-Type: text/plain");
-	printf('http://downloads.simracing.org.uk/s3.php/%s%s', $_REQUEST['key'], $bucket != $defaultBucket ? '?bucket=' . $bucket : '');
+	printf('http://downloads.simracing.org.uk/s3.php/%s%s', encodeKey($_REQUEST['key']), $bucket != $defaultBucket ? '?bucket=' . $bucket : '');
 	break;
 case 'dry':
 	$dryRun = true;
 default:
 	$dryRun = isset($dryRun) ? $dryRun : false;
-	$key = $_SERVER['PATH_INFO'];
-	$key = urlencode($key);
-	$key = str_replace("%2F", "/", $key);
+	$key = encodeKey($_SERVER['PATH_INFO']);
 	$canonical = "GET\n\n\n$expires\n/$bucket$key";
 	$url = sprintf('http://%s%s?AWSAccessKeyId=%s&Signature=%s&Expires=%d',
 	        $bucket, $key, $accessKey,
