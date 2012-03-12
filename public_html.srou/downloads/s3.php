@@ -94,7 +94,18 @@ EOF
 	$signature = base64_encode(hash_hmac('sha1', $policy, $secretKey, true));
 ?>
 	<form action="http://<?php echo $bucket; ?>" method="post" enctype="multipart/form-data">
-	Key <input type="text" size="100" name="key" value="gtr2/cars/templates/${filename}" /><br/>
+	Key <input type="text" size="100" name="key" value="gtr2/tracks/${filename}" />
+	<SELECT NAME="x-ignore-nameshortcut" onChange="form.key.value = options[selectedIndex].value + '/${filename}'">
+		<optgroup label="GTR2">
+			<OPTION VALUE="gtr2/tracks">Tracks</OPTION>
+			<OPTION VALUE="gtr2/cars">Cars</OPTION>
+			<OPTION VALUE="gtr2/cars/templates">Car Templates</OPTION>
+		</optgroup>
+		<optgroup label="GTL">
+			<OPTION VALUE="gtl/tracks">Tracks</OPTION>
+			<OPTION VALUE="gtl/cars">Cars</OPTION>
+		</optgroup>
+	</SELECT><br/>
 	<input type="hidden" name="AWSAccessKeyId" value="<?php echo $accessKey; ?>" />
 	<input type="hidden" name="Content-Disposition" value="attachment; filename=&quot;${filename}&quot;">
 	<input type="hidden" name="success_action_redirect" value="<?php echo htmlentities($redirect, ENT_QUOTES); ?>" />
