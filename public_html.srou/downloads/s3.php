@@ -93,6 +93,21 @@ EOF
 	$policy = base64_encode($policy);
 	$signature = base64_encode(hash_hmac('sha1', $policy, $secretKey, true));
 ?>
+<script>
+function setName(keyField, filename) {
+	//  filename yields the full path on IE8 but only the name in FF 10
+	filename = filename.replace(/\\/g, '/');
+	if (filename.substr(0, 8) == 'S:/Sims/') {
+		filename = filename.substr(8);
+		keyField.value = filename.replace(/^(.+\/)([^\/]+)$/, function filenameRegularizer(matched, p1, p2) {
+			return p1.toLowerCase() + '${filename}';
+		});
+	} else {
+		alert('Please select the key from the drop down');
+		keyField.focus();
+	}
+}
+</script>
 	<form action="http://<?php echo $bucket; ?>" method="post" enctype="multipart/form-data">
 	Key <input type="text" size="100" name="key" value="gtr2/tracks/${filename}" />
 	<SELECT NAME="x-ignore-nameshortcut" onChange="form.key.value = options[selectedIndex].value + '/${filename}'">
@@ -112,7 +127,7 @@ EOF
 	<input type="hidden" name="signature" value="<?php echo $signature; ?>" />
 	<input type="hidden" name="x-amz-storage-class" value="REDUCED_REDUNDANCY" />
 	<input type="hidden" name="policy" value="<?php echo htmlentities($policy, ENT_QUOTES); ?>" />
-	File: <input type="file" name="file" /> <br />
+	File: <input type="file" name="file" onChange="setName(form.key, value)"><br />
 	<input type="submit" />
 </form>
 <?php
