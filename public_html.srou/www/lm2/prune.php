@@ -42,8 +42,9 @@ $query = lm2_query("
 	, IF(lastLogin > dateRegistered, lastLogin, dateRegistered)
 	", __FILE__, __LINE__);
 while ($row = mysql_fetch_assoc($query)) {
+	$allNull = is_null($row['posts']) && is_null($row['events']) && is_null($row['pm_sent']) && is_null($row['pm_recv']);
 	echo "<TR>
-		<TD><INPUT TYPE='CHECKBOX' NAME='memberToDelete[]' VALUE='{$row['id']}'" . (is_null($row['posts']) && is_null($row['events']) ? " CHECKED" : "") . " /></TD>
+		<TD><INPUT TYPE='CHECKBOX' NAME='memberToDelete[]' VALUE='{$row['id']}'" . ($allNull ? " CHECKED" : "") . " /></TD>
 		<TD TITLE=\"{$row['signature']}\"><A HREF=\"$boardurl/index.php?action=profile;u={$row['id']}\">{$row['name']}</A></TD>
 		<TD><SMALL>" . ($row['websiteUrl'] ? "<A HREF=\"{$row['websiteUrl']}\">{$row['websiteTitle']}</A>" : $row['websiteTitle']) . "</SMALL></TD>
 		<TD ALIGN=CENTER>{$row['is_activated']}</TD>
