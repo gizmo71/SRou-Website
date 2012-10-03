@@ -24,40 +24,8 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 		}
 		mysql_free_result($query);
 
-		$query = lm2_query("
-			SELECT full_desc, short_desc AS name, CONCAT(';theme=',series_theme) AS theme
-			FROM {$lm2_db_prefix}event_groups
-			WHERE id_event_group = {$_REQUEST['group']}
-			", __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("group {$_REQUEST['group']} not found");
-		$group = $row['name'];
-		$groupFull = $row['full_desc'];
-		$groupTheme = $row['theme'];
-		mysql_fetch_assoc($query) && die("topic {$_REQUEST['group']} found more than once!");
-		mysql_free_result($query);
-
-		$query = lm2_query("
-			SELECT id_circuit, brief_name AS name
-			FROM {$lm2_db_prefix}sim_circuits
-			, {$lm2_db_prefix}circuits
-			, {$lm2_db_prefix}circuit_locations
-			WHERE id_sim_circuit = {$_REQUEST['simcircuit']}
-			AND id_circuit = circuit AND id_circuit_location = circuit_location
-			" , __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("circuit {$_REQUEST['simcircuit']} not found");
-		$circuit = $row['name'];
-		$id_circuit = $row['id_circuit'];
-		mysql_fetch_assoc($query) && die("topic {$_REQUEST['simcircuit']} found more than once!");
-		mysql_free_result($query);
-
-//TODO: move this into Post.php...
-		$extra .= "/evtitle=" . urlencode("$group $circuit")
-			. "/subject=" . urlencode("$groupFull - {$_REQUEST['circuit']} - {$txt['months_short'][$month]} $day")
-			. "/message=" . urlencode("COPY THE TEXT IN!"
-				. "\nPassword: [iurl=#event_password]see above[/iurl]"
-				. "\n(2) Driver lists can be found on the [url=$boardurl/index.php?action=LM2R;group={$_REQUEST['group']}$groupTheme]championship standings page[/url]")
-			. "/lm2group={$_REQUEST['group']}"
-			. "/lm2circuit=$id_circuit"
+		$extra .= "/lm2group={$_REQUEST['group']}"
+			. "/lm2simCircuit={$_REQUEST['simcircuit']}"
 			. "/lm2sim={$_REQUEST['sim']}"
 			. "/";
 	} else {
@@ -103,7 +71,6 @@ function smfTopicLinker(rowNum) {
 				+ "&event=" + eventId
 				+ "&group=" + eventGroup
 				+ "&simcircuit=" + simCircuit
-				+ "&circuit=" + selectedText(rdForm["sim_circuit" + rowNum])
 				+ "&date=" + date;
 		}
 	}

@@ -1897,19 +1897,52 @@ function lm2MakeChampStats($champ_type, $id) {
 	mysql_free_result($query);
 }
 
-function lm2MaybeAddEventText(&$form_message, &$form_subject) {
-	if (isset($_REQUEST['lm2group']) && isset($_REQUEST['lm2circuit'])) {
-		global $lm2_db_prefix, $db_prefix;
+function lm2MaybeAddEventText() {
+	if (isset($_REQUEST['lm2group']) && isset($_REQUEST['lm2simCircuit']) && isset($_REQUEST['lm2sim'])) {
+		is_numeric($_REQUEST['lm2group']) && is_numeric($_REQUEST['lm2simCircuit']) && is_numeric($_REQUEST['lm2sim']) || die('hacker be gone!');
+		global $lm2_db_prefix, $db_prefix, $context, $func, $boardurl, $txt;
+
+		$query = db_query("
+			SELECT full_desc, short_desc, series_theme
+			FROM {$lm2_db_prefix}event_groups
+			WHERE id_event_group = {$_REQUEST['lm2group']}
+			", __FILE__, __LINE__);
+		($row = mysql_fetch_assoc($query)) || die("group {$_REQUEST['lm2group']} not found");
+		$group = $row['short_desc'];
+		$groupFull = $row['full_desc'];
+		$groupTheme = $row['series_theme'];
+		mysql_fetch_assoc($query) && die("topic {$_REQUEST['lm2group']} found more than once!");
+		mysql_free_result($query);
+
+		$query = db_query("
+			SELECT id_circuit, brief_name AS name
+			FROM {$lm2_db_prefix}sim_circuits
+			, {$lm2_db_prefix}circuits
+			, {$lm2_db_prefix}circuit_locations
+			WHERE id_sim_circuit = {$_REQUEST['lm2simCircuit']}
+			AND id_circuit = circuit AND id_circuit_location = circuit_location
+			" , __FILE__, __LINE__);
+		($row = mysql_fetch_assoc($query)) || die("circuit {$_REQUEST['lm2simCircuit']} not found");
+		$circuit = $row['name'];
+		$id_circuit = $row['id_circuit'];
+		mysql_fetch_assoc($query) && die("topic {$_REQUEST['lm2simCircuit']} found more than once!");
+		mysql_free_result($query);
+
+		$_REQUEST['evtitle'] = "$group $circuit";
+		$_REQUEST['subject'] = "$groupFull - $circuit - {$txt['months_short'][$_REQUEST['month']]} {$_REQUEST['day']}";
+		$_REQUEST['message'] = "COPY THE TEXT IN!
+Password: [iurl=#event_password]see above[/iurl]
+(2) Driver lists can be found on the [url=$boardurl/index.php?action=LM2R;group={$_REQUEST['lm2group']}$groupTheme]championship standings page[/url]";
 
 		$query = db_query("
 			SELECT DISTINCT smf_topic, body
 			, (event_group = {$_REQUEST['lm2group']}) AS same_group
-			, (circuit = {$_REQUEST['lm2circuit']}) AS same_circuit
+			, (circuit = $id_circuit) AS same_circuit
 			FROM {$lm2_db_prefix}events
 			JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
 			JOIN {$db_prefix}topics ON id_topic = smf_topic
 			JOIN {$db_prefix}messages ON id_first_msg = id_msg
-			WHERE (event_group = {$_REQUEST['lm2group']} OR circuit = {$_REQUEST['lm2circuit']})
+			WHERE (event_group = {$_REQUEST['lm2group']} OR circuit = $id_circuit)
 			AND {$lm2_db_prefix}events.sim = {$_REQUEST['lm2sim']}
 			AND smf_topic IS NOT NULL
 			ORDER BY same_group DESC, event_date DESC
@@ -1917,19 +1950,18 @@ function lm2MaybeAddEventText(&$form_message, &$form_subject) {
 		$seen_group = false;
 		$seen_circuit = false;
 		while ($row = mysql_fetch_assoc($query)) {
+			$row['body'] = un_htmlspecialchars(un_preparsecode($row['body']) );
 			if (!$seen_group && $row['same_group']) {
 				$seen_group = true;
 				$seen_circuit = $row['same_circuit'] ? true : false;
 				// Just replace all the text - don't need the template stuff.
-				$form_message = un_preparsecode($row['body']);
+				$_REQUEST['message'] = $row['body'];
 			} else if (!$seen_circuit && $row['same_circuit']) {
 				$seen_circuit = true;
-				$form_message .= "\n\n\n\n[quote author=MostRecentAtThisCircuit]" . un_preparsecode($row['body']) . "[/quote]";
+				$_REQUEST['message'] .= "\n\n\n\n[quote author=MostRecentAtThisCircuit]{$row['body']}[/quote]";
 			}
 		}
 		mysql_free_result($query);
-
-		$form_subject = stripslashes($form_subject); // WTF?!
 	}
 }
 
