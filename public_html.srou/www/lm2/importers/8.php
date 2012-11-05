@@ -118,7 +118,7 @@ echo "<PRE>track $location</PRE>";
 
 	$gplraTimeRE = "(?:(?:(?:\\d+h)?\\d+m)?\\d+\\.\\d{3}s)";
 	$gplraRE_driver = "(?:\\s\\S|\\S.).{29}";
-	$gplraRE_car = "[A-Za-z].{7}";
+	$gplraRE_car = "[A-Za-z].{7,8}"; // Sportscar mod uses one more character and may include a slash
 
 	// Race results.
 
@@ -140,7 +140,7 @@ echo "<PRE>track $location</PRE>";
 		$lochint = " for " . htmlentities($matches[$match][0]);
 
 		$slot = array('Driver'=>trim($matches[$match][3]), 'Vehicle'=>trim($matches[$match][4]));
-		is_numeric($slot['#'] = $matches[$match][2]) || die("bad car number '{$slot['#']}'$lochint");
+		$slot['#'] = parseGPLRASlotNum($matches[$match][2], $lochint);
 		$entry = &lookup_entry($slot, false, true);
 
 //echo "<PRE>HTML {$entry['RacePos']}#{$entry['raceLaps']}/{$entry['raceTime']}@{$entry['reason']}";
@@ -202,7 +202,7 @@ echo "<PRE>track $location</PRE>";
 		$lochint = " for " . htmlentities($matches[$match][0]);
 
 		$slot = array('Driver'=>trim($matches[$match][3]), 'Vehicle'=>trim($matches[$match][4]));
-		is_numeric($slot['#'] = $matches[$match][2]) || die("bad car number '{$slot['#']}'");
+		$slot['#'] = parseGPLRASlotNum($matches[$match][2], $lochint);
 		$entry = &lookup_entry($slot, false, true);
 
 //echo "<PRE>HTML {$entry['qualLaps']}/{$entry['qualBestLapTime']}";
@@ -212,6 +212,14 @@ echo "<PRE>track $location</PRE>";
 	}
 
 	return $winnerTime;
+}
+
+// 10x shows up as 0x, pff
+function parseGPLRASlotNum($n, $lochint) {
+	is_numeric($n) || die("bad car number '$n'$lochint");
+	$m = preg_replace('%^0(\d)$%', '10$1', $n);
+	//echo("#$n -> #$m $lochint<br/>");
+	return $m;
 }
 
 function parseGPLRATime($t) {
