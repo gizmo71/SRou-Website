@@ -937,7 +937,7 @@ function lm2MakeRssWeather($links) {
 		//TODO: share some of this with the generator?
 		//XXX: figure out how to not bother if it's very old
 
-		($dom = DOMDocument::loadXML($rssXml)) || die("Error while loading RSS");
+		if (!($dom = DOMDocument::loadXML($rssXml))) return;
 
 		$root = $dom->documentElement;
 		($root->localName == 'rss') || die("root node is not rss");
