@@ -1,6 +1,7 @@
 <?php require("../smf/SSI.php"); ?>
 <HTML>
 <HEAD>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <STYLE>
 .navbar { background: #dddddd; border: solid 1px }
 </STYLE>
