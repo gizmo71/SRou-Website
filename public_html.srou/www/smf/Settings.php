@@ -60,20 +60,20 @@ $db_show_debug = false;
 # Note: If $maintenance is set to 2, the forum will be unusable!  Change it to 0 to fix it.
 $maintenance = 0;		# Set to 1 to enable Maintenance Mode, 2 to make the forum untouchable. (you'll have to make it 0 again manually!)
 $mtitle = 'Maintenance Mode';		# Title for the Maintenance Mode message.
-$mmessage = 'The Arvixe server is being tested...';		# Description of why the forum is in maintenance mode.
+$mmessage = 'Database recovery in progress...';		# Description of why the forum is in maintenance mode.
 
 ########## Forum Info ##########
 $mbname = 'SimRacing.org.uk';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
 $boardurl = 'http://www.simracing.org.uk/smf';		# URL to your forum's folder. (without the trailing /!)
 $webmaster_email = 'smf@davegymer.org';		# Email address to send emails from. (like noreply@yourdomain.com.)
-$cookiename = 'SMFCookie680';		# Name of the cookie to set for authentication.
+$cookiename = 'SMFCookie201404010707';		# Name of the cookie to set for authentication.
 
 ########## Database Info ##########
 $db_server = 'localhost';
 $db_name = 'gizmo71_smf';
 $db_user = 'gizmo71_smf';
-$db_passwd = 'r0manf0rum';
+$db_passwd = 't$AQP1z[zUW8';
 $db_prefix = 'smf_';
 $db_persist = 0;
 $db_error_send = 0;
