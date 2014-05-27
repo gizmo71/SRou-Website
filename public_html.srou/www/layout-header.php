@@ -23,13 +23,14 @@ function makeSrouLayoutHeader() {
 			$balance = 0;
 		}
 		echo ($balance < 0 ? "
-	<TD ALIGN='RIGHT' VALIGN='MIDDLE'>
-		<form action='https://www.paypal.com/cgi-bin/webscr' method='post'>
-		<input type='hidden' name='cmd' value='_s-xclick'>
-		<input type='image' src='https://www.paypal.com/en_US/i/btn/x-click-but21.gif' border='0' name='submit' alt='Make payments with PayPal - it&#39;s fast and secure!'>
-		<input type='hidden' name='encrypted' value='-----BEGIN PKCS7-----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-----END PKCS7-----'>
-		<BR/><A HREF='$boardurl/index.php?topic=754.0'><B>Read this first!</B></A>
-		</form>
+	<TD ALIGN='RIGHT' VALIGN='MIDDLE'>" . '
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="F84XCYWWCG9R4">
+<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+<BR/>' . "<A HREF='$boardurl/index.php?topic=754.0'><B>Read this first!</B></A>&nbsp;&nbsp;&nbsp;&nbsp;
+</form>
 		</TD>" : "") . "
 	<TD ALIGN='RIGHT' VALIGN='MIDDLE' WIDTH='1'>
 		<A HREF='$boardurl/index.php?topic=754.0'><IMG SRC='/lm2/donations.php?balance=$balance' WIDTH='80' HEIGHT='43' BORDER='0' />
