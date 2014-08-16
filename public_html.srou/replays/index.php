@@ -40,7 +40,7 @@ foreach (array(
 	array(dir=>'race', url=>'63', title=>"Race'07"),
 ) as $dirA) {
 	$dir = $dirA['dir'];
-	echo "<H2><A HREF=\"http://www.simracing.org.uk/index.php?ind=lm2&group={$dirA['url']}\">{$dirA['title']}</A></H2>"
+	echo "<H2><A id='$dir' HREF=\"http://www.simracing.org.uk/index.php?ind=lm2&group={$dirA['url']}\">{$dirA['title']}</A></H2>"
 ?>
 
 <TABLE BORDER=1>
@@ -68,9 +68,9 @@ while ($filename = readdir($dh)) {
 	);
 	$file['displayName'] = $file['displayname'];
 	if (!is_dir($filename)) {
-		$total_size += ($file['size'] = filesize($fullname) / 1000000.0);
+		$total_size  = ($file['size'] = filesize($fullname) / 1000000.0);
 		if (substr($file['filename'], -4, 4) == '.zip' && $ID_MEMBER > 0) {
-			$file['explode'] = "index.php?explode=$dir%2F{$file['url']}";
+			$file['explode'] = "index.php?explode=$dir/{$file['url']}#exploded";
 		}
 	} else {
 		$file['size'] = "&nbsp;";
@@ -87,18 +87,20 @@ foreach ($list AS $file) {
 	if ($ID_MEMBER > 0) {
 		$filename = "<A HREF='$dir/{$file['url']}'>$filename</A>";
 	}
-	echo "  <TR>\n"
-		. "    <TD ALIGN=LEFT><TT>$filename</TT></TD>\n"
-		. "    <TD ALIGN=RIGHT>{$file['size']}</TD>\n"
-		. "    <TD ALIGN=RIGHT>{$file['date']}</TD>\n"
-		. "    <TD ALIGN=RIGHT>". ($file['explode'] ? "<A HREF=\"{$file['explode']}\">Examine contents</A>" : "")."</TD>\n"
-		. "  </TR>\n";
-	$explodeUrl = "http://replays.simracing.org.uk/cgi-bin/explode.cgi?zip=$dir%2F{$file['url']}";
-	if ($explode == $file['filename'] && ($ph = fopen($explodeUrl, "r"))) {
+	$isExploded = $explode == $file['filename'];
+	echo "  <TR", $isExploded ? " id='exploded'" : "", ">\n",
+		"    <TD ALIGN=LEFT><TT>$filename</TT></TD>\n",
+		"    <TD ALIGN=RIGHT>{$file['size']}</TD>\n",
+		"    <TD ALIGN=RIGHT>{$file['date']}</TD>\n",
+		"    <TD ALIGN=RIGHT>", $file['explode'] ?
+			"<A HREF=\"{$file['explode']}\">Examine contents</A>" : "", "</TD>\n",
+		"  </TR>\n";
+	$explodeUrl = "http://replays.simracing.org.uk/cgi-bin/explode.cgi?zip=$dir/{$file['url']}";
+	if ($isExploded && ($ph = fopen($explodeUrl, "r"))) {
 		$sep = "";
 		while ($read = fgets($ph)) {
 			$text .= "$sep<TT>" . str_replace(' ', '&nbsp;', htmlentities($read, ENT_QUOTES)) . "</TT>";
-			if (preg_match('/^\s*(\d+)\s+\S+\s+\d+\s+\d+%\s+\d\d-\d\d-\d\d \d\d:\d\d\s+[a-f0-9]{8}\s+(\S.*.(?:txt|xml|vcr))\s*$/i', $read, $matches)) {
+			if (preg_match('/^\s*(\d )\s \S \s \d \s \d %\s \d\d-\d\d-\d\d \d\d:\d\d\s [a-f0-9]{8}\s (\S.*.(?:txt|xml|vcr))\s*$/i', $read, $matches)) {
 				$name = rawurlencode(htmlentities($matches[2], ENT_QUOTES));
 				if (($size = $matches[1]) < 250000 && preg_match('/\.(?:txt|xml)$/i', $name, $dummy)) {
 					$text .= " (<A HREF=\"$explodeUrl&name=$name\">*</A>)";
