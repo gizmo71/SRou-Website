@@ -400,7 +400,7 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 		}
 	}
 
-	array_push($entries, &$entry);
+	$entries[] =& $entry;
 	
 	return $entry;
 }

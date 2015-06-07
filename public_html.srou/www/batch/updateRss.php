@@ -3,6 +3,9 @@ require_once('../smf/SSI.php');
 
 header('Content-Type: text/plain');
 
+if (true) {
+	echo "Weather generation disabled\r\n";
+} else {
 $query = db_query("
 	SELECT DISTINCT wu_station
 	, MAX(event_date BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND DATE_ADD(NOW(), INTERVAL 10 DAY)) AS update_flag
@@ -28,4 +31,5 @@ while ($row = mysql_fetch_assoc($query)) {
 	}
 }
 mysql_free_result($query);
+}
 ?>

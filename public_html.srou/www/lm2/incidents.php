@@ -37,7 +37,7 @@ if (!is_null($event_status)) {
 	} else {
 		$replay_time = parse_incident_time(nullIfNull($_REQUEST['replayTime']));
 		$is_comment = $_REQUEST['is_comment'] == '1' ? '1' : '0';
-		$description = sqlString($description);
+		$description = sqlString(stripslashes($description));
 		if ($incident == "ADD") {
 			db_query("
 				INSERT INTO {$lm2_db_prefix}incidents
@@ -221,7 +221,7 @@ if (!is_null($event_status)) {
 		LEFT JOIN {$lm2_db_prefix}reports ON id_event = report_event
 		LEFT JOIN {$lm2_db_prefix}drivers ON driver_member = event_moderator
 		WHERE NOT is_protected
-		AND (event_date > " . php2timestamp(time()) . " - INTERVAL 2 YEAR OR event_status NOT IN ('O', 'H'))
+		AND (event_date > " . php2timestamp(time()) . " - INTERVAL 3 YEAR OR event_status NOT IN ('O', 'H'))
 		" . ($show_all ? "" : "AND event_status = 'U'") . "
 		GROUP BY id_event
 		ORDER BY IF(event_moderator = $ID_MEMBER, 0, 1), event_date DESC
