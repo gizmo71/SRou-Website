@@ -1,5 +1,6 @@
 <?php
 require("../www/smf/SSI.php");
+header('Content-Type: text/html; charset=utf-8');
 $ID_MEMBER = 32767; //XXX: remove this and restore the above once the site is fully transitioned.
 ?>
 <HTML>
@@ -37,7 +38,8 @@ foreach (array(
 	array(dir=>'ukgtl', url=>'13', title=>'UKGTL'),
 	//array(dir=>'ukrf', url=>'16', title=>'UKrF'),
 	array(dir=>'ukpng', url=>'213', title=>'UKP&amp;G'),
-	array(dir=>'race', url=>'63', title=>"Race'07"),
+	array(dir=>'ukac', url=>'484', title=>'UKAC'),
+	//array(dir=>'race', url=>'63', title=>"Race'07"),
 ) as $dirA) {
 	$dir = $dirA['dir'];
 	echo "<H2><A id='$dir' HREF=\"http://www.simracing.org.uk/index.php?ind=lm2&group={$dirA['url']}\">{$dirA['title']}</A></H2>"
