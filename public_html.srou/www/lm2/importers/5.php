@@ -16,6 +16,8 @@ class Sessions {
 }
 
 function doImport() {
+	global $fatal_errors;
+
 	$file = $_FILES["acServerLog"];
 	($handle = fopen($file['tmp_name'], "r")) || die("can't open {$file['tmp_name']}");
 	do {
@@ -34,13 +36,16 @@ function doImport() {
 			$outputRace = $race;
 		} else if (preg_match('/^SENDING session type : (\\d+)$/', $line, $matches)) {
 			$newSessionType = (int)$matches[1];
-			if ($newSessionType < $sessionType) {
+			if ($newSessionType <= $sessionType) {
 				if ($sessionType == Sessions::RACE) $outputRace = $race;
 				$race = array('location' => $currentTrack);
 			}
 			$sessionType = $newSessionType;
 		} else if (preg_match('/^(?:TRACK=(\\S+)|Changed track:\\s+(\\S+))$/', $line, $matches)) {
-			$currentTrack = $matches[1] ?: $matches[2];
+			// Ignore - doesn't distinguish layouts any more. :-(
+			//$currentTrack = $matches[1] ?: $matches[2];
+		} else if (preg_match('%^CALLING\\s+http.*/lobby.ashx/register\\?.*&track=([^&]+)&%', $line, $matches)) {
+			$currentTrack = $matches[1];
 		} else if (preg_match('/^Adding car: SID:(\d+) name=(.+) model=(\\S+) skin=(\\S+) guid=(\d+)$/', $line, $matches)) {
 			$race['sesid'][$matches[1]] = array(
 				'Lobby Username'=>$matches[5],
@@ -86,7 +91,7 @@ function decode_ac_time($s) {
 }
 
 function donkey($race) {
-	global $fatal_errors, $location, $entries, $modReport;
+	global $location, $entries, $modReport;
 	// Things we can't fill in. :-(
 	global $track_length, $race_start_time;
 
