@@ -21,7 +21,7 @@ function doImport() {
 	do {
 		$line = fgets($handle);
 		if ($line === FALSE) die("No server banner found (or import of wrong version)");
-	} while (!preg_match('/^Assetto Corsa Dedicated Server v(\\d+.\\d+.\\d+)$/', $line, $matches));
+	} while (!preg_match('/^Assetto Corsa Dedicated Server v(\\d+.\\d+.\\d+(?: \S+)?)$/', $line, $matches));
 	echo('<P>AC dedicated server version ' . htmlentities($matches[1], ENT_QUOTES) . "</P>");
 
 	$racesOutput = 0;
@@ -86,11 +86,12 @@ function decode_ac_time($s) {
 }
 
 function donkey($race) {
-	global $fatal_errors, $location, $entries;
+	global $fatal_errors, $location, $entries, $modReport;
 	// Things we can't fill in. :-(
 	global $track_length, $race_start_time;
 
 	$location = $race['location'];
+	$modReport .= "\n[table]";
 	foreach ($race['sesid'] AS $slot) {
 		$entry = &lookup_entry($slot, true, false);
 		$entry['qualBestLapTime'] = $slot[Sessions::QUALIFY]['best'];
@@ -103,10 +104,9 @@ function donkey($race) {
 		//TODO 'raceBestLapNo'
 		$entry['RacePos'] = $slot[Sessions::RACE]['pos'];
 		//TODO 'LapsLed'
-		$plp = $race['plp'][$slot['Driver']];
-		$entry['reason'] = $plp ? -1 : null;
-array_push($fatal_errors, "{$slot['Driver']} --- $plp");
+		$modReport .= "\n[tr][td]" . $slot['Driver'] . '[/td][td]' . $race['plp'][$slot['Driver']] . '[/td][/tr]';
 	}
+	$modReport .= '[/table]';
 }
 
 ?>
