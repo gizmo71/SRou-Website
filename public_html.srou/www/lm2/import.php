@@ -50,6 +50,7 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 	$race_start_time = null;
 	$entries = array();
 	$fatal_errors = array();
+	$modReport = '';
 
 	$query = db_query("
 		SELECT id_sim_circuit
