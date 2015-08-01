@@ -70,6 +70,7 @@ function maybeParseXmlSession($session, $isRace) {
 
 		$bestLapTime = get_single_element_text($driver_entry, 'BestLapTime', null);
 		if ($bestLapTime <= 0) $bestLapTime = null;
+		else $bestLapTime = bcdiv($bestLapTime, '1000', 3);
 
 		if ($isRace) {
 			//$entry['raceTime'] = ;
