@@ -56,83 +56,38 @@ function maybeParseXmlSession($session, $isRace) {
 		// Fake the old form...
 		$slot = array();
 		$slot['Driver'] = $slot['Lobby Username'] = get_single_element_text($driver_entry, 'Username');
+		if (!$slot['Driver']) $slot['Driver'] = '{unknown}';
 		$slot['Vehicle'] = get_single_element_text($driver_entry, 'Car');
 		//$slot['VehicleNumber'] = get_single_element_text($driver_entry, 'CarNumber');
 		//$slot['Team'] = get_single_element_text($driver_entry, 'TeamName');
 		//$slot['VehicleFile'] = get_single_element_text($driver_entry, 'VehFile');
 		//$slot['VehicleType'] = get_single_element_text($driver_entry, 'CarType');
 		//$slot['UpgradeCode'] = decodeUpgradeCode(get_single_element_text($driver_entry, 'UpgradeCode'));
-		echo "<HR/>" . print_r($slot, true) . "\n";
+		//echo "<HR/>" . print_r($slot, true) . "\n";
 
 		$entry = &lookup_entry($slot, $isRace);
 		if ($entry == null) continue;
 
-		$rf_best_lap_time = get_single_element_text($driver_entry, 'BestLapTime', null);
-		$bestLap = null;
-		foreach ($driver_entry->getElementsByTagName('Lap') as $lap_entry) {
-			$time = parseTime(get_element_text($lap_entry), "reading individual Lap data for {$slot['Driver']}");
-
-			if (is_null($time)) // Doesn't happen in GTx.
-				continue;
-
-			$lap = array(Lap=>$lap_entry->getAttribute('num'), Time=>$time);
-			if (is_null($bestLap) || $bestLap['Time'] > $time) {
-				$bestLap = $lap;
-			}
-		}
-		if (is_null($bestLap)) {
-			if (!is_null($rf_best_lap_time)) {
-				$bestLap = array(Lap=>null, Time=>$rf_best_lap_time);
-			}
-		} else if (!is_null($rf_best_lap_time)) {
-			if ($rf_best_lap_time != $bestLap['Time']) {
-				echo "<P>Warning: best lap times do not match: $rf_best_lap_time != " .$bestLap['Time'] . "</P>";
-			}
-		}
-
-		$slot['BestLap'] = array(BestLap=>null, Time=>$rf_best_lap_time);
+		$bestLapTime = get_single_element_text($driver_entry, 'BestLapTime', null);
+		if ($bestLapTime <= 0) $bestLapTime = null;
 
 		if ($isRace) {
-			$status = get_single_element_text($driver_entry, 'FinishStatus');
-			if ($status == "Finished Normally") {
-				$entry['raceTime'] = get_single_element_text($driver_entry, 'FinishTime');
-			} else if ($status == "DNF") {
-				$reason = get_single_element_text($driver_entry, 'DNFReason');
-				is_null($entry['reason'] = $rf_reason_codes[$reason]) && die("unknown reason '$reason'");
-			} else if ($status == "DQ") {
-				$entry['reason'] = "-1";
-			} else if ($status == "None") {
-				continue; // DNS?
-			} else {
-				die("unknown FinishStatus $status");
-			}
-			$entry['raceLaps'] = get_single_element_text($driver_entry, 'Laps');
-			$entry['raceBestLapTime'] = $slot['BestLap']['Time'];
-			$entry['raceBestLapNo'] = $slot['BestLap']['Lap'];
-			//FIXME: consider also storing individual laps against each entry for progression charts...
-			$entry['Pitstops'] = get_single_element_text($driver_entry, 'Pitstops');
-			$entry['GridPos'] = get_single_element_text($driver_entry, 'GridPos');
-			$entry['RacePos'] = get_single_element_text($driver_entry, 'Position'); // rFactor seems to store reliable positions.
-			$entry['DriverKG'] = get_single_element_text($driver_entry, 'PenaltyMass', null);
-			//FIXME: ControlAndAids (for driver changes and AI control)
+			//$entry['raceTime'] = ;
+			//$entry['reason'] = "-1";
+			//$entry['raceLaps'] = get_single_element_text($driver_entry, 'Laps');
+			$entry['raceBestLapTime'] = $bestLapTime;
+			//$entry['raceBestLapNo'] = ;
+			//$entry['Pitstops'] = get_single_element_text($driver_entry, 'Pitstops');
+			//$entry['GridPos'] = get_single_element_text($driver_entry, 'GridPos');
+			$entry['RacePos'] = get_single_element_text($driver_entry, 'Position');
 		} else {
-			$entry['qualLaps'] = get_single_element_text($driver_entry, 'Laps');
-			$entry['qualBestLapTime'] = $slot['BestLap']['Time'];
-			$entry['qualBestLapNo'] = $slot['BestLap']['Lap'];
+			//$entry['qualLaps'] = ;
+			$entry['qualBestLapTime'] = $bestLapTime;
+			//$entry['qualBestLapNo'] = ;
 		}
 
 		//echo "<BR/> = <B>" . print_r($entry, true) . "</B>\n";
 	}
 } // End maybeParseXmlSession()
-
-function decodeUpgradeCode($s) {
-	$bytes = sscanf($s, "%02x%02x%02x%02x %02x%02x%02x%02x");
-	(count($bytes) == 8) || die("bad upgrade code: $s " . print_r($bytes, true));
-	$code = "";
-	for ($i = 8; $i-- > 0; ) {
-		$code .= sprintf("%02x", $bytes[$i]);
-	}
-	return $code == '0000000000000000' ? null : $code;
-} // End decodeUpgradeCode()
 
 ?>
