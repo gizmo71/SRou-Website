@@ -1,5 +1,10 @@
 <P ALIGN="RIGHT"><B><A HREF="http://www.simracing.org.uk/smf/index.php?topic=362.0">Importer Instructions</A></B></P>
 <?php
+
+require_once("$sourcedir/Subs-Post.php");
+ini_set('display_errors', 'stdout');
+
+// SMF 1.x version
 ini_get("precision") >= 12 || die("default precision is less than 12");
 $sim = -1;
 $id_event = $_REQUEST['id_event'];
@@ -201,17 +206,49 @@ function show_event_selector() {
 }
 
 function write_entries($id_sim_circuit) {
-	global $id_event;
-	global $entries;
-	global $lm2_db_prefix;
-	global $race_start_time, $iracing_subsession;
+	global $id_event, $entries, $modReport, $race_start_time, $iracing_subsession;
+	global $lm2_db_prefix, $db_prefix, $circuit_html_clause, $incidentReportForum;
+
+	$modTopic = null;
+	if ($modReport) {
+		$query = db_query("SELECT IFNULL(id_topic, 0) AS incident_topic
+			, event_date AS event_date
+			, short_desc AS series_desc
+			, $circuit_html_clause AS circuit_html
+			FROM {$lm2_db_prefix}events
+			JOIN {$lm2_db_prefix}event_groups ON id_event_group = event_group
+			JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
+			JOIN {$lm2_db_prefix}circuits ON id_circuit = circuit
+			JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
+			LEFT JOIN {$db_prefix}topics ON incident_topic = id_topic
+			WHERE id_event = $id_event", __FILE__, __LINE__);
+		($row = mysql_fetch_assoc($query)) || die("can't find event $event");
+		mysql_fetch_assoc($query) && die("more than one event $id_event");
+		mysql_free_result($query);
+		$modTopic = $row['incident_topic']; // Almost certainly 0.
+		$from = array(
+			'id' => 0,
+			'name' => "SimRacing.org.uk",
+			'email' => ''
+		);
+		$msgOptions = array(
+			'subject'=>htmlspecialchars("Moderation import checks: {$row['event_date']} {$row['series_desc']} ({$row['circuit_html']})"),
+			'body'=>$modReport,
+			'attachments'=>array(),
+			'smileys_enabled' => 0,
+		);
+		$topicOptions = array('board'=>$incidentReportForum, 'id'=>$modTopic);
+		createPost($msgOptions, $topicOptions, $from);
+		if ($modTopic == 0) $modTopic = $topicOptions['id'];
+	}
+
 
 	db_query("
 		UPDATE {$lm2_db_prefix}events SET sim_circuit = $id_sim_circuit
 		" . (is_null($race_start_time) ? "" : ", event_date = " . php2timestamp($race_start_time)) . "
 		" . (is_null($iracing_subsession) ? "" : ", iracing_subsession = " . sqlString($iracing_subsession)) . "
-		WHERE id_event = $id_event
-		", __FILE__, __LINE__); 
+		" . ($modTopic ? ", incident_topic = $modTopic" : "") . "
+		WHERE id_event = $id_event", __FILE__, __LINE__); 
 
 	$has_GridPos = false;
 
