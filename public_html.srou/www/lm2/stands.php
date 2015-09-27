@@ -892,26 +892,25 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 	}
 
 	function set_class_positions() {
-		echo "<P>Updating classes and class positions...</P>\n";
+		echo "<P>Updating classes and class positions...";
 
 		//XXX: strongly consider moving the protection flag from event_groups to championships, and keying event_entries updates off event status.
-		//XXX: use the new lm2_classifications view instead of the subselect.
+		//TODO: rewrite to not use the subselect.
 		lm2_query("
 			UPDATE {$this->lm2_db_prefix}event_entries
 			SET qual_pos_class = NULL
 			, race_pos_class = NULL
 			, car_class_c = IFNULL((
 				SELECT car_class
-				FROM {$this->lm2_db_prefix}car_classification
+				FROM {$this->lm2_db_prefix}car_class_c
 				JOIN {$this->lm2_db_prefix}sim_cars USING (car)
-				JOIN {$this->lm2_db_prefix}event_group_tree ON event_group = container
 				WHERE id_sim_car = sim_car
-				AND (SELECT event_group FROM {$this->lm2_db_prefix}events WHERE id_event = event) = contained
-				ORDER BY depth
-				LIMIT 1
+				AND (SELECT event_group FROM {$this->lm2_db_prefix}events WHERE id_event = event) = event_group
 			), '-')
 			WHERE NOT is_protected_c
 			", __FILE__, __LINE__);
+
+		echo " cleared...";
 		//FIXME: consider restricting this to championship classes only...
 		lm2_query("
 			CREATE TEMPORARY TABLE {$this->temp_db_prefix}class_positions
@@ -934,6 +933,8 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 		$this->class_rank('race_best_lap');
 		$this->class_rank('qual');
 		$this->class_rank('start');
+
+		echo " temporary table built...";
 		lm2_query("
 			UPDATE {$this->lm2_db_prefix}event_entries, {$this->temp_db_prefix}class_positions
 			SET " . $this->class_pos_copy('qual_pos_class') . "
@@ -942,6 +943,8 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 			, " . $this->class_pos_copy('race_best_lap_pos_class') . "
 			WHERE id_event_entry = event_entry
 			", __FILE__, __LINE__);
+
+		echo " done</P>\n";
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}class_positions", __FILE__, __LINE__);
 	}
 

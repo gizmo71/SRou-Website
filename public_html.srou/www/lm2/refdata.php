@@ -469,20 +469,23 @@ class Classification extends RefData {
 		return $filters;
 	}
 
+	function rebuild() {
+		rebuildClassificationCache();
+	}
+
 	function show_notes() {
 		global $lm2_view_prefix;
 		$query = lm2_query("
 			SELECT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
 			, GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name)) AS car
-			FROM {$lm2_view_prefix}lm2_classifications
-			JOIN {$this->lm2_db_prefix}event_entries USING (id_event_entry)
+			FROM {$this->lm2_db_prefix}event_entries
 			JOIN {$this->lm2_db_prefix}events ON id_event = event
 			JOIN {$this->lm2_db_prefix}event_groups eg_e ON id_event_group = event_group
 			JOIN {$this->lm2_db_prefix}sim_cars ON id_sim_car = sim_car
 			JOIN {$this->lm2_db_prefix}cars ON id_car = {$this->lm2_db_prefix}sim_cars.car
 			JOIN {$this->lm2_db_prefix}manufacturers ON id_manuf = manuf
-			LEFT JOIN {$this->lm2_db_prefix}car_classification USING (id_car_classification)
-			LEFT JOIN {$this->lm2_db_prefix}event_groups eg_c ON eg_c.id_event_group = {$this->lm2_db_prefix}car_classification.event_group
+			LEFT JOIN {$this->lm2_db_prefix}car_class_c USING (car, event_group)
+			LEFT JOIN {$this->lm2_db_prefix}event_groups eg_c ON eg_c.id_event_group = src_group
 			WHERE car_class_c <> IFNULL(car_class, '-')
 			GROUP BY car_class_c, car_class, eg_c.short_desc, eg_e.short_desc
 			", __FILE__, __LINE__);
@@ -491,6 +494,42 @@ class Classification extends RefData {
 		}
 		mysql_free_result($query);
 	}
+}
+
+function rebuildClassificationCache($parent = null, $group = null) {
+	global $lm2_db_prefix;
+
+	if (is_null($group)) {
+		echo "</BR>Rebuilding classification cache";
+
+		// Cannot use TRUNCATE within a transaction.
+		lm2_query("DELETE FROM {$lm2_db_prefix}car_class_c", __FILE__, __LINE__);
+	} else {
+		echo "."; ob_flush(); flush();
+
+		$query = lm2_query("
+			INSERT INTO {$lm2_db_prefix}car_class_c (event_group, src_group, car, car_class)
+			SELECT $group
+			, IFNULL({$lm2_db_prefix}car_classification.event_group, {$lm2_db_prefix}car_class_c.src_group)
+			, id_car
+			, IFNULL({$lm2_db_prefix}car_classification.car_class, {$lm2_db_prefix}car_class_c.car_class) AS car_class
+			FROM {$lm2_db_prefix}cars
+			LEFT JOIN {$lm2_db_prefix}car_classification ON id_car = {$lm2_db_prefix}car_classification.car
+				AND {$lm2_db_prefix}car_classification.event_group = $group
+			LEFT JOIN {$lm2_db_prefix}car_class_c ON id_car = {$lm2_db_prefix}car_class_c.car
+				AND {$lm2_db_prefix}car_class_c.event_group " . (is_null($parent) ? "IS NULL" : "= $parent") . "
+			WHERE id_car_classification IS NOT NULL OR {$lm2_db_prefix}car_class_c.car IS NOT NULL
+			", __FILE__, __LINE__);
+	}
+
+	$query = lm2_query("
+		SELECT id_event_group FROM {$lm2_db_prefix}event_groups
+		WHERE parent " . (is_null($group) ? "IS NULL" : "= " . $group) . "
+		", __FILE__, __LINE__);
+	while ($row = mysql_fetch_assoc($query)) {
+		rebuildClassificationCache($group, $row['id_event_group']);
+	}
+	mysql_free_result($query);
 }
 
 class Classes extends RefData {
@@ -852,6 +891,10 @@ class Championships extends RefData {
 
 	function getDefaultSortOrder() {
 		return "U5";
+	}
+
+	function show_notes() {
+		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B></P>\n";
 	}
 }
 
@@ -1418,6 +1461,8 @@ class EventGroups extends RefData {
 			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
 			SET is_protected_c = is_protected
 			", __FILE__, __LINE__);
+
+		rebuildClassificationCache();
 	}
 
 	function set_seq($parent, &$dispSeq, $depth) {
