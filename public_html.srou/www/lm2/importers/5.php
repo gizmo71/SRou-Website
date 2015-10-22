@@ -33,7 +33,7 @@ function doImport() {
 		$line = fgets($handle);
 		$outputRace = FALSE;
 		if ($line === FALSE) {
-			$outputRace = $race;
+			$outputRace = $race && array_key_exists('location', $race);
 		} else if (preg_match('/^SENDING session type : (\\d+)$/', $line, $matches)) {
 			$newSessionType = (int)$matches[1];
 			if ($newSessionType <= $sessionType) {
@@ -77,6 +77,7 @@ function doImport() {
 			// Annoyingly, JSON_PRETTY_PRINT isn't suppored until PHP 5.4.0.
 			//echo "<pre>" . json_encode($outputRace, JSON_HEX_TAG|JSON_HEX_AMP|JSON_PRETTY_PRINT) . "</pre>";
 			donkey($outputRace);
+			$race = FALSE;
 		}
 	} while (!feof($handle));
 	fclose($handle);
