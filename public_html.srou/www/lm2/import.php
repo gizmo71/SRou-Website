@@ -443,7 +443,7 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 	return $entry;
 }
 
-function check_and_copy(&$old, &$new, $hint = 'no hint available') {
+function check_and_copy(&$old, $new, $hint = 'no hint available') {
 	global $fatal_errors;
 
 	if (is_null($new) && !is_null($old)) {
