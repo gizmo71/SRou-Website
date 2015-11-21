@@ -146,8 +146,10 @@ echo "<PRE>track $location</PRE>";
 //echo "<PRE>HTML {$entry['RacePos']}#{$entry['raceLaps']}/{$entry['raceTime']}@{$entry['reason']}";
 		check_and_copy($entry['RacePos'], $matches[$match][1], "RacePos$lochint");
 		check_and_copy($entry['raceLaps'], $matches[$match][6], "raceLaps$lochint");
-		check_and_copy($entry['raceTime'], ($dummy = parseGPLRATime($matches[$match][7])), "raceTime$lochint");
-		check_and_copy($entry['reason'], ($dummy = translateRetirementReason($matches[$match][8])), "reason$lochint");
+		$dummy = parseGPLRATime($matches[$match][7]);
+		check_and_copy($entry['raceTime'], $dummy, "raceTime$lochint");
+		$dummy = translateRetirementReason($matches[$match][8]);
+		check_and_copy($entry['reason'], $dummy, "reason$lochint");
 //echo " GPLRA {$entry['RacePos']}#{$entry['raceLaps']}/{$entry['raceTime']}@{$entry['reason']}  {$matches[$match][3]}</PRE>\n";
 
 		if ($entry['raceLaps'] == 0 && $matches[$match][7] == 'DidNotStart') {
@@ -207,7 +209,8 @@ echo "<PRE>track $location</PRE>";
 
 //echo "<PRE>HTML {$entry['qualLaps']}/{$entry['qualBestLapTime']}";
 		check_and_copy($entry['qualLaps'], $matches[$match][7], "qualLaps$lochint");
-		check_and_copy($entry['qualBestLapTime'], ($dummy = parseGPLRATime($matches[$match][6])), "qualBestLapTime$lochint");
+		$dummy = parseGPLRATime($matches[$match][6]);
+		check_and_copy($entry['qualBestLapTime'], $dummy, "qualBestLapTime$lochint");
 //echo " GPLRA {$entry['qualLaps']}/{$entry['qualBestLapTime']}  {$matches[$match][3]}</PRE>\n";
 	}
 
