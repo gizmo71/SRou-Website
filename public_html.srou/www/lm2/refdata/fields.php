@@ -66,14 +66,16 @@ class RefDataFieldReadOnly extends RefDataField {
 		if ($this->isHtml) {
 			$value = html_entity_decode($value, ENT_QUOTES);
 		}
+		$extraValue = '';
 		if (strlen($value) > $this->maxWidth) {
 			$extra = htmlentities($value, ENT_QUOTES);
-			$value = substr($value, 0, $this->maxWidth - 1) . "…";
+			$value = substr($value, 0, $this->maxWidth - 1);
+			$extraValue = "&hellip;";
 		} else {
 			$extra = null;
 		}
 		$value = htmlentities($value, ENT_QUOTES);
-		return "<SMALL" . (is_null($extra) ? '' : " TITLE='$extra'") . ">$value</SMALL>";
+		return "<SMALL" . (is_null($extra) ? '' : " TITLE='$extra'") . ">$value$extraValue</SMALL>";
 	}
 
 	function sqlize($value) {
