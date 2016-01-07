@@ -23,7 +23,7 @@ function doImport() {
 	do {
 		$line = fgets($handle);
 		if ($line === FALSE) die("No server banner found (or import of wrong version)");
-	} while (!preg_match('/^Assetto Corsa Dedicated Server v(\\d+.\\d+.\\d+(?: \S+)?)$/', $line, $matches));
+	} while (!preg_match('/^Assetto Corsa Dedicated Server v(\\d+(?:\\.\\d+)+(?: \S+)?)$/', $line, $matches));
 	echo('<P>AC dedicated server version ' . htmlentities($matches[1], ENT_QUOTES) . "</P>");
 
 	$racesOutput = 0;
