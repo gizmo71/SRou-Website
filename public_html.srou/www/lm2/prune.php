@@ -37,7 +37,7 @@ $query = lm2_query("
 	WHERE ((is_activated = 0 OR lastLogin = 0) AND FROM_UNIXTIME(dateRegistered) < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 2 MONTH))
 	   OR (lastLogin > 0 AND FROM_UNIXTIME(lastLogin) < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 12 MONTH) AND posts = 0)
 	   OR (posts = 0 AND (websiteUrl <> '' OR signature <> ''))
-	HAVING events IS NULL
+	HAVING events IS NULL AND pm_sent IS NULL AND pm_recv IS NULL
 	ORDER BY IFNULL(posts, 0) > 0 OR IFNULL(events, 0) > 0
 	, IF(lastLogin > dateRegistered, lastLogin, dateRegistered)
 	", __FILE__, __LINE__);
