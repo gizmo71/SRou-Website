@@ -28,17 +28,19 @@ function doImport() {
 
 	$racesOutput = 0;
 	$race = FALSE;
+	$guid2sesid = FALSE;
 	$sessionType = Sessions::PREAMBLE;
 	do {
 		$line = fgets($handle);
 		$outputRace = FALSE;
 		if ($line === FALSE) {
-			$outputRace = $race && array_key_exists('location', $race);
+			array_key_exists('location', $race) &&($outputRace = $race);
 		} else if (preg_match('/^SENDING session type : (\\d+)$/', $line, $matches)) {
 			$newSessionType = (int)$matches[1];
 			if ($newSessionType <= $sessionType) {
 				if ($sessionType == Sessions::RACE) $outputRace = $race;
 				$race = array('location' => $currentTrack);
+				$guid2sesid = array();
 			}
 			$sessionType = $newSessionType;
 		} else if (preg_match('/^(?:TRACK=(\\S+)|Changed track:\\s+(\\S+))$/', $line, $matches)) {
@@ -46,6 +48,11 @@ function doImport() {
 			//$currentTrack = $matches[1] ?: $matches[2];
 		} else if (preg_match('%^CALLING\\s+http.*/lobby.ashx/register\\?.*&track=([^&]+)&%', $line, $matches)) {
 			$currentTrack = $matches[1];
+		} else if (preg_match('/^Updating car info for GUID (\d+), name=(.+) model=(\\S+) skin=(\\S+)$/', $line, $matches)) {
+			array_key_exists($matches[1], $guid2sesid) || die("Update for unknown GUID {$matches[1]} @" . ftell($handle));
+			$race['sesid'][$guid2sesid[$matches[1]]]['Driver'] = $matches[2];
+			$race['sesid'][$guid2sesid[$matches[1]]]['Vehicle'] = $matches[3];
+			$race['sesid'][$guid2sesid[$matches[1]]]['_skin'] = $matches[4];
 		} else if (preg_match('/^Adding car: SID:(\d+) name=(.+) model=(\\S+) skin=(\\S+) guid=(\d+)$/', $line, $matches)) {
 			$race['sesid'][$matches[1]] = array(
 				'Lobby Username'=>$matches[5],
@@ -54,12 +61,13 @@ function doImport() {
 				'Vehicle'=>$matches[3],
 				'_skin'=>$matches[4],
 			);
+			$guid2sesid[$matches[5]] = $matches[1];
 		} else if (preg_match('/^SendLapCompletedMessage$/', $line, $matches)) {
 //TODO: only really want the last one in the session or we might end up with drivers who leave mucking it up?
 			while (preg_match('/^(\\d+)\\) (.*) BEST: (\\d+:\\d+:\\d+) TOTAL: (\\d+:\\d+:\\d+) Laps:(\\d+) SesID:(\d+)$/', ($line = fgets($handle)), $matches)) {
 				if (!$matches[2]) continue; // Pickup races may have unfilled slots.
-				($sesid = &$race['sesid'][$matches[6]]) || die("Unknown sesid in {$matches[0]}");
-				($sesid['Driver'] == $matches[2]) || die("Name mismatch {$race['sesid'][$matches[1]]['Driver']} v. {$matches[2]}");
+				($sesid = &$race['sesid'][$matches[6]]) || die("Unknown sesid in {$matches[0]} @" . ftell($handle));
+				($sesid['Driver'] == $matches[2]) || die("Name mismatch, expected {$sesid['Driver']} but got {$matches[2]} @" . ftell($handle));
 				$sesid[$sessionType] = array(
 					'pos'=>$matches[1],
 					'best'=>decode_ac_time($matches[3]),
@@ -67,7 +75,7 @@ function doImport() {
 					'laps'=>$matches[5],
 				);
 			}
-			preg_match('/^SendLapCompletedMessage END$/', $line) || die('Bad results block ' . htmlentities($line, ENT_QUOTES));
+			preg_match('/^SendLapCompletedMessage END$/', $line) || die('Bad results block ' . htmlentities($line, ENT_QUOTES) . " @" . ftell($handle));
 		} else if (preg_match('/^CHAT \\[(.+)\\]: PLP: running version (.+)\\|\\1$/', $line, $matches)) {
 			$race['plp'][$matches[1]] = $matches[2];
 		}
@@ -75,10 +83,11 @@ function doImport() {
 		if ($outputRace && array_key_exists('sesid', $outputRace)) {
 			++$racesOutput;
 			// Annoyingly, JSON_PRETTY_PRINT isn't suppored until PHP 5.4.0.
-			//echo "<pre>" . json_encode($outputRace, JSON_HEX_TAG|JSON_HEX_AMP|JSON_PRETTY_PRINT) . "</pre>";
+			echo "<pre>" . json_encode($outputRace, JSON_HEX_TAG|JSON_HEX_AMP|JSON_PRETTY_PRINT) . "</pre>";
 			donkey($outputRace);
 			$race = FALSE;
 		}
+//$outputRace && !is_array($outputRace) && die("true but not?! ..". print_r($outputRace, true) . ".. @" . ftell($handle));
 	} while (!feof($handle));
 	fclose($handle);
 
