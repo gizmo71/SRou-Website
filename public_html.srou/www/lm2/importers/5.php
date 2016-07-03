@@ -48,11 +48,37 @@ function doImport() {
 			//$currentTrack = $matches[1] ?: $matches[2];
 		} else if (preg_match('%^CALLING\\s+http.*/lobby.ashx/register\\?.*&track=([^&]+)&%', $line, $matches)) {
 			$currentTrack = $matches[1];
-		} else if (preg_match('/^Updating car info for GUID (\d+), name=(.+) model=(\\S+) skin=(\\S+)$/', $line, $matches)) {
+		} else if (preg_match('/^Updating car info for GUID (\\d+), name=(.+) model=(\\S+) skin=(\\S+)$/', $line, $matches)) {
 			array_key_exists($matches[1], $guid2sesid) || die("Update for unknown GUID {$matches[1]} @" . ftell($handle));
 			$race['sesid'][$guid2sesid[$matches[1]]]['Driver'] = $matches[2];
 			$race['sesid'][$guid2sesid[$matches[1]]]['Vehicle'] = $matches[3];
 			$race['sesid'][$guid2sesid[$matches[1]]]['_skin'] = $matches[4];
+		} else if (preg_match('/^NEW PICKUP CONNECTION from .*$/', $line, $matches)) {
+			$line = fgets($handle) . fgets($handle);
+			preg_match('/^VERSION (\d+)$\s+^(\S+(?:\s+\S+)*)$/m', $line, $matches) || die("Expected VERSION line and driver @" . ftell($handle). " but got <pre>$line</pre>");
+			$matches[1] == '160' || die("Unknown pickup block version {$matches[1]} @" . ftell($handle));
+			$driverName = $matches[2];
+			$lineOffset = ftell($handle);
+			preg_match('/^REQUESTED CAR: (\S+)\*$/', fgets($handle), $matches) || die("No car requested @$lineOffset");
+			$car = $matches[1];
+			for (;;) {
+				($line = fgets($handle)) !== FALSE || die("Never found end of pickup block @$lineOffset");
+				if (preg_match('/Slot found(?: by name)? at index (\d+)$/', $line, $matches)) break;
+				if (preg_match('/, client refused$/', $line)) continue 2;
+				if (preg_match('/^(?:ENTRY LIST OPEN MODE [01]|Looking for available slot(?: by name)?)$/', $line))
+					continue;
+				die("Unexpected pickup block line @" . ftell($handle));
+			}
+			$race['sesid'][$matches[1]] = array(
+				'Lobby Username'=>null,
+				'Driver'=>$driverName,
+				'#'=>$matches[1],
+				'Vehicle'=>$car,
+				'_skin'=>null,
+			);
+			while (!preg_match('/^OK$/', ($line = fgets($handle)))) {
+				$line === FALSE && die("Never found end of accepted pickup block @$lineOffset");
+			}
 		} else if (preg_match('/^Adding car: SID:(\d+) name=(.+) model=(\\S+) skin=(\\S+) guid=(\d+)$/', $line, $matches)) {
 			$race['sesid'][$matches[1]] = array(
 				'Lobby Username'=>$matches[5],
@@ -67,7 +93,7 @@ function doImport() {
 			while (preg_match('/^(\\d+)\\) (.*) BEST: (\\d+:\\d+:\\d+) TOTAL: (\\d+:\\d+:\\d+) Laps:(\\d+) SesID:(\d+)$/', ($line = fgets($handle)), $matches)) {
 				if (!$matches[2]) continue; // Pickup races may have unfilled slots.
 				($sesid = &$race['sesid'][$matches[6]]) || die("Unknown sesid in {$matches[0]} @" . ftell($handle));
-				($sesid['Driver'] == $matches[2]) || die("Name mismatch, expected {$sesid['Driver']} but got {$matches[2]} @" . ftell($handle));
+				($sesid['Driver'] == $matches[2]) || die("Name mismatch, expected '{$sesid['Driver']}' but got '{$matches[2]}' @" . ftell($handle));
 				$sesid[$sessionType] = array(
 					'pos'=>$matches[1],
 					'best'=>decode_ac_time($matches[3]),
@@ -85,6 +111,7 @@ function doImport() {
 			echo "<pre>" . json_encode($outputRace, JSON_HEX_TAG|JSON_HEX_AMP|JSON_PRETTY_PRINT) . "</pre>";
 			donkey($outputRace);
 			$race = FALSE;
+			break; // Pickup races carry session IDs forward - let's just not deal with it right now!
 		}
 //$outputRace && !is_array($outputRace) && die("true but not?! ..". print_r($outputRace, true) . ".. @" . ftell($handle));
 	} while (!feof($handle));
