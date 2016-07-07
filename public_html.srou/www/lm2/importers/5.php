@@ -26,6 +26,7 @@ function doImport() {
 	} while (!preg_match('/^Assetto Corsa Dedicated Server v(\\d+(?:\\.\\d+)+(?: \S+)?)$/', $line, $matches));
 	echo('<P>AC dedicated server version ' . htmlentities($matches[1], ENT_QUOTES) . "</P>");
 
+	$entryList = array();
 	$racesOutput = 0;
 	$race = FALSE;
 	$guid2sesid = FALSE;
@@ -39,7 +40,8 @@ function doImport() {
 			$newSessionType = (int)$matches[1];
 			if ($newSessionType <= $sessionType) {
 				if ($sessionType == Sessions::RACE) $outputRace = $race;
-				$race = array('location' => $currentTrack);
+				$race = $entryList;
+				$race['location'] = $currentTrack;
 				$guid2sesid = array();
 			}
 			$sessionType = $newSessionType;
@@ -78,6 +80,22 @@ function doImport() {
 			);
 			while (!preg_match('/^OK$/', ($line = fgets($handle)))) {
 				$line === FALSE && die("Never found end of accepted pickup block @$lineOffset");
+			}
+		} else if (preg_match('/^Opening entry list:\s+/', $line)) {
+			$lineOffset = ftell($handle);
+			while (!preg_match('/^(?:Random seed: \d+|NextSession)$/', ($line = fgets($handle)))) {
+				$line === FALSE && die("Never found end of entry list block @$lineOffset");
+				if (preg_match('/^CAR:\s+(\d+)\s+(\S+)\s+\(\1\)\s+\[(.+) \[(.*)\]\]\s+\3\s+\[\4\]\s+(\d+)\s+(\d+)\s+kg$/', $line, $matches)) {
+					$entryList['sesid'][$matches[1]] = array(
+						'Lobby Username'=>$matches[5],
+						'Driver'=>$matches[3],
+						'#'=>$matches[1],
+						'Vehicle'=>$matches[2],
+						'_skin'=>$matches[4],
+						'Penalty'=>$matches[6],
+					);
+				} else if (!preg_match('/^(?:Found car  CAR_\d+$|open setups\/)/', $line, $matches))
+					die("Unexpected entry list line @" . ftell($handle));
 			}
 		} else if (preg_match('/^Adding car: SID:(\d+) name=(.+) model=(\\S+) skin=(\\S+) guid=(\d+)$/', $line, $matches)) {
 			$race['sesid'][$matches[1]] = array(
