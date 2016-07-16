@@ -3,8 +3,26 @@
 
 function showFileChoosers() {
 ?>
-    <TR><TD>Server log</TD><TD><INPUT size="120" name="acServerLog" type="file" /></TD></TR>
+    <TR><TH>Server log</TD><TD><INPUT size="120" name="acServerLog" type="file" /></TD></TR>
+    <TR><TD COLSPAN="2" ALIGN="CENTER"><i>Choose log file (above) or JSON exports (below)</i></TD></TR>
+    <TR><TH>Qualifying JSON (optional)</TH><TD><INPUT size="120" name="acQualJson" type="file" /></TD></TR>
+    <TR><TH>Race JSON</TH><TD><INPUT size="120" name="acRaceJson" type="file" /></TD></TR>
 <?php
+}
+
+function doImport() {
+	$log = $_FILES["acServerLog"]['size'] ? $_FILES["acServerLog"]['tmp_name'] : null;
+	$q = $_FILES["acQualJson"]['size'] ? $_FILES["acQualJson"]['tmp_name'] : null;
+	$r = $_FILES["acRaceJson"]['size'] ? $_FILES["acRaceJson"]['tmp_name'] : null;
+	if ($r) {
+		if ($log) echo '<P><I>Using JSON; ignoring log file</I></P>';
+		doImportJson($q, $r);
+	} else if ($log) {
+		if ($q) echo '<P><I>Using log; ignoring qualifying JSON</I></P>';
+		doImportLog($log);
+	} else {
+		die("Neither log nor JSON files supplied");
+	}
 }
 
 class Sessions {
@@ -15,11 +33,111 @@ class Sessions {
 	const RACE = 3;
 }
 
-function doImport() {
+function doImportJson($qFilename, $rFilename) {
 	global $fatal_errors;
 
-	$file = $_FILES["acServerLog"];
-	($handle = fopen($file['tmp_name'], "r")) || die("can't open {$file['tmp_name']}");
+	$cars = array();
+
+	processJson($rFilename, Sessions::RACE, $cars);
+	if ($qFilename) processJson($qFilename, Sessions::QUALIFY, $cars);
+
+	foreach ($cars AS &$slot) {
+		$entry =& lookup_entry($slot, true, false);
+
+		$entry['DriverKG'] = $slot['DriverKG'];
+
+		if (count($slot['sesid'][Sessions::RACE]['Laps'])) {
+			$entry['race_laps'] = count($slot['sesid'][Sessions::RACE]['Laps']);
+			$entry['race_time_actual'] = bcdiv($slot['sesid'][Sessions::RACE]['Result']['TotalTime'], 1000, 3);
+			$entry['race_best_lap_time'] = bcdiv($slot['sesid'][Sessions::RACE]['Result']['BestLap'], 1000, 3);
+			$entry['race_best_lap_no'] = $slot['sesid'][Sessions::RACE]['BestLapNo'];
+			//$entry['pitstops'] = ;
+			//$entry['laps_led'] = ;
+			//$entry['incident_points'] = ;
+			$entry['RacePos'] = $slot['sesid'][Sessions::RACE]['SimPos'];
+		}
+
+		if (count($slot['sesid'][Sessions::QUALIFY]['Laps'])) {
+			$entry['qual_laps'] = count($slot['sesid'][Sessions::QUALIFY]['Laps']);
+			$entry['qualBestLapTime'] = bcdiv($slot['sesid'][Sessions::QUALIFY]['Result']['BestLap'], 1000, 3);
+			$entry['qualBestLapNo'] = $slot['sesid'][Sessions::QUALIFY]['BestLapNo'];
+			$entry['GridPos'] = $slot['sesid'][Sessions::QUALIFY]['SimPos'];
+		}
+$entry['__slot__'] = &$slot;
+	}
+}
+
+function processJson($filename, $session, &$cars) {
+	global $location, $entries, $modReport;
+
+	$json = json_decode(file_get_contents($filename), true);
+	$json['Events'] = null; //TODO: maybe report them
+
+	((new ReflectionClass('Sessions'))->getConstants()[$json['Type']] == $session) || die("Unexpected type {$json['Type']} for session ID $session");
+
+    $newLocation = $json['TrackName'];
+    if ($json['TrackConfig']) $newLocation .= ":" . $json['TrackConfig'];
+
+	if ($location) $location == $newLocation || die("Locations $location and $newLocation don't match");
+	else $location = $newLocation;
+
+	foreach ($json['Cars'] as &$car) {
+		$slot = array(
+			'#'=>$car['CarId'],
+			'Driver'=>$car['Driver']['Name'],
+			'Lobby Username'=>$car['Driver']['Guid'],
+			'Vehicle'=>$car['Model'],
+			'_skin'=>$car['Skin'],
+			'DriverKG'=>$car['BallastKG']
+		);
+		if (array_key_exists($car['CarId'], $cars)) {
+			$oldSlot =& $cars[$car['CarId']];
+			array_intersect($slot, $oldSlot) == $slot || die("Mismatch between " . print_r($oldSlot, true) . " and " . print_r($slot, true));
+		} else {
+			$slot['sesid'] = [];
+			$cars[$car['CarId']] = $slot;
+		}
+	}
+
+	$simPos = 0;
+	foreach ($json['Result'] as &$result) {
+		$slot =& $cars[$result['CarId']];
+		$slotData = slotDataFromResultOrLap($result);
+		array_intersect($slotData, $slot) == $slotData || die("Mismatch between " . print_r($slot, true) . " and result's " . print_r($slotData, true));
+		$slot['sesid'][$session] = [ 'Result'=>&$result, 'Laps'=>[], 'SimPos'=>++$simPos ];
+	}
+
+	// Note - assumes laps are in order!
+	foreach ($json['Laps'] as &$lap) {
+		$slot =& $cars[$lap['CarId']];
+		$slotData = slotDataFromResultOrLap($lap);
+		array_intersect($slotData, $slot) == $slotData || die("Mismatch between " . print_r($slot, true) . " and lap's " . print_r($slotData, true));
+		!array_key_exists($lap['Timestamp'], $slot['sesid'][$session]['Laps']) || die("Already got lap at timestamp {$lap['Timestamp']}");
+		$sessionSlot =& $slot['sesid'][$session];
+		$sessionSlot['Laps'][$lap['Timestamp']] =& $lap;
+		if ($lap['LapTime'] == $sessionSlot['Result']['BestLap'] && !$sessionSlot['BestLapNo']) {
+			$sessionSlot['BestLapNo'] = count($sessionSlot['Laps']);
+		}
+unset($lap['Sectors']);
+unset($lap['DriverName']);
+unset($lap['DriverGuid']);
+unset($lap['BallastKG']);
+unset($lap['CarModel']);
+unset($lap['CarId']);
+unset($lap['Timestamp']);
+	}
+}
+
+function slotDataFromResultOrLap(&$resultOrLap) {
+	return [ 'Driver'=>$resultOrLap['DriverName'], 'Lobby Username'=>$resultOrLap['DriverGuid'], 'Vehicle'=>$resultOrLap['CarModel'], 'DriverKG'=>$resultOrLap['BallastKG'] ];
+}
+
+//////////////////////////////// JSON above, Log File below ////////////////////////////////
+
+function doImportLog($filename) {
+	global $fatal_errors;
+
+	($handle = fopen($filename, "r")) || die("can't open $filename");
 	do {
 		$line = fgets($handle);
 		if ($line === FALSE) die("No server banner found (or import of wrong version)");
@@ -126,7 +244,7 @@ function doImport() {
 		if ($outputRace && array_key_exists('sesid', $outputRace)) {
 			++$racesOutput;
 			// Annoyingly, JSON_PRETTY_PRINT isn't suppored until PHP 5.4.0.
-			echo "<pre>" . json_encode($outputRace, JSON_HEX_TAG|JSON_HEX_AMP|JSON_PRETTY_PRINT) . "</pre>";
+			//echo "<pre>" . json_encode($outputRace, JSON_HEX_TAG|JSON_HEX_AMP|JSON_PRETTY_PRINT) . "</pre>";
 			donkey($outputRace);
 			$race = FALSE;
 			break; // Pickup races carry session IDs forward - let's just not deal with it right now!

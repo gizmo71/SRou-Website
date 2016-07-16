@@ -117,16 +117,15 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 
 	if (count($entries) == 0) {
 		die("no entries - are you sure you did anything?");
-	} else if (count($fatal_errors) > 0) {
+	}
+	if ($_REQUEST['simulate'] == '1') {
+		array_push($fatal_errors, "Import simulated - not writing entries. Would write <pre>" . print_r($entries, true) . "</pre>");
+	}
+	if (count($fatal_errors) > 0) {
 		echo "<H2>" . count($fatal_errors) . " fatal errors; not writing event to database.<BR>Please fix the problems and try again.</H2>";
 		foreach (array_unique($fatal_errors) AS $fatal_error) {
 			echo "$fatal_error<BR/>\n";
 		}
-	} else if ($_REQUEST['simulate'] == '1') {
-		echo "<P>Import simulated - not writing entries</P>\n";
-//foreach ($entries AS $entry) {
-//echo "<BR/>Would write " . print_r($entry, true) . "\n";
-//}
 	} else {
 		write_entries($current_circuit['id_sim_circuit']);
 		echo "<P>Don't forget to generate the standings!</P>\n";
