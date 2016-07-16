@@ -47,18 +47,18 @@ function doImportJson($qFilename, $rFilename) {
 		$entry['DriverKG'] = $slot['DriverKG'];
 
 		if (count($slot['sesid'][Sessions::RACE]['Laps'])) {
-			$entry['race_laps'] = count($slot['sesid'][Sessions::RACE]['Laps']);
-			$entry['race_time_actual'] = bcdiv($slot['sesid'][Sessions::RACE]['Result']['TotalTime'], 1000, 3);
-			$entry['race_best_lap_time'] = bcdiv($slot['sesid'][Sessions::RACE]['Result']['BestLap'], 1000, 3);
-			$entry['race_best_lap_no'] = $slot['sesid'][Sessions::RACE]['BestLapNo'];
-			//$entry['pitstops'] = ;
-			//$entry['laps_led'] = ;
-			//$entry['incident_points'] = ;
+			$entry['raceLaps'] = count($slot['sesid'][Sessions::RACE]['Laps']);
+			$entry['raceTime'] = bcdiv($slot['sesid'][Sessions::RACE]['Result']['TotalTime'], 1000, 3);
+			$entry['raceBestLapTime'] = bcdiv($slot['sesid'][Sessions::RACE]['Result']['BestLap'], 1000, 3);
+			$entry['raceBestLapNo'] = $slot['sesid'][Sessions::RACE]['BestLapNo'];
+			//$entry['Pitstops'] = ;
+			//$entry['LapsLed'] = ;
+			//$entry['IncidentPoints'] = ;
 			$entry['RacePos'] = $slot['sesid'][Sessions::RACE]['SimPos'];
 		}
 
 		if (count($slot['sesid'][Sessions::QUALIFY]['Laps'])) {
-			$entry['qual_laps'] = count($slot['sesid'][Sessions::QUALIFY]['Laps']);
+			$entry['qualLaps'] = count($slot['sesid'][Sessions::QUALIFY]['Laps']);
 			$entry['qualBestLapTime'] = bcdiv($slot['sesid'][Sessions::QUALIFY]['Result']['BestLap'], 1000, 3);
 			$entry['qualBestLapNo'] = $slot['sesid'][Sessions::QUALIFY]['BestLapNo'];
 			$entry['GridPos'] = $slot['sesid'][Sessions::QUALIFY]['SimPos'];
