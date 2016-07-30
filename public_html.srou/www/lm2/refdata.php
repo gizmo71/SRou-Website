@@ -839,7 +839,7 @@ class Championships extends RefData {
 			new RefDataFieldFK("scoring_scheme", scoringSchemeRefDataFieldFKSQL("1"), false, "12em"),
 			new RefDataFieldEdit("class", 10),
 			new RefDataFieldFK("reg_class_regexp", "
-				SELECT class_regexp AS id, CONCAT('^(', class_regexp, ')\$ - ', description) AS description
+				SELECT class_regexp AS id, CONCAT(description, ' - ^(', class_regexp, ')\$') AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
 				WHERE class_regexp IS NOT NULL
 				ORDER BY description
@@ -1154,7 +1154,7 @@ class EventEntries extends RefData {
 				FROM {$lm2_db_prefix}teams
 				ORDER BY description", true, "10em"),
 			new RefDataFieldFK("reg_class", "
-				SELECT class_code AS id, CONCAT(class_code, ' - ', description) AS description
+				SELECT class_code AS id, CONCAT(description, ' - ', class_code) AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
 				WHERE class_code IS NOT NULL
 				ORDER BY description
