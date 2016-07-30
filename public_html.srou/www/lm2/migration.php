@@ -242,6 +242,20 @@ class TeamMap extends MapBase {
 	}
 }
 
+class RefDataFieldFKDriver extends RefDataFieldFK {
+	function __construct($name, $isLive) {
+		parent::__construct($name, driverRefDataFieldFKSQL($isLive), false, "30em");
+	}
+
+	function render($row, $rownum) {
+		global $lm2_guest_member_id, $boardurl;
+		$html = parent::render($row, $rownum);
+		$id_selected = $row[$this->getName()];
+		$html .= $id_selected ? "<a href='$boardurl/index.php?action=profile&u=$lm2_guest_member_id&sa=racing_history&driver=$id_selected#aliases'>*</a>" : "-";
+		return $html;
+	}
+}
+
 class DriverMap extends MapBase {
 	function getName() { return "DriverMap"; }
 	function getBaseEntity() { return "driver"; }
@@ -251,8 +265,8 @@ class DriverMap extends MapBase {
 	function getFields() {
 		return Array(
 			new RefDataFieldID("id_map_drivers", true),
-			new RefDataFieldFK("hist_driver", driverRefDataFieldFKSQL(false), false, "30em"),
-			new RefDataFieldFK("live_driver", driverRefDataFieldFKSQL(true), false, "30em"),
+			new RefDataFieldFKDriver("hist_driver", false),
+			new RefDataFieldFKDriver("live_driver", true),
 			new RefDataFieldFK("approved", array(0=>'No', 1=>'Yes')),
 		);
 	}
