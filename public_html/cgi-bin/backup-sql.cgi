@@ -6,21 +6,22 @@ export TZ
 echo "Content-Type: text/plain"
 echo
 
-exec 2>&1
-
-set -x
+#set -x
 
 date
 cd ~/public_ftp/backup || exit 1
 
-crontab -l >arvixe-crontab.log
+# Crontab has to be saved manually as this script cannot find the command! :o
+#crontab -l >arvixe-crontab.log || find / -name \*crontab\* -ls 2>/dev/null
+
+tar -C ~ -c -f - public_html.srou/smf2-code public_html.ukgpl/smf2 | gzip -9v >smf2-code.tgz
 
 SHARED_OPTIONS="--user=gizmo71_backup --password=ju5t1nca5e"
 BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
 lm2
 smf smf_messages=id_msg smf_topics= smf_personal_messages= smf_pm_recipients=
-ukgpl
+ukgpl _map_drivers= _map_teams=
 cpg
 EOF
 do
