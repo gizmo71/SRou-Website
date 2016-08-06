@@ -460,7 +460,7 @@ function template_group() {
 		JOIN {$lm2_db_prefix}scoring_schemes ON scoring_scheme = id_scoring_scheme
 		JOIN {$lm2_db_prefix}event_groups ON event_group = id_event_group
 		JOIN {$lm2_db_prefix}penalty_groups USING (penalty_group)
-		WHERE id_event_group = $group
+		WHERE id_event_group " . (is_null($group) ? "IS NULL" : "= $group") . "
 		ORDER BY champ_sequence, champ_class_desc, champ_type
 		", __FILE__, __LINE__);
 	while ($row = mysql_fetch_assoc($query)) {
@@ -546,7 +546,7 @@ function template_group() {
 		. ", {$lm2_db_prefix}sim_circuits)"
 		. " LEFT JOIN {$db_prefix}topics ON smf_topic = {$db_prefix}topics.id_topic"
 		. " LEFT JOIN {$db_prefix}messages ON id_first_msg = id_msg"
-		. " WHERE event_group = $group"
+		. " WHERE event_group " . (is_null($group) ? "IS NULL" : "= $group")
 		. " AND (event_type <> 'C' OR points_c = 0 AND entries_c > 0)"
 		. " AND circuit_location = id_circuit_location"
 		. " AND id_sim_circuit = {$lm2_db_prefix}events.sim_circuit"
