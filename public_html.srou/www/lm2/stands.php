@@ -632,6 +632,8 @@ class StandingsGenerator {
 				$sep = " AND ";
 			}
 			$where .= ")";
+echo "<B><I>Warning! Regression testing of cumulative champsionships is disabled!</I></B>\n";
+$where .= " AND a.championship NOT IN (SELECT id_championship FROM {$this->lm2_db_prefix}championships WHERE scoring_scheme IN (SELECT id_scoring_scheme FROM {$this->lm2_db_prefix}scoring_schemes WHERE scoring_type = 'C'))";
 
 			$sql = "
 				SELECT $field_list
