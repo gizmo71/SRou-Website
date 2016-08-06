@@ -39,6 +39,7 @@ foreach (array(
 	//array(dir=>'ukrf', url=>'16', title=>'UKrF'),
 	array(dir=>'ukpng', url=>'213', title=>'UKP&amp;G'),
 	array(dir=>'ukac', url=>'484', title=>'UKAC'),
+	array(dir=>'rre', url=>'498', title=>'RRE'),
 	//array(dir=>'race', url=>'63', title=>"Race'07"),
 ) as $dirA) {
 	$dir = $dirA['dir'];
