@@ -6,17 +6,17 @@
 
 <P>This is the home page of UKGPL, a United Kingdom based online racing league for fans of Grand Prix Legends.</P>
 
-<H1><IMG WIDTH="706" HEIGHT="367" SRC="/images/frontpics24.jpg"></H1>
+<H1><IMG WIDTH="670" HEIGHT="470" SRC="/images/s28_frontpic.jpg"></H1>
 
-<H1>Registration for Season 29 is now OPEN<br>
+<H1>Registration for Season 28 is now OPEN<br>
 Don't miss out!</H1>
 
 <P align="justify">
-The league is still going strong despite the advent of dozens of new sims.
+The league is now into its sixteenth year and is still going strong despite the advent of dozens of new sims.
 Although many other games cater to online racing they often try to model every era. Grand Prix Legends simply models the best cars of the late sixties and does it exceptionally well. GPL still attracts a loyal following and UKGPL offers the opportunity to race in cars from the 1967 season and in addition offers mods that simulate the 1965, 1966 and 1969 seasons. The GT, 67 F2 cars and the Can-Ams prove that the community still has some life in it yet!</p>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement. This coming season UKGPL will also run championships for 1965, 1966 and 1969 (extra) cars.  There will also be a Friday fun series featuring a mix of mods, tracks and formats which should provide something different.
+UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement. This coming season UKGPL will also run championships for 1965 cars, celebrating the 50th anniversary of that iconic season, 1966 cars, F2 1967 chassis, and continue a fun series featuring a mix of mods, tracks and formats which should provide something different.
 Our aim is simply to have some fun racing those 1960s brutes.</p>
 
 <P align="justify">
@@ -24,14 +24,14 @@ We are now an international league having drivers from many countries but races 
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
 <p>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13307.0" target="_blank">1967 Works Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13305.0" target="_blank">1967 Privateers Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13299.0" target="_blank">1969 Sunday Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13310.0" target="_blank">1966 Historic Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13311.0" target="_blank">1965 Professionals Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13312.0" target="_blank">1965 Amateurs Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=12903.0" target="_blank">1967 Works Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=12904.0" target="_blank">1967 Privateers Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=12906.0" target="_blank">1969 Sunday Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=12905.0" target="_blank">1966 Historic Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=12908.0" target="_blank">1965 Professionals Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=12907.0" target="_blank">1965 Amateurs Trophy</A><br>
 
-and our mixed mod 'Fun' series - the <A HREF="http://www.simracing.org.uk/smf/index.php?topic=13313.0" target="_blank">Friday Trophy</A>. This is the place for more light hearted action.</P>
+and our mixed mod 'Fun' series - the <A HREF="http://www.simracing.org.uk/smf/index.php?topic=12909.0" target="_blank">Friday Trophy</A>. This is the place for more light hearted action.</P>
 
 <P align="justify">
 If all of this has not whetted your appetite why not take a look at our 10th Anniversary video compiled by Vlad Vosblod.

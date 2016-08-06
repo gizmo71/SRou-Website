@@ -6,46 +6,68 @@
 
 <P>This is the home page of UKGPL, a United Kingdom based online racing league for fans of Grand Prix Legends.</P>
 
-<H1><IMG WIDTH="706" HEIGHT="367" SRC="/images/frontpics24.jpg"></H1>
+<H1><IMG WIDTH="700" HEIGHT="345" SRC="/images/S22frontpic.jpg"></H1>
 
-<H1>Registration for Season 29 is now OPEN<br>
+<H1>Registration for Season 22 is now OPEN!<br>
 Don't miss out!</H1>
 
 <P align="justify">
-The league is still going strong despite the advent of dozens of new sims.
-Although many other games cater to online racing they often try to model every era. Grand Prix Legends simply models the best cars of the late sixties and does it exceptionally well. GPL still attracts a loyal following and UKGPL offers the opportunity to race in cars from the 1967 season and in addition offers mods that simulate the 1965, 1966 and 1969 seasons. The GT, 67 F2 cars and the Can-Ams prove that the community still has some life in it yet!</p>
+The league is now into its twelth year and is still going strong despite the advent of dozens of new sims.
+None can hold a candle to the accuracy of Grand Prix Legends though, which still attracts a loyal following and it
+now provides the opportunity to race in cars from the 1965, 1966 and 1969 seasons as well as in the original 1967 cars.</p>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement. This coming season UKGPL will also run championships for 1965, 1966 and 1969 (extra) cars.  There will also be a Friday fun series featuring a mix of mods, tracks and formats which should provide something different.
+This season UKGPL will run three championships for 1965 cars, one for 1966 cars, two for the 1967 cars and two for the 
+1967 GT Mod, one being for Porsche only.  We will also be running a Spec Race championship using a mixture of 1965 and 1969 cars.
 Our aim is simply to have some fun racing those 1960s brutes.</p>
 
 <P align="justify">
 We are now an international league having drivers from many countries but races are run at times most suited to UK based drivers.
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
-<p>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13307.0" target="_blank">1967 Works Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13305.0" target="_blank">1967 Privateers Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13299.0" target="_blank">1969 Sunday Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13310.0" target="_blank">1966 Historic Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13311.0" target="_blank">1965 Professionals Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13312.0" target="_blank">1965 Amateurs Trophy</A><br>
+<P align="justify">
+To register for the Season 22 races, please visit the <A HREF="http://www.simracing.org.uk/smf/index.php?board=48.0" target="_blank">announcements</A> forum.
+Here you will be able to register for the:</p>
 
-and our mixed mod 'Fun' series - the <A HREF="http://www.simracing.org.uk/smf/index.php?topic=13313.0" target="_blank">Friday Trophy</A>. This is the place for more light hearted action.</P>
+<p>
+1967 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=9976.0" target="_blank">Works Trophy</A><br>
+1967 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=9977.0" target="_blank">Privateers Trophy</A><br>
+1966 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=9978.0" target="_blank">Historic Trophy</A><br>
+1965 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=9979.0" target="_blank">Pro Trophy</A><br>
+1965 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=10017.0" target="_blank">Intermediate Trophy</A><br>
+1965 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=9980.0" target="_blank">Novices Trophy</A><br>
+1967 GT <a href="http://www.simracing.org.uk/smf/index.php?topic=9981.0" target="_blank">Team Challenge</a><br>
+1967 GT <a href="http://www.simracing.org.uk/smf/index.php?topic=9983.0" target="_blank">Porsche Super Cup</a><br>
+and the single chassis<br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=9982.0" target="_blank">Spec Race Challenge</A>.</P>
 
 <P align="justify">
-If all of this has not whetted your appetite why not take a look at our 10th Anniversary video compiled by Vlad Vosblod.
+If all that hasn't inspired you why not take a look at our 10th Anniversary video compiled by Vlad Vosblod.
 If you are ex-UKGPL and are contemplating a return, see if you can spot yourself!</P>
 
 <P>
 <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
 </P>
 
+<H2>Congratulations to the Season 21 champions:</H2>
+<P>
+<UL>
+<LI>Works Trophy - Hristo Itchov
+<LI>Privateers Trophy - Ronnie Peterson
+<LI>Historic Trophy - Hristo Itchov
+<LI>Spec Challenge - Hristo Itchov
+<LI>Pro Trophy - Hristo Itchov
+<LI>Novices Trophy - Jonny O
+<LI>GT Team Challenge - Hristo Itchov
+<LI>Porsche Super Cup - Juha Halli
+</UL>
+</P>
+
 <HR WIDTH="75%" />
 
-<P>Our Chief Moderator is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=3776">Badblood</A>.</P>
+<P>Our Chief Moderator is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=2017">Vlad Vosblod</A>.</P>
 
-<P>Please address applications to join to any of the moderating team, whose profiles are below</P>
+<P>Please address applications to join to our club secretary, <A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=3776">BadBlood</A></P>
 
 <P>Our web master is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=1">Dave 'Gizmo' Gymer</A>.</P>
 

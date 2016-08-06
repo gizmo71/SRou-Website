@@ -8,30 +8,36 @@
 
 <H1><IMG WIDTH="706" HEIGHT="367" SRC="/images/frontpics24.jpg"></H1>
 
-<H1>Registration for Season 29 is now OPEN<br>
+<H1>Season 24 is under way. Registration is now OPEN!<br>
 Don't miss out!</H1>
 
 <P align="justify">
-The league is still going strong despite the advent of dozens of new sims.
-Although many other games cater to online racing they often try to model every era. Grand Prix Legends simply models the best cars of the late sixties and does it exceptionally well. GPL still attracts a loyal following and UKGPL offers the opportunity to race in cars from the 1967 season and in addition offers mods that simulate the 1965, 1966 and 1969 seasons. The GT, 67 F2 cars and the Can-Ams prove that the community still has some life in it yet!</p>
+The league is now into its fourteenth year and is still going strong despite the advent of dozens of new sims.
+None can hold a candle to the accuracy of Grand Prix Legends though, which still attracts a loyal following and it
+now provides the opportunity to race in cars from the 1965, 1966 and 1969 seasons as well as in the original 1967 cars. The F2 cars and the Can-Ams prove that the community still has some life in it yet!</p>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement. This coming season UKGPL will also run championships for 1965, 1966 and 1969 (extra) cars.  There will also be a Friday fun series featuring a mix of mods, tracks and formats which should provide something different.
+This coming season UKGPL will run two championships for 1965 cars, one for 1966 cars, two for the 1967 cars (F1 and F2), a 69 series and something for fans of sports cars as well.
 Our aim is simply to have some fun racing those 1960s brutes.</p>
 
 <P align="justify">
 We are now an international league having drivers from many countries but races are run at times most suited to UK based drivers.
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
-<p>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13307.0" target="_blank">1967 Works Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13305.0" target="_blank">1967 Privateers Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13299.0" target="_blank">1969 Sunday Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13310.0" target="_blank">1966 Historic Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13311.0" target="_blank">1965 Professionals Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13312.0" target="_blank">1965 Amateurs Trophy</A><br>
+<P align="justify">
+To register for the Season 24 races, please visit the <A HREF="http://www.simracing.org.uk/smf/index.php?board=48.0" target="_blank">announcements</A> forum.
+Here you will be able to register for the:</p>
 
-and our mixed mod 'Fun' series - the <A HREF="http://www.simracing.org.uk/smf/index.php?topic=13313.0" target="_blank">Friday Trophy</A>. This is the place for more light hearted action.</P>
+
+<p>
+1967 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11393.0" target="_blank">Works Trophy</A><br>
+1967 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11394.0" target="_blank">Privateers Trophy</A><br>
+1967 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11401.0" target="_blank">Formula 2 Trophy</A><br>
+1966 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11400.0" target="_blank">Historic Trophy</A><br>
+1965 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11396.0" target="_blank">Professionals Trophy</A><br>
+1965 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11398.0" target="_blank">Novices Trophy</A><br>
+1967 <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11395.0" target="_blank">Extra Trophy (69X)</A><br>
+and the <A HREF="http://www.simracing.org.uk/smf/index.php?topic=11399.0" target="_blank">Sports Car Trophy</A>.</P>
 
 <P align="justify">
 If all of this has not whetted your appetite why not take a look at our 10th Anniversary video compiled by Vlad Vosblod.
@@ -39,6 +45,22 @@ If you are ex-UKGPL and are contemplating a return, see if you can spot yourself
 
 <P>
 <object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+</P>
+
+<H2>Congratulations to the Season 23 champions:</H2>
+<P>
+<UL>
+<LI>Works Trophy - Hristo Itchov - HikiWaza Racing
+<LI>Privateers Trophy - Rainier - Black Night Racing
+<LI>Historic Trophy - Al Heller - Clark-Hill Racing
+<LI>F2 European Tour (Light) - Hristo Itchov - HikiWaza Racing
+<LI>F2 European Tour (Heavy) - Phil Thornton - Antipasti Racing
+<LI>Pro Trophy - Hristo Itchov - HikiWaza Racing
+<LI>Intermediates Trophy - Ronniepeterson - Clark-Hill Racing
+<LI>Novices Trophy - John Pennington
+<LI>GT Team Challenge - GT International
+<LI>Porsche Super Cup - PSC Team Shadow
+</UL>
 </P>
 
 <HR WIDTH="75%" />
