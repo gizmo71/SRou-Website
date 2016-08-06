@@ -46,9 +46,9 @@ GPL window will probably appear blank or severely distorted).
 <P>The correct camera angle is vital when reviewing an incident. It is
 very difficult to judge who did what if the moderator does not have a clear
 view. It is possible to change the default camera views and there are
-utilities available which simplify the process (e.g. <a href="http://www.fortunecity.com/underworld/3d/797/">GPL
-Car Cam Editor</a>). However some ready modified car cam angles can be
-found <a href="http://www.david-mack.net/gplrr/camera_angles/camera_angles.htm#camera_downloads">here</a>.
+utilities available which simplify the process (e.g. <a href="http://www.buli.demon.nl/gplforever/ccm.htm">GPL
+Forever Camera Control Master</a>). However some ready modified car cam angles can be
+found <a href="/files/moderators_camera_views.zip">here</a>.
 The overhead view is particularly useful when trying to determine how much
 overlap a driver had at turn in.
 

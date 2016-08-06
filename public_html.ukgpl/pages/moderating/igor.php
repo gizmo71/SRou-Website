@@ -35,6 +35,7 @@
 
 <p>4. When the main window pops up go to the &quot;Host&quot; tab. Enter appropriate comments in the &quot;Host comments&quot;, &quot;Connection type&quot; and &quot;Server location&quot; fields. Select the following options:</p>
 <p>Note:  Please ensure the &quot;Full-Screen&quot; option is NOT selected as it can cause server problems.</p>
+<p>For T7_2 do NOT check the "Replay memory override" option.  The server core.ini is already set to record long replays.</p>
 <blockquote>
   <blockquote>
     <blockquote>
@@ -56,12 +57,42 @@
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/hosting_security.JPG" width="636" height="488"></p>
+    <p><img border="0" src="/images/igor/hosting_security.JPG" width="646" height="492"></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>7. Finally in the &quot;Event List&quot; tab select the track, practice time and event type.  For a single race the &quot;Repeat event list&quot; should be set to 1.</p>
+<p>7. For races with restrictions on chassis use (e.g. 2 litre 66 mods cars only) it is usefull to restrict the chassis the drivers may select when they join.  Sometimes the full name of the car will not be visible when hosting a race.  As a guide the following screen shots show the full car names as they appear to the drivers when joining the server.</p>
+<blockquote>
+  <blockquote>
+    <blockquote>
+    <p><img border="0" src="/images/igor/igor_65_cars.jpg" width="552" height="613"></p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+<blockquote>
+  <blockquote>
+    <blockquote>
+    <p><img border="0" src="/images/igor/igor_66_cars.jpg" width="552" height="612"></p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+<blockquote>
+  <blockquote>
+    <blockquote>
+    <p><img border="0" src="/images/igor/igor_67_cars.jpg" width="551" height="612"></p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+<blockquote>
+  <blockquote>
+    <blockquote>
+    <p><img border="0" src="/images/igor/igor_69_cars.jpg" width="551" height="612"></p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<p>8. Finally in the &quot;Event List&quot; tab select the track, practice time and event type.  For a single race the &quot;Repeat event list&quot; should be set to 1.</p>
 <blockquote>
   <blockquote>
     <blockquote>
@@ -70,7 +101,7 @@
   </blockquote>
 </blockquote>
 
-<p>8. Once the passwords have been inputted the &quot;Host&quot; button will become active and the server can be started. A popup should appear confirming that the server has started. This popup can be cancelled by the OK button.</p>
+<p>9. Once the passwords have been inputted the &quot;Host&quot; button will become active and the server can be started. A popup should appear confirming that the server has started. This popup can be cancelled by the OK button.</p>
 <blockquote>
   <blockquote>
     <blockquote>
