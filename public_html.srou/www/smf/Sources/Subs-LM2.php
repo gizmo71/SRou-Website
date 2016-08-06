@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /*TODO: move more stuff from include.php - might need to rename carefully...
  * Using a convention that externally access stuff is lm2CamelCase and internal is lm2_under_scores.
  */
@@ -1670,7 +1670,7 @@ function LM2R() {
 	} else if (!is_null($group = lm2ArrayValue($_REQUEST, 'group'))) {
 		is_numeric($group) || fatal_error("'$group' is not a number (referer " . lm2ArrayValue($_SERVER, 'HTTP_REFERER') . ")", true);
 		$stats = lm2ArrayValue($_REQUEST, 'stats');
-		if ($group == 0) {
+		if ((int)$group == 0) {
 			$context['lm2']['group'] = array('full_desc'=>'All Series', 'block_text'=>null, 'id_event_group'=>null);
 		} else {
 			$query = db_query("
