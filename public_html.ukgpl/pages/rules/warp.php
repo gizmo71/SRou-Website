@@ -19,9 +19,14 @@
 <P>Warp Incident Caused by Careless Driving: Penalty 1 Place
 <ol>
   <li> Prior to the warp incident, the following car was driving inches from the gearbox of the leading car for a protracted length of time rather than momentarily as would be the case as part of a genuine overtaking attempt.</li>
+  <li> Prior to the warp incident, on a straight, the cars are running side by side and one car moves over from their half of the track and squeezes the other car unnecessarily.</li>
+  <li> Prior to the warp incident, on a straight, the cars are running side by side and one car moves over from their half of the track and straddles the centre line. </li>
 </ol>
 
 <P>Genuine Warp Incident: No penalty - Racing Incident
 <ol>
   <li> Prior to the warp incident, the following car was driving no closer than a car's length from the leading car but then closed up under braking, possibly due to the leading car braking early, but no actual contact would have been made.</li>
+  <li> Prior to the warp incident, on a straight, the cars are running side by side and one car moves over from their half of the track toward the centre line but does not straddle it. No actual contact would have been made.</li>
+  <li> Prior to the warp incident, in a corner, after a legitimate overtaking attempt the cars end up side by side. One driver looses control and strays from their side of the track but no actual contact is made.</li>
+  <li> Prior to the warp incident, in a corner, after a legitimate overtaking attempt the cars end up side by side. Both drivers move over instead of staying on their own side of the track but no actual contact is made.</li>
 </ol>

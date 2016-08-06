@@ -8,7 +8,7 @@
 itself) will be confirmed by the divisional moderator before each
 race.</P>
 
-<H2>When To Perform A Stop</H2>
+<H2 id="whentoperform">When To Perform A Stop</H2>
 
 <UL>
 
@@ -46,7 +46,7 @@ usual for a 'fault' Shift-R.</LI>
 
 <UL>
 
-<LI>A corner or two before the pit entrance, issue a "Pit&nbsp;In" message.</LI>
+<LI>A corner or two before the pit entrance, where practical, issue a "Pit&nbsp;In" message.</LI>
 
 <BLOCKQUOTE><SMALL>If another driver is close behind the pitting
 driver, the latter should consider moving offline and/or raising an
@@ -106,4 +106,32 @@ one of which types a "Pit&nbsp;In" message for you, and the other which does the
 
 <H3>Installation</H3>
 
-<P>Download <A HREF="/files/GPLWait-v3.1.zip">GPLWait</A>; unzip the contents of the zip file somwhere, then just run <TT>GPLWait.exe</TT>.</P>
+<P>Download <A HREF="/files/GPLWait-v3.1.zip">GPLWait</A>; unzip the contents of the zip file somewhere, then just run <TT>GPLWait.exe</TT>.</P>
+
+<HR WIDTH="50%">
+
+<H2>Typical Penalties</H2>
+
+<H3>Failure to make Mandatory Pit Stop</H3>
+
+<p>A mandatory pit stop is one that is decreed before the start of a race rather
+than as a consequence of an incident in the race (i.e. a S&amp;G due to a
+shift-R is not a mandatory pit stop). Typical mandatory pit stops are
+those designed to even-out the chassis. A driver who fails to make a
+mandatory pit stop will be excluded from the results.</p>
+
+<H3>Short Mandatory Pit Stop</H3>
+
+<p>If a driver makes a short mandatory Pit Stop, the moderator will apply a time penalty equal to 3 times the number of
+seconds short.</p>
+
+<H3>Incorrect Pit Stop</H3>
+
+<p>If a driver makes a pit stop (either mandatory or a S&amp;G due to a Shift-R)
+but fails to bring the car to rest in
+the stalls. The moderator may decide an unfair advantage has been gained
+and consequently a time penalty may be applied equal to 3 times the number of
+seconds gained.  Where the number of seconds gained cannot be determined with 
+any confidence, the moderator may decide to impose a standard 5 second 
+penalty.  This is cumulative so a driver making a late pitstop and failing to stop
+close enough to the pit wall may incur two 5 second penalties during the one stop.</p>

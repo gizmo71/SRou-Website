@@ -2,7 +2,9 @@
 
 <H3>Bad Rejoin</H3>
 
-<p>This seems to happen regularly at all levels. The primary objective of
+<p>Any car that has four wheels off the track, intentionally or unintentionally must rejoin and obviously do so safely. Cars are also in a rejoin situation whenever they have stopped racing for whatever reason - a spin, stopping to avoid other cars etc.</p>
+
+<p>This seems to happen regularly at all levels. A rejoin can only be considered bad if an incident (or potential incident which caused another driver to take avoiding action) took place. The primary objective of
 the moderator is to establish how inconsiderate the rejoining driver was.
 A rejoin can only be considered bad if an incident (or potential incident which
 caused another driver to take avoiding action) took place. It is quite
@@ -58,4 +60,9 @@ driver to drive straight back onto the track.</p>
   <li> The rejoining driver was NOT in full control but drove straight back onto
   the track without leaving enough room for other cars. Contact was NOT
   made but other drivers had to take avoiding action.</li>
+</ol>
+
+<P>Unavoidable Bad Rejoin: Racing Incident
+<ol>
+  <li> Only practical place to join is onto the racing line but topography prevents rejoining driver from checking if another car is approaching.  Rejoining driver pauses to listen for approaching car.  Nothing heard so rejoins promptly but a car appears and contact is made.</li>
 </ol>

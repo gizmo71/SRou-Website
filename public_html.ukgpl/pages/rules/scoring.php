@@ -6,12 +6,11 @@
 
 <UL>
 
-<LI>Where not otherwise stated, UKGPL will follow the
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=3349.msg54451#msg54451"> SRou race classification</A> rules.</LI>
-<BR/>
-<LI>If a driver is disconnected during a race, this is regarded as
-a technical failure, and they are awarded points for the position that
-GPL shows in the server's race results.</LI>
+<LI><P>The scoring systems used vary from season to season. The scoring system in-use for a specific division is available via a hyperlink at the top of the championship table.</P>
+</LI>
+
+<LI><P>If a driver is disconnected during a race they are awarded points for the position that GPL shows in the server's race results.</P>
+</LI>
 
 </UL>
 
@@ -27,7 +26,7 @@ GPL shows in the server's race results.</LI>
 <LI>Team points are awarded to each driver who has entered on
 behalf of a team. The same scoring system as the Driver Championship
 is used. Privateers (drivers with no team affiliation) and drivers who
-have two or more teammates who finish higher than them are ignored
+have two or more team mates who finish higher than them are ignored
 when allocating team points.
 <BLOCKQUOTE>That is to say, only the top two drivers from a team score
 team points, and additional nominated drivers for that team do not
@@ -41,7 +40,7 @@ all the drivers from the lower-scoring team should move to the higher-scoring
 team, leaving their points behind. A team cannot split, but some drivers may
 leave to form a new team, which will start with no points.
 <BLOCKQUOTE>Teams are discouraged from entering several "sub-teams",
-that is, splitting a large team into A and B teams.</BLOCKQUOTE>
-A team <I>is</I> permitted to change its name.</LI>
+that is, splitting a large team into A and B teams.</BLOCKQUOTE></LI>
+<LI>A team <I>is</I> permitted to change its name.</LI>
 
 </UL>

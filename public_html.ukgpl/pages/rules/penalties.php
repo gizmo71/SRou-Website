@@ -1,6 +1,6 @@
 <?php include("pages/rules/index.php"); ?>
 
-<H1>Penalty Guidelines</H1>
+<H1 ALIGN=CENTER>Penalty Guidelines</H1>
 
 <P>In order to help drivers understand how penalties are determined we've
 decided to publish a set of guidelines used by the moderators.</P>
@@ -11,7 +11,7 @@ the finishing order, shuffling other drivers up (much the same as a time
 penalty in real world motorsport).</P>
 
 <P>Only incidents reported by drivers are assured of a moderator's
-attention. Resets and pit stops will in all cases be checked.</P>
+attention but resets will always be checked.</P>
 
 <H2>Definitions</H2>
 
@@ -43,10 +43,7 @@ likely to consider are detailed below along with typical penalties or rulings.</
 <p>A driver is hit from behind - examples with typical penalties are <a href="rear_end_shunt">here</a>.</p>
 
 
-
 <H3>Side by Side Contact</H3>
-
-
 
 <p>Cars make side contact either on a straight or in a corner - examples with
 typical penalties are <a href="side_by_side">here</a>.</p>
@@ -81,7 +78,7 @@ examples with typical penalties are <a href="ambitious_overtake">here</a>.
 <P>Drivers can cause total carnage by careering into stricken cars and
 generating a mass pile-up. Drivers who fail to take account of yellow
 flags will be penalized -
-examples with typical penalties are <a href="lack_of_care">here</a>.&nbsp;&nbsp;
+examples with typical penalties are <a href="lack_of_care">here</a>.
 
 <H3>First Lap Incidents</H3>
 
@@ -89,37 +86,13 @@ examples with typical penalties are <a href="lack_of_care">here</a>.&nbsp;&nbsp;
 incidents) they will attract an extra
 1 place penalty.</P>
 
-
-<H3>Failure to make Mandatory Pit Stop</H3>
-
-<p>A mandatory pit stop is one that is decreed before the start of a race rather
-than as a consequence of an incident in the race (i.e. a S&amp;G due to a
-shift-R is not a mandatory pit stop). Typical mandatory pit stops are
-those designed to even-out the chassis. A driver who fails to make a
-mandatory pit stop will be excluded from the results.</p>
-
-<H3>Short Mandatory Pit Stop</H3>
-
-<p>If a driver makes a short mandatory Pit Stop, the moderator will apply a time penalty equal to 3 times the number of
-seconds short.</p>
-
-<H3>Incorrect Pit Stop</H3>
-
-<p>If a driver makes a pit stop (either mandatory or a S&amp;G due to a Shift-R)
-but fails to bring the car to rest in
-the stalls. The moderator may decide an unfair advantage has been gained
-and consequently a time penalty may be applied equal to 3 times the number of
-seconds gained.  Where the number of seconds gained cannot be determined with 
-any confidence, the moderator may decide to impose a standard 5 second 
-penalty.  This is cumulative so a driver making a late pitstop and failing to stop
-close enough to the pit wall may incur two 5 second penalties during the one stop.</p>
-
-<H3>Railriding</H3>
+<H3>Railriding and Corner Cutting</H3>
 
 <p>Railriding is when a driver uses track side objects, typically armco barriers
 to control the car. Clearly a driver is not using his skill to control the
 car and will not be allowed to gain an unfair advantage as a result of his
-actions. Examples with typical penalties are <a href="railriding">here</a>.</p>
+actions. Corner Cutting involves a driver persistently placing all four wheels
+off track through corners. Examples with typical penalties are <a href="railriding">here</a>.</p>
 
 <H3>Ignoring shift R restriction</H3>
 
@@ -132,23 +105,31 @@ the results will be amended to the time they exceeded their shift-R limit).</p>
 
 <p ID="nostopgo">In general, every time a driver has to make a shift-R as a
 result of their own actions or as a result of mechanical failure then they must
-perform a Stop and Go in the pit lane. The specific rules are covered in detail in the Sporting
-Regulations. However, the moderator will invariably apply a time penalty each time a driver fails to make a Stop
-and Go after a shift-R. Examples where the time penalty may be rescinded
+perform a Stop and Go (S&amp;G).  This is to be performed in the pits, not on the open track. The rules about how 
+to perform a S&amp;G (in effect a Pit Stop of zero seconds) are <a href="pitstops">here</a>. The moderator 
+will invariably apply a time penalty (normally 30 seconds) each time a driver fails to make a S&amp;G after a 
+shift-R. Examples where the time penalty may be rescinded
 are detailed <a href="no_stop_and_go">here</a>.</p>
 
 <p ID="nostopgo">If a driver makes more than one shift-R on a single lap a
 separate Stop and Go would have to be taken for each shift-R. Obviously
-each Stop and Go would have to be taken on different laps.&nbsp;&nbsp;</p>
+each Stop and Go would have to be taken on different laps.</p>
 
 <p ID="nostopgo">If a driver makes a shift-R on the last lap then, depending on
 the layout of the pit lane and position of the finish line, it may be possible
 for a driver to take the Stop and Go at the end of the last lap and cross the
 finish line in the pit lane. If this is not possible or the driver elects
-not to do it then the moderator will apply a time penalty. If the cause of
-the last lap shift-R warrants a longer penalty for a missed Stop and Go, the
-moderator may waive this in favour of the shorter time penalty on the basis that
-the driver did not have sufficient opportunity to perform the Stop and Go.</p>
+not to do it then the moderator may apply a reduced time penalty (normally 15 seconds) 
+on the basis that the driver did not have sufficient opportunity to perform the Stop and Go.</p>
+
+<H3>Incorrect Stop &amp; Go</H3>
+
+<p>A S&amp;G should be considered to be a Pit Stop of zero seconds and hence the rules about how to perform a Pit Stop also applies to a
+S&amp;G.  The rules about how to perform a Pit Stop are <a href="pitstops">here</a>. If a driver makes a S&amp;G but fails to bring the car 
+to rest in the stalls. The moderator may decide an unfair advantage has been gained and consequently a time penalty may be applied equal 
+to 3 times the number of seconds gained.  Where the number of seconds gained cannot be determined with any confidence, the moderator may 
+decide to impose a standard 5 second  penalty.  This is cumulative so a driver making a late S&amp;G and failing to stop close enough to 
+the pit wall may incur two 5 second penalties during the one stop.</p>
 
 <H3>Ignoring Blue Flags</H3>
 
@@ -168,26 +149,27 @@ responsible for a variety of collisions. Typical examples are detailed <a href="
 
 <h2>Other Situations where Penalties may be Awarded</h2>
 
-<H3>Infringement of Technical Regulations</H3>
+<H3>Infringement of Game Regulations</H3>
 
-<p>The technical regulations are there to ensure the racing is fair.&nbsp;
+<p>The game regulations are there to ensure physics of the game have not been tampered with.  All drivers must use a common version of the game physics to ensure the racing is fair.
 Whilst cheating may be too strong a term, it is self evident that anyone
-ignoring the technical regulations is likely to gain an unfair advantage over
+ignoring the game regulations is likely to gain an unfair advantage over
 the other competitors. The types of infringement are many and varied;
 moreover they do not need to be moderated. If a driver is found to have
-infringed the technical regulations there is no room for discretion by the
+infringed the game regulations there is no room for discretion by the
 moderator. The types of penalties awarded for infringements are declared
-along with the technical regulation.</p>
+along with the game regulation.</p>
 
-<h3>Contravention of Sporting Regulations</h3>
 
-<p>The Sporting Regulations are there to ensure the racing runs smoothly and to
+<h3>Contravention of On-Line Regulations</h3>
+
+<p>The On-Line Regulations are there to ensure the racing runs smoothly and to
 guard against the unique problems that can arise in on-line racing.
 Possible contraventions are many and varied but they are quite likely to
 manifest themselves as an incident which would be dealt with in the normal
 way. Consequently, there is generally some room for discretion by the
 moderator. The types of penalties awarded for infringements are either declared
-along with the regulation or detailed <a href="contravene_sporting">here</a>.</p>
+along with the regulation or detailed <a href="contravene_online">here</a>.</p>
 
 <HR WIDTH="50%">
 
@@ -233,8 +215,34 @@ list, and points allocated accordingly.
 <P>Note that when applying place penalties, no account is taken of where
 each driver finished on the road.</P>
 
-<H2>Drivers Racing Under Suspended Bans</H2>
+<HR WIDTH="50%">
 
-<P>Where a driver picks up a penalty whilst racing under a suspended ban,
-the moderator will use their discretion to decide whether or not that
-driver should actually pick up the race ban.</P>
+<H1>Race Bans and Suspended Race Bans</H1>
+
+<H2>Single Incidents</H2>
+
+<p>A caution, warning or penalty will normally be sufficient admonishment, however
+in exceptional circumstances it may be necessary to award a race ban or suspended
+race ban. Where a driver picks up a penalty whilst racing under a suspended ban,
+the moderator will use their discretion to decide whether or not that driver should
+actually pick up the race ban.</p>
+
+<H2>Persistent Bad Driving</H2>
+
+<p>If a driver amasses a huge number of penalties then clearly the yellow card points
+system is not a sufficient deterrent and a race ban may be necessary. As a general
+rule anybody with 10 or more yellow card points who picks up another yellow card
+point will get a suspended race ban (suspended for 3 races). Any yellow cards picked
+up (in any division) during the suspension period means a race ban in the division
+that invoked the suspension. When the suspension has expired, another yellow card
+point will invoke another suspended race ban (again suspended for 3 races).</p>
+
+<p>The moderators do have some discretion as to applying Bans or Suspended Bans and factors
+that can be taken into account are a driver’s willingness to improve or demonstrated
+improvement and accumulations in fully moderated divisions. Initially alternatives,
+eg starting form the back of the grid, a drive through or a X sec pitstop are also
+options which can be considered.</p>
+
+<p>Ultimately, if the application of the racing ban system does not produce any improvement,
+the moderators can then apply a season ban leading to an eventual extreme of a lifetime
+ban. This hopefully unrealistic <a href="auto_race_ban_example">example</a> illustrates the principle.</p>

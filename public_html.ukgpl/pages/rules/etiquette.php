@@ -2,7 +2,13 @@
 
 <H1 ALIGN=CENTER>Racing Etiquette</H1>
 
+<H2>General</H2>
+
 <UL>
+<LI><P>Repeated poor driving standards will not be tolerated. Racing
+accidents can and will happen, it is aggressive driving incidents
+which can be avoided that will be penalised. The final decision is up
+to the moderator of each division.</P>
 
 <LI><P>All drivers are expected to familiarise themselves with the
 GPLAC <A HREF="/rec_dvr_beh/rec_driver_beh.htm" TARGET="_top">
@@ -24,10 +30,12 @@ defensively they may move off the line and back onto it only
 <I>once</I> per straight/section.</P>
 
 <LI><P>If an overtaking driver has any part of their car beside another as
-they enter a corner, the driver being overtaken should <I>not</I> move
+they enter a corner (known as overlap), the driver being overtaken should <I>not</I> move
 across; they should give the overtaking car room and go through the corner
 side by side, or let them through into the corner and try to re-take them at
-the exit.</P>
+the exit.  Drivers must learn to judge overlap without being able to actually see 
+the opposition, this requires an understanding of the limited visibility provided by the mirrors. 
+As described <A HREF="overlap">here</A>.</P>
 
 <LI><P>If a driver is following a slower car, they should remember that they
 will brake earlier than the faster car.</P>
@@ -50,15 +58,93 @@ things: <UL>
        The driver should then contact their divisional moderator after the
        race, who will examine the replay and reinstate the driver in their
        correct finishing place.
-</UL></O>
+</UL>
+<LI><P>Riding the kerbs is permitted but there must always be at least two wheels within the track boundary at any one time.  If three or four wheels have been placed outside the track boundary then a driver is deemed to have left the track and will subsequently have to perform a rejoin with the necessary caution this dictates.  
+<UL>
+<LI> If you have knowingly overdone the kerb riding or left the track for any other reason in qualifying, please abort the lap in order to not post an illegal lap time.
+</UL>
+</UL>
+
+<HR WIDTH="50%">
+
+<H2>Incidents involving other cars</H2>
+
+<UL>
+
+<LI><P>If a driver is involved in an incident with another car, they
+must report the incident to the division moderator; failure to do so
+will leave the driver with no appeal against any penalty assessed. The
+driver should try to save a replay of the incident if possible, as
+this will help their case.  The other moderators will then hold a
+"stewards enquiry" and decide on any penalties that may be
+applicable.</P>
+
+<BLOCKQUOTE>If a driver hits another driver and cause an
+accident, it is suggested that they do not attempt to wait for them,
+as this is likely to cause more problems for drivers who are passing
+the scene of the accident as two or more cars all try to rejoin "in
+order".</BLOCKQUOTE>
 
 </UL>
 
-<HR WIDTH="66%">
+<HR WIDTH="50%">
+
+<H2>Shift-R (resetting the car)</H2>
+
+<UL>
+
+<LI><P>Shift-R is allowed <I>only</I> in a race, not in practice.</P>
+
+<BLOCKQUOTE>This rule may be relaxed at certain tracks (usually only the Nurburgring).  If the rule is to be relaxed the drivers will be notified in the race post.</BLOCKQUOTE>
+
+<LI><P>
+Any Shift-R must be followed by a Stop and Go
+(&quot;<B>S&amp;G</B>&quot;) in the pits. Any Stop and Go <I>must</I> be taken within 2 laps of
+the Shift-R. A &quot;<B>S&amp;G</B>&quot; is effectively a Timed Pit Stop of zero seconds. The rules for making 
+Timed Pit Stops are <A HREF="pitstops#whentoperform">here</A>. The section describing how to perform a stop is the most relevant for a Shift-R &quot;<B>S&amp;G</B>&quot;.</P>
+
+<LI><P>Drivers should take every precaution to make sure they rejoin the
+race without interfering with any other drivers. This means waiting
+until there is a sufficient gap in the traffic before using
+Shift-R. On lap 1 this may even mean waiting until the whole field has
+passed before using Shift-R.</P>
+
+<BLOCKQUOTE>Any driver who, due to inappropriate use of
+Shift-R, causes another car to crash or take severe avoiding action
+will be penalised.</BLOCKQUOTE>
+
+</UL>
+
+<HR WIDTH="50%">
+
+<H2>Rejoining the race after an incident</H2>
+
+<UL>
+
+<LI><P>It is the responsibility of any driver who is returning to the track
+to make sure they do not interfere with other drivers.</P>
+
+<BLOCKQUOTE>Rejoining drivers should stay off the racing line
+and give way to faster cars until they are fully up to
+speed. Rejoining drivers should not attempt to keep anyone behind them
+until they are fully up to speed. Any driver who rejoins a race and,
+owing to negligence, causes another car to crash or take severe avoiding
+action, will be penalised.</BLOCKQUOTE>
+
+</UL>
+
+<HR WIDTH="50%">
 
 <H2>Lapping</H2>
 
 <UL>
+<LI><P>Any driver who is about to be lapped may not deliberately
+block or race the lapping driver, and must allow the lapping driver to
+pass at the first safe opportunity.</P>
+
+<LI><P>Any driver intending to lap another car must allow for warping,
+the difference in speed (especially under braking), and must execute
+any pass safely and without contact.</P>
 
 <LI><P>Any driver appearing not to be making adequate use of his rear
 view mirrors, or driving in a manner which even unintentionally
@@ -101,24 +187,24 @@ very fast.
 
 </UL>
 
-<H5>How to allow a lapping car to pass cleanly</H5>
+<P>How to allow a lapping car to pass cleanly:<UL>
 
-<P>When approached by a faster car, initially just hold your line 
+<LI>When approached by a faster car, initially just hold your line 
 to prevent any confusion A valid exception to this is where you have spotted 
 the car early enough to move off the racing line before they approach you. 
 Make sure that any such move is made well before the lapping car is close 
 to give them plenty of time to react. If in doubt, it is best to hold your 
-line.
+line.</LI>
 
-<P>If the faster driver then moves alongside in an attempt to 
+<LI>If the faster driver then moves alongside in an attempt to 
 pass, back off just very slightly to make the pass easier. Be aware in this 
 situation that GPL only shows one following car in your mirrors. If the pass 
 is in a corner, make sure to give as much room as possible to the other driver. 
 Because of warping and your limited peripheral vision, this usually means 
-running right around the outside of a corner.</P>
+running right around the outside of a corner.</LI>
 
-<P>If the following car does not pass you almost immediately then 
-try to allow them to pass at a safe part of the circuit as soon as you can.</P>
+<LI>If the following car does not pass you almost immediately then 
+try to allow them to pass at a safe part of the circuit as soon as you can.</LI>
 
 <BLOCKQUOTE>Suggestion 1 &mdash; as you brake for a corner stay well to the outside 
 during the braking stage, then deliberately run right around the outside of 
@@ -133,8 +219,8 @@ you safely, without hindering them or yourself. At some circuits such as Monaco,
 it may require extra care to make this go smoothly. Ultimately, as long as 
 you have done everything above correctly, any accident where the lapping driver 
 hits the back of you is likely to be their fault.</P>
-
-<H4>Advice for the lapping driver</H4>
+</UL>
+<H3>Advice for the lapping driver</H3>
 
 <P>The lapping driver takes the majority of the responsibility 
 to make a clean pass. If you cannot see any guaranteed clean route to pass 
@@ -149,9 +235,37 @@ may be totally different to yours and they may be more likely to make mistakes.
 Warping will also mean that you may need to leave extra room. Lapping drivers 
 showing a lack of care in this situation will be penalised.</P>
 
-<HR WIDTH="66%">
+<HR WIDTH="50%">
 
-<H2>Red Flag Situations</H2>
+<H2>Flags and Pit Signals</H2>
+
+<H3>Deserved Black Flags</H3>
+
+<UL>
+
+<LI><P>A driver being shown the black flag and a "pit in" board for a
+genuine offence, such as jumping the start, must enter the pits and take the
+penalty. Failure to do so will result in the disqualification of that
+driver.</P>
+
+</UL>
+
+<H3>Yellow and Green Flags</H3>
+
+<UL>
+
+<LI><P>Drivers have a duty to drive safely and well within their limits when
+they have passed a yellow flag. Stay on the racing line unless it is
+blocked. Drivers may <B>not</B> overtake any car they are racing with, until
+they are sure they have passed a green flag <B>or</B> they are sure they
+have passed the incident and the green flag has been taken in. (Sometimes a
+yellow flag is shown when a car loses and then quickly regains control, so
+the green flag may be gone by the time the driver passes the next
+marshall).</P>
+
+</UL>
+
+<H3>Red Flag Situations</H3>
 
 <UL>
 

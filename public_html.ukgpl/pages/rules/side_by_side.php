@@ -43,6 +43,9 @@ control when the incident took place. There was no loss of control. Penalty for 
   <li> In a corner, after a legitimate overtaking attempt the cars end up side
     by side. One driver moves over instead of staying on their own side of
     the track. Contact is made. Penalty for driver that moves over.</li>
+	<ul>
+	<li><A HREF="side_by_side_simple_4_a">Example A</A></li>
+	</ul>
 </ol>
 
 <P>Marginal Side by Side contact:  Warning
