@@ -1,8 +1,8 @@
 <?php
 global $boardurl;
 
-$quarterlyCost = 0;
-$balance = 0;
+$quarterlyCost = 150;
+$balance = 76;
 $topicId = 7555;
 ?>
 
