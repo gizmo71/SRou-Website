@@ -1,3 +1,8 @@
+#<IfModule mod_security.c>
+#SecFilterEngine Off
+#SecFilterScanPOST Off
+#</IfModule>
+
 SetEnvIfNoCase User-Agent "^Yandex*" bad_bot
 Order Deny,Allow
 Deny from env=bad_bot

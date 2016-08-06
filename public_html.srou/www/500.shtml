@@ -7,7 +7,12 @@ Something  bad has happened. :-(
 <!--#echo var="HTTP_USER_AGENT" -->
 <!--#echo var="REDIRECT_STATUS" -->
 <!--#echo var="HTTP_COOKIE" -->
-<!--#exec cmd="/usr/bin/uptime" -->
+<!--#echo var="DATE_GMT" --> GMT/<!--#echo var="DATE_LOCAL" --> PST
+<!-- exec cgi="/cgi-bin/500data.cgi" -->
 </PRE>
 
-<IFRAME WIDTH=500 HEIGHT=350 SRC="http://stats.lark.arvixe.com/" />
+<!-- IFRAME WIDTH=500 HEIGHT=350 SRC="http://stats.lark.arvixe.com/" / -->
+
+<!-- 
+                                                                                                                                          
+--> 
