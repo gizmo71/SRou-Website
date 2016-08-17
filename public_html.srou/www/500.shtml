@@ -1,4 +1,4 @@
-Something  bad has happened. :-(
+Something bad has happened. :-(
 <PRE>
 <!--#echo var="HTTP_REFERER" -->
 <!--#echo var="REMOTE_ADDR" -->
