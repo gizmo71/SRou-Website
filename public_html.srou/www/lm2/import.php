@@ -423,10 +423,10 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 	if (!$isGPL) {
 		lookup_driver($entry, $driver, $lobby);
 
-		if (is_null($entry['DriverKG'])) {
+		if (false && is_null($entry['DriverKG'])) {
 			$query = db_query("
 				SELECT eb_ballast FROM {$lm2_db_prefix}event_ballasts
-				WHERE eb_name = " . sqlString($driver) . "
+				WHERE eb_name = " . sqlString($driver) . " COLLATE bad_bad_bad
 				AND eb_event = $id_event
 				", __FILE__, __LINE__);
 			if ($row = mysql_fetch_assoc($query)) {
