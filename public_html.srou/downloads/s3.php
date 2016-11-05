@@ -51,7 +51,7 @@ The new policy uses active link generation to allow 24H access, and only to sign
 
 */
 
-if ($ID_MEMBER <= 0) {
+if (!$ID_MEMBER || $ID_MEMBER <= 0) {
 	$me = "http://downloads.simracing.org.uk/s3.php{$_SERVER['PATH_INFO']}?{$_SERVER['QUERY_STRING']}";
 	echo "<P><B>You must be logged in to download this file.</B></P>";
 	ssi_login($me);
