@@ -426,7 +426,7 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 		if (is_null($entry['DriverKG'])) {
 			$query = db_query("
 				SELECT eb_ballast FROM {$lm2_db_prefix}event_ballasts
-				WHERE eb_name = " . sqlString($driver) . " COLLATE latin1_bin
+				WHERE eb_name = " . sqlString($driver) . "
 				AND eb_event = $id_event
 				", __FILE__, __LINE__);
 			if ($row = mysql_fetch_assoc($query)) {
