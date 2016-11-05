@@ -19,7 +19,7 @@ tar -C ~ -c -f - public_html.srou/smf2-code public_html.ukgpl/smf2 | gzip -9v >s
 SHARED_OPTIONS="--user=gizmo71_backup --password=ju5t1nca5e"
 BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
-lm2
+lm2 lm2_circuits= lm2_circuit_locations= lm2_championships= lm2_championship_points= lm2_events= lm2_event_entries=
 smf smf_messages=id_msg smf_topics= smf_personal_messages= smf_pm_recipients=
 ukgpl _map_drivers= _map_teams=
 cpg
@@ -30,23 +30,23 @@ do
 	if [ -n "$big_tables" ]; then
 		for table in $big_tables; do EXTRA="$EXTRA --ignore-table=gizmo71_${db}.${table/=*/}"; done 
 	fi
-	mysqldump --no-data --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} | gzip -9v >arvixe_${db}_schema.sql.gz
+	mysqldump --no-data --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} | gzip -9v >arvixe_${db}_0_schema.sql.gz
 # Don't think we need this any more (not that we'got any routines anyway!): | sed -e "s/DELIMITER ;;/DELIMITER \$\$/g"
-	mysqldump --routines --no-create_info --no-data $SHARED_OPTIONS gizmo71_${db} | gzip -9v >arvixe_${db}_routines.sql.gz
-	mysqldump --no-create_info --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >arvixe_${db}_data.sql.gz
+	mysqldump --routines --no-create_info --no-data $SHARED_OPTIONS gizmo71_${db} | gzip -9v >arvixe_${db}_1_routines.sql.gz
+	mysqldump --no-create_info --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >arvixe_${db}_2_data.sql.gz
 	if [ -n "$big_tables" ]; then
 		for table in $big_tables; do
 			chunk_key=${table/*=/}
 			table=${table/=*/}
 			if [ -z "$chunk_key" ]; then
-				mysqldump --no-create_info --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} ${table} | gzip -9v >arvixe_${db}_${table}_data.sql.gz
+				mysqldump --no-create_info --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} ${table} | gzip -9v >arvixe_${db}_2_${table}_data.sql.gz
 			else
 				chunk_size=20000
 				absolute_max_id=2000000
 				max_id=${chunk_size}
 				while [ $max_id -le $absolute_max_id ]; do
 					min_id=$[max_id-$chunk_size+1]
-					dumpname="$(printf 'arvixe_%s_%s_%07d-%07d_data.sql.gz' "${db}" "${table}" ${min_id} ${max_id})"
+					dumpname="$(printf 'arvixe_%s_2_%s_%07d-%07d_data.sql.gz' "${db}" "${table}" ${min_id} ${max_id})"
 					mysqldump --no-create_info --opt --disable-keys $SHARED_OPTIONS --where="${chunk_key} BETWEEN $min_id AND $max_id" gizmo71_${db} ${table} | gzip -9v >$dumpname
 					max_id=$[$max_id+$chunk_size]
 					if [ $(du -b $dumpname | cut -f1) -lt 1000 ]; then
