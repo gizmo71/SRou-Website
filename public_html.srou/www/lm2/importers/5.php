@@ -42,6 +42,10 @@ function doImportJson($qFilename, $rFilename) {
 	if ($qFilename) processJson($qFilename, Sessions::QUALIFY, $cars);
 
 	foreach ($cars AS &$slot) {
+if (!$slot['Driver'] && !$slot['Lobby Username']) {
+	echo "Skipping empty slot {$slot['#']}<br/>\n";
+	continue;
+}
 		$entry =& lookup_entry($slot, true, false);
 
 		$entry['DriverKG'] = $slot['DriverKG'];
