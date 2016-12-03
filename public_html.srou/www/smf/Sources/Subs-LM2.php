@@ -933,6 +933,7 @@ function lm2MakeWeatherLinks($location_row) {
 }
 
 function lm2MakeRssWeather($links) {
+return; //TODO: fix weather
 	if (file_exists($links['rssFile']) && ($rssXml = file_get_contents($links['rssFile']))) {
 		//TODO: share some of this with the generator?
 		//XXX: figure out how to not bother if it's very old
