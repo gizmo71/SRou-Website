@@ -642,7 +642,7 @@ function lm2_show_event($event) {
 		if (!is_null($qual_time)) {
 			$qual_time_display = ($event['best_qual_time'] == $qual_time) ? lm2FormatTime($qual_time) : lm2FormatTimeGap($qual_time - $event['best_qual_time']);
 			$qual_time_display .= "<BR /><SMALL>" . lm2FormatTimeAndSpeed($qual_time, null, $event['length_metres']) . "</SMALL>";
-			$qual_class = $row['qual_pos'] == 1 ? "bestO" : ($row['qual_pos_class'] == 1 ? "lm2bestC" : "windowbg");
+			$qual_class = $row['qual_pos'] == 1 ? "lm2bestO" : ($row['qual_pos_class'] == 1 ? "lm2bestC" : "windowbg");
 		} else {
 			$qual_class = "windowbg";
 		}
