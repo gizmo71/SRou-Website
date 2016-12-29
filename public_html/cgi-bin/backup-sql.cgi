@@ -1,28 +1,25 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 TZ=GMT0BST
 export TZ
 
-echo "Content-Type: text/plain"
-echo
-
-#set -x
+#echo "Content-Type: text/plain"
+#echo
 
 date
-cd ~/public_ftp/backup || exit 1
 
 # Crontab has to be saved manually as this script cannot find the command! :o
 #crontab -l >arvixe-crontab.log || find / -name \*crontab\* -ls 2>/dev/null
 
-tar -C ~ -c -f - public_html.srou/smf2-code public_html.ukgpl/smf2 | gzip -9v >smf2-code.tgz
+#tar -C ~ -c -f - public_html.srou/smf2-code public_html.ukgpl/smf2 | gzip -9v >smf2-code.tgz
 
+#cpg
 SHARED_OPTIONS="--user=gizmo71_backup --password=ju5t1nca5e"
 BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
 lm2 lm2_circuits= lm2_circuit_locations= lm2_championships= lm2_championship_points= lm2_events= lm2_event_entries=
 smf smf_messages=id_msg smf_topics= smf_personal_messages= smf_pm_recipients=
 ukgpl _map_drivers= _map_teams=
-cpg
 EOF
 do
 	rm -f arvixe_${db}_*.sql*
