@@ -842,6 +842,7 @@ class Championships extends RefData {
 				SELECT class_regexp AS id, CONCAT(description, ' - ^(', class_regexp, ')\$') AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
 				WHERE class_regexp IS NOT NULL
+				UNION SELECT '.*', 'Any (or no) class'
 				ORDER BY description
 			", true, "6em"), 
 			new RefDataFieldEdit("champ_class_desc", 15),
