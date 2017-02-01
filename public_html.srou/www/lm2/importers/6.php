@@ -4,7 +4,24 @@ ini_set('display_errors', 'stdout');
 // Race Room Experience importer
 function showFileChoosers() {
 ?>
-    <TR><TD><B>XML</B></TD><TD><INPUT size="120" name="xml" type="file" /></TD></TR>
+    <TR>
+      <TD><B>XML</B></TD>
+      <TD><INPUT size="120" name="xml" type="file" /></TD>
+    </TR><TR>
+      <TD><B>Race selection</B></TD>
+      <TD><SELECT name="raceType">
+        <OPTION VALUE="Race">Single race or first race of double header</OPTION>
+        <OPTION VALUE="Race2">Second race of double header</OPTION>
+      </SELECT></TD>
+    </TR><TR>
+      <TD COLSPAN="2"><I>For RRE double headers, import the first race as normal, then:
+        <UL>
+          <LI>import the second race using the alternate 'Race selection' option above,</LI>
+          <LI>use the 'Event Entries' in Reference Data to wipe the qualifying positions and set the starting positions appropriately,</LI>
+          <LI>and generate standings.</LI>
+        </UL>
+      </I></TD>
+    </TR>
 <?php
 }
 
@@ -18,13 +35,14 @@ function doImport() {
 	($xpath->evaluate('string(m:Experience)') == 'RaceRoom Experience') || die("Does not appear to be RaceRoom Experience");
 	($location = $xpath->evaluate('string(m:Track)')) || die("No location");
 	($race_start_time = strtotime($xpath->evaluate('string(m:Time)'))) || die("No time");
+        if ($_REQUEST['raceType'] == 'Race') $race_start_time -= 600;
 
 	$race = $qual = null;
 //$result->getElementsByTagName('MultiplayerRaceSession')
 	foreach ($xpath->query('m:Sessions/m:MultiplayerRaceSession') as $session) {
 		($type = $xpath->evaluate('string(m:Type)', $session)) || die("No session type");
 		if ($type == 'Qualify') $qual = $session;
-		else if ($type == 'Race') $race = $session;
+		else if ($type == $_REQUEST['raceType']) $race = $session;
 	}
 echo "<P>Track is $location</P>\n";
 echo "<P>Race start time is $race_start_time</P>\n";

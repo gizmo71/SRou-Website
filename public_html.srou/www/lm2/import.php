@@ -9,7 +9,7 @@ ini_get("precision") >= 12 || die("default precision is less than 12");
 $sim = -1;
 $id_event = $_REQUEST['id_event'];
 if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
-	echo "<P>Using $id_race1 to set starting positions for $id_event (Race '07)</P>\n";
+	echo "<P>Using $id_race1 to set starting positions for $id_event</P>\n";
 	db_query("
 		UPDATE {$lm2_db_prefix}event_entries r1, {$lm2_db_prefix}event_entries r2
 		SET r2.start_pos = IF(r1.race_pos < 9, 9 - r1.race_pos, r1.race_pos)
@@ -130,20 +130,18 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 		write_entries($current_circuit['id_sim_circuit']);
 		echo "<P>Don't forget to generate the standings!</P>\n";
 
-		if ($sim == 7) {
-			$query = db_query("
-				SELECT r1.id_event
-				FROM {$lm2_db_prefix}events r1
-				JOIN {$lm2_db_prefix}events r2 USING (sim, sim_circuit)
-				WHERE r2.id_event = $id_event
-				AND r1.event_date < r2.event_date AND r1.event_date > r2.event_date - INTERVAL 2 HOUR
-				", __FILE__, __LINE__);
-			while ($row = mysql_fetch_assoc($query)) {
-				echo "<P><A HREF='?action=import&id_event=$id_event&id_race1={$row['id_event']}'>Take starting positions from event {$row['id_event']}</A></P>\n";
-			}
-			echo "<P><A HREF='?action=refdata&refData=eve&rdFilt=e$id_event'>Check for AI drivers</A></P>\n";
-			mysql_free_result($query);
+		$query = db_query("
+			SELECT r1.id_event
+			FROM {$lm2_db_prefix}events r1
+			JOIN {$lm2_db_prefix}events r2 USING (sim, sim_circuit)
+			WHERE r2.id_event = $id_event AND r1.id_event <> $id_event AND r1.entries_c > 0
+			AND r1.event_date <= r2.event_date AND r1.event_date > r2.event_date - INTERVAL 2 HOUR
+			", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			echo "<P><A HREF='?action=import&id_event=$id_event&id_race1={$row['id_event']}'>Take starting positions from event {$row['id_event']}</A></P>\n";
 		}
+		if ($sim == 7) echo "<P><A HREF='?action=refdata&refData=eve&rdFilt=e$id_event'>Check for AI drivers</A></P>\n";
+		mysql_free_result($query);
 	}
 }
 
