@@ -57,11 +57,13 @@ exceptional circumstances.</P>
 the driver.</P>
 
 <LI><P>Appeals against a decision made by the division moderator can be
-made to the chief moderator who will appraise the incident and
+made to the Chief Moderator who will appraise the incident and
 give a final verdict in association with the other division
 moderators. (If the moderator of the penalised driver's division is
-also the chief moderator, the highest available division
-moderator will be given the ultimate decision).</P>
+also the Chief Moderator, the highest available division
+moderator will be given the ultimate decision). A simple Personal Message (PM) 
+on SimRacing.org.uk (SRou) to the Chief Moderator is sufficient to launch an appeal. The current Chief 
+Moderator is listed on the <A HREF="http://www.ukgpl.com/index.php" target="_blank">UKGPL Homepage</A>.
 
 <LI><P>Post-race penalties can include:
 <UL>

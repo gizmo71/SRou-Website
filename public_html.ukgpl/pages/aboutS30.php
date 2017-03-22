@@ -6,9 +6,9 @@
 
 <P>This is the home page of UKGPL, a United Kingdom based online racing league for fans of Grand Prix Legends.</P>
 
-<H1><IMG WIDTH="630" HEIGHT="393" SRC="/images/S16_CC_R8.jpg"></H1>
+<H1><IMG WIDTH="706" HEIGHT="367" SRC="/images/frontpics24.jpg"></H1>
 
-<H1>Registration for Season 31 is OPEN!<br>
+<H1>Registration for Season 31 will OPEN soon!<br>
 Don't miss out!</H1>
 
 <P align="justify">
@@ -16,7 +16,7 @@ The league is still going strong despite the advent of dozens of new sims.
 Although many other games cater to online racing they often try to model every era. Grand Prix Legends simply models the best cars of the late sixties and does it exceptionally well. GPL still attracts a loyal following and UKGPL offers the opportunity to race in cars from the 1967 season and in addition offers mods that simulate the 1965, 1966 and 1969 seasons. The GT, 67 F2 cars and the Can-Ams prove that the community still has some life in it yet!</p>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement. This coming season UKGPL will run a 1967 F1 championship to commemorate the 50th Anniversary. We will also run championships for 1965, 1966 and a Specials Series involving a mixture of 66 CanAm, 67F2 and 1969 (extra) cars.  
+UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement. This coming season UKGPL will also run championships for 1965, 1966 and 1969 (extra) cars.  There will also be a Friday fun series featuring a mix of mods, tracks and formats which should provide something different.
 Our aim is simply to have some fun racing those 1960s brutes.</p>
 
 <P align="justify">
@@ -24,13 +24,14 @@ We are now an international league having drivers from many countries but races 
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
 <p>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14244" target="_blank">1967 Graduates Cup (Works)</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14266.0" target="_blank">1967 Graduates Cup (Privateers)</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14245.0" target="_blank">1966 Historic Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14246.0" target="_blank">1965 Professionals Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14274" target="_blank">1965 Amateurs Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14247.0" target="_blank">Specials Series Trophy</A><br>
-</P>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13307.0" target="_blank">1967 Works Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13305.0" target="_blank">1967 Privateers Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13299.0" target="_blank">1969 Sunday Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13310.0" target="_blank">1966 Historic Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13311.0" target="_blank">1965 Professionals Trophy</A><br>
+<A HREF="http://www.simracing.org.uk/smf/index.php?topic=13312.0" target="_blank">1965 Amateurs Trophy</A><br>
+
+and our mixed mod 'Fun' series - the <A HREF="http://www.simracing.org.uk/smf/index.php?topic=13313.0" target="_blank">Friday Trophy</A>. This is the place for more light hearted action.</P>
 
 <P align="justify">
 If all of this has not whetted your appetite why not take a look at our 10th Anniversary video compiled by Vlad Vosblod.
@@ -42,7 +43,7 @@ If you are ex-UKGPL and are contemplating a return, see if you can spot yourself
 
 <HR WIDTH="75%" />
 
-<P>Our Chief Moderator is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=1643">Phil Thornton</A>.</P>
+<P>Our Chief Moderator is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=3776">Badblood</A>.</P>
 
 <P>Please address applications to join to any of the moderating team, whose profiles are below</P>
 
@@ -60,16 +61,11 @@ on-line there are some invaluable hints and tips in our <A HREF='http://www.simr
 
 <HR WIDTH="75%" />
 
-<P><BIG>We do not have any funded race servers.  All our servers are provided by our members free of charge for the benefit of the drivers. These members are:
-
-<BR/>	
+<P><BIG>Funded race server hosted by <A HREF='http://www.team7racing.net/' target="_blank">Team 7 Online Racing</A>, additional servers and replays hosted by
+<BR/>
 <A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=3776" target="_blank"> BadBlood</A>
-<BR/>
+<BR/>and<BR/>
 <A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=5475" target="_blank"> Cookie</A>
-<BR/>
-<A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=2660" target="_blank"> Turkey Machine</A>
-<BR/>
-<A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=1643" target="_blank"> Phil Thornton</A>
 </BIG></P>
 
 
