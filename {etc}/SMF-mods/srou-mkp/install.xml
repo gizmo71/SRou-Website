@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is an example modification file for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	Modification files can be used to modify files so that they do what
+	your package needs them to do to work properly.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>gizmo71:srou_mkp</id>
+	<version>0.4</version>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/../index.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'staff'        =>   "staff",
+		'docs'         =>   "docs",
+]]></search>
+			<add><![CDATA[
+                'lm2'          =>   "lm2",
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/../mkportal/include/functions.php">
+		<operation>
+			<search position="replace"><![CDATA[
+    die ("Sorry !! You cannot access this file directly.");
+}
+
+
+class mklib {
+]]></search>
+			<add><![CDATA[
+    die ("Sorry !! You cannot access this file directly.");
+}
+
+require("/home/gizmo71/public_html.srou/www/lm2/include.php"); //FIXME: relative path?
+
+class mklib {
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/../mkportal/blocks/rss.php">
+		<operation>
+			<search position="replace"><![CDATA[
+$DB->query("SELECT * FROM mkp_rss WHERE active='1' ORDER BY position ASC");
+if ($DB->get_num_rows()) {
+    while ($r = $DB->fetch_row()) {
+        $rss_source[$r['name']] = $r['url'];
+    }
+}
+]]></search>
+			<add><![CDATA[
+//FIXME: if only this portal was truly modular...
+if (is_array($rss_special_source)) {
+	$rss_source = $rss_special_source;
+	unset($rss_special_source);
+} else {
+	$DB->query("SELECT * FROM mkp_rss WHERE active='1' ORDER BY position ASC");
+	if ($DB->get_num_rows()) {
+	    while ($r = $DB->fetch_row()) {
+	        $rss_source[$r['name']] = $r['url'];
+	    }
+	}
+}
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+        if ($allow_url) {
+            $rdf = implode("",file($rdf_file));
+        }
+        else {
+            $url = parse_url($rdf_file);
+            $fp = fsockopen ($url['host'], 80, $errno, $errstr, 30);
+]]></search>
+			<add><![CDATA[
+        $timeout = 5; // SRou: the former produces visible error messages. Grr.
+        if (false && $allow_url) {
+			$old = ini_set('default_socket_timeout', $timeout);
+            $rdf = implode("",file($rdf_file));
+			ini_set('default_socket_timeout', $old);
+        }
+        else {
+            $url = parse_url($rdf_file);
+            $fp = fsockopen ($url['host'], 80, $errno, $errstr, $timeout);
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/../mkportal/admin/ad_contents.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	$myquery = $DB->query("SELECT id, title FROM mkp_pages");
+]]></search>
+			<add><![CDATA[
+	$myquery = $DB->query("SELECT id, title FROM mkp_pages ORDER BY TITLE");
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/../mkportal/admin/ad_blocks.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	$myquery = $DB->query("SELECT id, title, personal FROM mkp_blocks WHERE personal > '0' ORDER by id");
+]]></search>
+			<add><![CDATA[
+	$myquery = $DB->query("SELECT id, title, personal FROM mkp_blocks WHERE personal > '0' ORDER by title");
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+	$DB->query("SELECT id, title, personal FROM mkp_blocks WHERE personal = '0' ORDER by id");
+]]></search>
+			<add><![CDATA[
+	$DB->query("SELECT id, title, personal FROM mkp_blocks WHERE personal = '0' ORDER by title");
+]]></add>
+		</operation>
+	</file>
+
+</modification>

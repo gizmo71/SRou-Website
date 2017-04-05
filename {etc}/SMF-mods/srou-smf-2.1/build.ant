@@ -1,0 +1,27 @@
+<project name="Zip SMF 2.1 mod" default="build">
+
+	<target name="buildZip">
+		<xmlproperty file="${subname}/install.xml" keeproot="false" prefix="install" />
+		<xmlproperty file="${subname}/package-info.xml" keeproot="false" prefix="package_info" />
+		<property name="zipfile" value="srou-smf-${subname}-${package_info.version}.zip" />
+		<condition property="versionsDoNotMatch">
+		  <not>
+		    <equals arg1="${package_info.version}" arg2="${install.version}"/>
+		  </not>
+		</condition>
+		<fail if="versionsDoNotMatch" message="Mismatched version for ${subname} - ${package_info.version} against ${install.version}"/>
+		<delete file="${zipfile}" />
+		<zip destfile="${zipfile}" basedir="${basedir}/${subname}" />
+	</target>
+
+	<target name="build">
+		<!-- echoproperties / -->
+		<antcall target="buildZip">
+			<param name="subname" value="main" />
+		</antcall>
+		<antcall target="buildZip">
+			<param name="subname" value="prefix" />
+		</antcall>
+	</target>
+
+</project>

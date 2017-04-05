@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>gizmo71:srou_stopspammer</id>
+	<name>SimRacing.org.uk Stop Spammer fixes</name>
+	<version>2.3.9-2</version>
+
+	<file name="$sourcedir/ManageMembers.php">
+		<operation>
+			<search position="replace"><![CDATA[// Don't report yourself, idiot :P
+			if ($value == $user_info['id'] || '1' == $value)
+				unset($_POST['todoAction'][$key]);
+]]></search>
+			<add><![CDATA[// Don't report yourself, idiot :P
+			if ($value == $ID_MEMBER || '1' == $value)
+				unset($_POST['todoAction'][$key]);
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[function AdminApprove()
+{
+	global $txt, $context, $db_prefix, $scripturl, $modSettings, $sourcedir, $language, $user_info;]]></search>
+			<add><![CDATA[function AdminApprove()
+{
+	global $txt, $context, $db_prefix, $scripturl, $modSettings, $sourcedir, $language, $user_info, $ID_MEMBER;]]></add>
+		</operation>
+	</file>
+
+</modification>

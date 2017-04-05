@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is a somewhat detailed package manifest for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	This script can be used to make your package do many different things.
+	The following documentation should be available on the format of this
+	file and the things you can do with it:
+		http://mods.simplemachines.org/docs/package-info.php
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+
+	<!-- For the id, always use something unique - put your name, a colon, and then the package name. -->
+	<id>gizmo71:7zip64-fix</id>
+
+	<!-- Below should be the name of this package. -->
+	<name>Fix for 7-Zip packages in SMF</name>
+
+	<!-- Type, one of: modification, avatar, language. -->
+	<type>modification</type>
+
+	<!-- The version of this modification.  Keep it numeric so PHP can tell that old < new. -->
+	<version>1.0</version>
+
+	<install>
+		<readme>README.txt</readme>
+		<modification format="xml" type="file">install.xml</modification>
+	</install>
+	<uninstall>
+		<modification format="xml" type="file" reverse="true">install.xml</modification>
+	</uninstall>
+
+	<!-- You should also provide a script for upgrading from previous versions. - - >
+	<upgrade from="1.0" for="1.0 RC1, 1.0 - 1.1">
+		<modification type="file" reverse="true">changes-in-1.01.xml</modification>
+		<require-file name="Blarg.css" destination="$themedir" />
+	</upgrade>
+	-->
+
+</package-info>

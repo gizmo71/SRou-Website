@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- Stuff from 2.0 mod which no longer works with 2.1 but might need adapting. -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>gizmo71:srou_smf</id>
+	<version>2.0xx</version>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/Themes/default/index.template.php">
+		<operation>
+			<search position="after"><![CDATA[
+}
+
+/**
+ * The main sub template above the content.
+ */
+]]></search>
+			<add><![CDATA[
+
+	// SROU-specific settings; these are defaults, typically overridden by a more specific template.
+
+	$settings['srou_layout_header'] = array(
+		'imgW'=>'480',
+		'imgH'=>'80',
+		'imgUrl'=>'/images/srou-pops.gif',
+		'imgAlt'=>'SimRacing.org.uk logo by The Popabawa',
+		'imgSub'=>'The Spirit of British SimRacing',
+		'imgSubStyle'=>'',
+		'centreCell'=>'&nbsp;',
+		'homeUrl'=>'http://www.SimRacing.org.uk/',
+		'ads'=>true,
+	);
+
+	$settings['srou_downloads_topic'] = null;
+
+	$settings['srou_footer_html'] = 'Hosted by <A HREF="http://davegymer.com/"><TT>DaveGymer.com</TT></A>';
+
+//	srou_template_init();
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[	<a id="top" href="', $scripturl, '">',]]></search>
+			<add><![CDATA[	<a id="top" href="', $settings['srou_layout_header']['homeUrl'], '">',]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[echo '
+	<div id="footer_section">
+		<div class="frame">';]]></search>
+			<add><![CDATA[
+	echo $GLOBALS['settings']['srou_footer_html'];
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<!-- No longer valid with 2.1 - might not be needed any more, will have to retest replay upload -->
+	<!-- file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="before"><![CDATA[if ($already_uploaded)
+		$attachmentOptions['tmp_name'] = $attach_dir . '/' . $attachmentOptions['tmp_name'];]]></search>
+			<add><![CDATA[
+	else if ($GLOBALS['lm2_guest_member_id'] == $attachmentOptions['poster'])
+		$already_uploaded = true;]]></add>
+		</operation>
+	</file -->
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+</modification>

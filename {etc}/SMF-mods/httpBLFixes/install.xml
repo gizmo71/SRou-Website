@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>gizmo71:srou_httpbl</id>
+	<name>SimRacing.org.uk httpBL fixes</name>
+	<version>2.5.1-1</version>
+
+	<file name="$sourcedir/httpBL_Subs.php">
+		<operation>
+			<search position="replace"><![CDATA[$ip = httpBL_look_for_empty_ip();]]></search>
+			<add><![CDATA[$ip = httpBL_look_for_empty_ip($ip);]]></add>
+		</operation>
+	</file>
+
+</modification>

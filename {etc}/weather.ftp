@@ -1,0 +1,6 @@
+OPEN ftp.ukgtr.org
+USER downloads@ukgtr.org
+c00perav0n
+HASH
+GET weather.txt
+QUIT

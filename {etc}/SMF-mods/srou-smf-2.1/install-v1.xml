@@ -1,0 +1,282 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+	This is an example modification file for SMF packages.
+
+	ATTENTION: If you are trying to install this manually, you should try
+	the package manager.  If it will not work for you, please take a look
+	at the following for information on this format:
+		http://mods.simplemachines.org/docs/manual-install.php
+
+================================================================================
+
+	Modification files can be used to modify files so that they do what
+	your package needs them to do to work properly.
+
+ - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+	<!-- This information needs to be the same as that in the package-info.xml. -->
+	<id>gizmo71:srou_smf</id>
+	<version>1.10</version>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$sourcedir/Errors.php">
+		<operation>
+			<search position="before"><![CDATA[
+		$user_info['ip'] = '';
+]]></search>
+			<add><![CDATA[
+
+	$query = db_query("SELECT proxy_name FROM {$db_prefix}proxy_exit_ips WHERE proxy_exit_ip = '{$user_info['ip']}'", false, false);
+	while ($row = mysql_fetch_assoc($query)) {
+		$error_message .= "<br />IP corresponds to proxy exit IP for " . htmlspecialchars($row['proxy_name'], ENT_QUOTES);
+	}
+	mysql_free_result($query);
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$sourcedir/ManageMembers.php">
+		<operation>
+			<search position="before"><![CDATA[
+			'posts' => array(
+				'db_fields' => array('posts'),
+				'type' => 'int',
+				'range' => true
+			),
+]]></search>
+			<add><![CDATA[
+			'races' => array(
+				'db_fields' => array('races'),
+				'type' => 'int',
+				'range' => true
+			),
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+		'posts' => array('label' => $txt[26])
+]]></search>
+			<add><![CDATA[
+		'posts' => array('label' => $txt[26]),
+		'races' => array('label' => 'Races')
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+function ViewMemberlist()
+{
+	global $txt, $scripturl, $db_prefix,]]></search>
+			<add><![CDATA[
+function ViewMemberlist()
+{
+	global $txt, $scripturl, $db_prefix, $lm2_view_prefix,]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+		SELECT ID_MEMBER, memberName, realName, emailAddress, memberIP, lastLogin, posts, is_activated, is_spammer
+		FROM {$db_prefix}members" . ($context['sub_action'] == 'query' && !empty($where) ? "
+]]></search>
+			<add><![CDATA[
+		SELECT ID_MEMBER, memberName, realName, emailAddress, memberIP, lastLogin, posts, is_activated, is_spammer, races
+		FROM {$lm2_view_prefix}smf_lm2i_members" . ($context['sub_action'] == 'query' && !empty($where) ? "
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+		$request = db_query("
+			SELECT COUNT(*)
+			FROM {$db_prefix}members
+			WHERE $where", __FILE__, __LINE__);
+		list ($num_members) = mysql_fetch_row($request);
+]]></search>
+			<add><![CDATA[
+		$request = db_query("
+			SELECT COUNT(*)
+			FROM {$lm2_view_prefix}smf_lm2i_members
+			WHERE $where", __FILE__, __LINE__);
+		list ($num_members) = mysql_fetch_row($request);
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+			'posts' => $row['posts'],
+]]></search>
+			<add><![CDATA[
+			'races' => $row['races'],
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/Themes/default/ManageMembers.template.php">
+		<operation>
+			<search position="before"><![CDATA[
+							<th align="right">', $txt['activation_status'], ':</th>
+							<td align="left" colspan="2">
+								<label for="activated-0"><input type="checkbox" name="activated[]" value="1" id="activated-0" checked="checked" class="check" /> ', $txt['activated'], '</label>&nbsp;&nbsp;
+								<label for="activated-1"><input type="checkbox" name="activated[]" value="0" id="activated-1" checked="checked" class="check" /> ', $txt['not_activated'], '</label>
+							</td>
+]]></search>
+			<add><![CDATA[
+							<th align="right">Races:</td>
+							<td align="left">
+								<select name="types[races]">
+									<option value="--">&lt;</option>
+									<option value="-">&lt;=</option>
+									<option value="=" selected="selected">=</option>
+									<option value="+">&gt;=</option>
+									<option value="++">&gt;</option>
+								</select>&nbsp;
+								<input type="text" name="races" value="" size="6" />
+							</td>
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+				<td align="left" colspan="8">
+]]></search>
+			<add><![CDATA[
+				<td align="left" colspan="9">
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+				</td>
+				<td class="windowbg2">
+					', $member['posts'], '
+]]></search>
+			<add><![CDATA[
+				</td>
+				<td class="windowbg2">
+					', $member['races'], '
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$sourcedir/Subs-Post.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		$mailmessage .= "\n\n" . $txt['instant_reply'] . ' ' . $scripturl . '?action=pm;sa=send;f=inbox;pmsg=' . $ID_PM . ';quote;u=' . $from['id'];
+]]></search>
+			<add><![CDATA[
+		if ($from['id'] != 0) {
+			$mailmessage .= "\n\n" . $txt['instant_reply'] . ' ' . $scripturl . '?action=pm;sa=send;f=inbox;pmsg=' . $ID_PM . ';quote;u=' . $from['id'];
+		} else {
+//XXX: internationalized message
+			$mailmessage .= "\n\nRead this instant message here: " . $scripturl . '?action=pm#' . $ID_PM;
+		}
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/Themes/default/Display.template.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	// Show the anchor for the top and for the first message. If the first message is new, say so.
+	echo '
+<a name="top"></a>
+<a name="msg', $context['first_message'], '"></a>', $context['first_new_message'] ? '<a name="new"></a>' : '';
+]]></search>
+			<add><![CDATA[
+	// DON'T Show the anchor for the top and for the first message. If the first message is new, DON'T say so.
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[
+		if ($message['id'] != $context['first_message'])
+]]></search>
+			<add><![CDATA[
+		if ($message['id'] == $context['first_message'])
+			echo '<a name="top"></a>';
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/index.php">
+		<operation>
+			<search position="after"><![CDATA[
+	loadUserSettings();
+]]></search>
+			<add><![CDATA[
+
+	// Attempt to block hack attacks...
+	if ($GLOBALS['user_info']['is_guest'] && isset($_GET['action']) && strpos($_GET['action'], 'quickmod2') !== false)
+		redirectexit();
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$sourcedir/Search.php">
+		<operation>
+			<search position="replace"><![CDATA[// Ensure that brd is an array.
+	if (!empty($_REQUEST['brd']) && !is_array($_REQUEST['brd']))]]></search>
+			<add><![CDATA[// Ensure that brd is an array.
+	if (!array_key_exists('brd', $_REQUEST)) $_REQUEST['brd'] = array(); // Fix stupid SMF buglette.
+	else if (!is_array($_REQUEST['brd']) && !empty($_REQUEST['brd']))]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$sourcedir/Security.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		fatal_error(sprintf($txt[430], $old_name) . (empty($_SESSION['ban']['cannot_access']['reason']) ? '' : '<br />' . $_SESSION['ban']['cannot_access']['reason']));
+]]></search>
+			<add><![CDATA[
+		fatal_error(sprintf($txt[430], $old_name) . (empty($_SESSION['ban']['cannot_access']['reason']) ? '' : '<br />' . $_SESSION['ban']['cannot_access']['reason']), false);
+]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$sourcedir/LogInOut.php">
+		<operation>
+			<search position="replace"><![CDATA[)
+				redirectexit('action=reminder');
+			else
+			{
+				log_error($txt[39] . ' - <span class="remove">' . $user_settings['memberName'] . '</span>');
+]]></search>
+			<add><![CDATA[) {
+				log_error($txt[39] . ' (harder) - <span class="remove">' . $user_settings['memberName'] . '</span>');
+				redirectexit('action=reminder');
+			} else {
+]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[)
+				redirectexit('action=reminder');
+			// We'll give you another chance...
+			else
+			{
+				// Log an error so we know that it didn't go well in the error log.
+				log_error($txt[39] . ' - <span class="remove">' . $user_settings['memberName'] . '</span>');
+]]></search>
+			<add><![CDATA[) {
+				// Log an error so we know that it didn't go well in the error log.
+				log_error($txt[39] . ' (harder) - <span class="remove">' . $user_settings['memberName'] . '</span>');
+				redirectexit('action=reminder');
+			// We'll give you another chance...
+			} else {
+]]></add>
+		</operation>
+	</file>
+
+</modification>

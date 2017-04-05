@@ -1,0 +1,1 @@
+SimRacing.org.uk-specific modifications to fix minor problems with Stop Spammer.
