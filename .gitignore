@@ -1,15 +1,24 @@
+*~
+*.delete
 error_log
-.ftpquota
+.ssh
 
-/.bash_history
-/.bash_logout
+/.zcompdump
+/.X*
+/arvixe
+/boxfish
+/.cache
+/.mozilla
+/.config
+/.vnc
+/.gitconfig
 /.fontconfig
-/.lastlogin
 /.lesshst
 /.mysql_history
-/.ssh
 /.viminfo
 /.zshrc
+
+public_html.davegymer.org/
 
 /public_html.srou/live
 /public_html.srou/lapcharts
