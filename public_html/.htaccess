@@ -1,8 +1,0 @@
-RewriteEngine on
-
-RewriteCond %{HTTP_HOST} ^www.davegymer.com$
-RewriteRule ^(.*)$ "http://davegymer.com/$1" [R=301,L]
-
-RewriteCond %{HTTP_HOST} ^(www\.)?teamshark\.org\.uk$
-RewriteRule ^.*$ "http\:\/\/www\.facebook\.com\/TeamSharkOnlineRacing?" [R=301,L]
-
