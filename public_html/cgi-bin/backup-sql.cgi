@@ -22,6 +22,7 @@ cat <<EOF | while read db big_tables
 lm2 lm2_circuits= lm2_circuit_locations= lm2_championships= lm2_championship_points= lm2_events= lm2_event_entries=
 smf smf_messages=id_msg smf_topics= smf_personal_messages= smf_pm_recipients=
 ukgpl _map_drivers= _map_teams=
+views
 EOF
 do
 	rm -f boxfish_${db}_*.sql*
@@ -29,7 +30,7 @@ do
 	if [ -n "$big_tables" ]; then
 		for table in $big_tables; do EXTRA="$EXTRA --ignore-table=gizmo71_${db}.${table/=*/}"; done 
 	fi
-	mysqldump --no-data --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} | gzip -9v >boxfish_${db}_0_schema.sql.gz
+	mysqldump --no-data --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} | sed -e 's/ DEFINER=`root`@`localhost`//' | gzip -9v >boxfish_${db}_0_schema.sql.gz
 # Don't think we need this any more (not that we'got any routines anyway!): | sed -e "s/DELIMITER ;;/DELIMITER \$\$/g"
 	mysqldump --routines --no-create_info --no-data $SHARED_OPTIONS gizmo71_${db} | gzip -9v >boxfish_${db}_1_routines.sql.gz
 	mysqldump --no-create_info --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >boxfish_${db}_2_data.sql.gz
