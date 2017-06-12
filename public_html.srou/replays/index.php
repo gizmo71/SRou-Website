@@ -25,6 +25,7 @@ $ignores = array(
 	1 => "index.html",
 	2 => "error_log",
 	3 => ".ftpquota",
+	4 => ".gitignore",
 	-2 => ".",
 	-1 => ".."
 );
