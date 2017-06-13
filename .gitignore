@@ -7,6 +7,7 @@ error_log
 /.X*
 /arvixe
 /boxfish
+/dories
 /.cache
 /.mozilla
 /.config
@@ -18,7 +19,8 @@ error_log
 /.viminfo
 /.zshrc
 
-public_html.davegymer.org/
+/public_html.davegymer.org/
+/public_html.test/
 
 /public_html.srou/live
 /public_html.srou/lapcharts
