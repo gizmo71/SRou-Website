@@ -69,7 +69,7 @@ $webmaster_email = 'smf@SimRacing.org.uk';		# Email address to send emails from.
 $cookiename = 'SMFCookie201612281356';		# Name of the cookie to set for authentication.
 
 ########## Database Info ##########
-$db_server = 'localhost';
+$db_server = 'mysql';
 $db_name = 'gizmo71_smf';
 $db_user = 'gizmo71_smf';
 $db_passwd = 't$AQP1z[zUW8';
