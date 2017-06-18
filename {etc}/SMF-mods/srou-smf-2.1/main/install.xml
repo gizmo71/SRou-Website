@@ -19,7 +19,7 @@
 
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>gizmo71:srou_smf_main</id>
-	<version>2.101</version>
+	<version>2.102</version>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -50,17 +50,19 @@
 ]]></add>
 		</operation>
 		<operation>
-			<search position="replace"><![CDATA[
-			AND is_activated = {int:is_activated}',
-		array(
-			'is_activated' => 1,
+			<search position="replace"><![CDATA[{date:high_date}') . '
+				)
+				AND is_activated = {int:is_activated}',
+			array(
+				'is_activated' => 1,
 ]]></search>
-			<add><![CDATA[
-			AND is_activated = {int:is_activated}
-			AND posts >= {int:min_posts}',
-		array(
-			'is_activated' => 1,
-			'min_posts' => 1,
+			<add><![CDATA[{date:high_date}') . '
+				)
+				AND is_activated = {int:is_activated}
+				AND posts >= {int:min_posts}',
+			array(
+				'is_activated' => 1,
+				'min_posts' => 1,
 ]]></add>
 		</operation>
 	</file>
