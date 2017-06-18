@@ -47,30 +47,32 @@ function template_group() {
 	}
 
 	function show_championship($champ, $champ_type, $group, $events, $event_headers, $fullWidth, $penalty_group, $penalty_group_months) {
-		global $lm2_db_prefix, $db_prefix, $boardurl;
+		global $lm2_db_prefix, $smcFunc, $boardurl;
 		global $lm2_champ_types, $lm2_guest_member_id;
 
 		if ($champ_type == 'D') { //FIXME or not: move this into the switch/case below...
 			// Note that painfully we cannot use a temporary table here because we need to use it in both sides of the UNION below.
-			db_query("DELETE FROM {$lm2_db_prefix}registered_drivers WHERE rd_championship = $champ", __FILE__, __LINE__);
-			db_query("
+			$smcFunc['db_query'](null, "
+				DELETE FROM {$lm2_db_prefix}registered_drivers WHERE rd_championship = {int:champ}
+				", array('champ'=>$champ));
+			$smcFunc['db_query'](null, "
 				INSERT IGNORE INTO {$lm2_db_prefix}registered_drivers
 				(rd_championship, member, name, url, rd_status, has_raced)
 				SELECT DISTINCT id_championship AS rd_championship
 				, id_member AS member
-				, realName AS name
+				, real_name AS name
 				, CONCAT('index.php?ind=lm2&driver=', id_member) AS url
 				, GROUP_CONCAT(DISTINCT CASE champ_group_type WHEN 'F' THEN '(FT)' WHEN '1' THEN '(R1)' WHEN '2' THEN '(R2)' WHEN '3' THEN '(R3)' ELSE champ_group_type END SEPARATOR '/') AS rd_status
 				, MAX(IF(id IS NULL, 0, 1)) AS has_raced
 				FROM {$lm2_db_prefix}champ_groups
 				JOIN {$lm2_db_prefix}championships ON champ_group_champ = id_championship
-				JOIN {$db_prefix}members
+				JOIN {db_prefix}members
 				LEFT JOIN {$lm2_db_prefix}championship_points ON id_championship = championship AND id = id_member
-				WHERE champ_group_champ = $champ AND champ_group_poll_choice IS NOT NULL AND champ_group_type <> 'L'
-				AND CONCAT(',', id_group, ',', additionalGroups, ',') REGEXP CONCAT(',', champ_group_membergroup, ',')
+				WHERE champ_group_champ = {int:champ} AND champ_group_poll_choice IS NOT NULL AND champ_group_type <> 'L'
+				AND CONCAT(',', id_group, ',', additional_groups, ',') REGEXP CONCAT(',', champ_group_membergroup, ',')
 				GROUP BY id_member
 				HAVING rd_status IS NOT NULL
-				" , __FILE__, __LINE__);
+				", array('champ'=>$champ));
 		}
 
 		switch ($champ_type) {
@@ -99,20 +101,21 @@ function template_group() {
 			$table = "{$lm2_db_prefix}drivers";
 			$id_field = 'driver_member';
 			$field = 'driver_name';
-			$url_field = "CONCAT('$boardurl/index.php?action=profile&u=', IFNULL((SELECT id_member FROM {$db_prefix}members WHERE id_member = driver_member), $lm2_guest_member_id), '&sa=racing_history&driver=', $id_field, '#aliases')";
+			$url_field = "CONCAT('$boardurl/index.php?action=profile&u=', IFNULL((
+				SELECT id_member FROM {db_prefix}members WHERE id_member = driver_member), {int:guest_id}), '&area=racing_history&driver=', $id_field, '#aliases')";
 			$left_joins = "
-				LEFT JOIN {$lm2_db_prefix}registered_drivers ON member = id AND rd_championship = $champ
+				LEFT JOIN {$lm2_db_prefix}registered_drivers ON member = id AND rd_championship = {int:champ}
 				LEFT JOIN {$lm2_db_prefix}manufacturers ON manuf = id_manuf
 			";
 			$union = " UNION (
 				SELECT member AS id, NULL, name, '&nbsp;'
-				, CONCAT('$boardurl/index.php?action=profile&u=', member, '&sa=racing_history&driver=', member, '#aliases') , $status
+				, CONCAT('$boardurl/index.php?action=profile&u=', member, '&area=racing_history&driver=', member, '#aliases') , $status
 				, NULL AS penalty_points
 				, NULL AS points_lost
 				, NULL AS tokens
 				, NULL AS single_car
 				FROM {$lm2_db_prefix}registered_drivers
-				WHERE NOT has_raced AND rd_championship = $champ)
+				WHERE NOT has_raced AND rd_championship = {int:champ})
 				";
 			break;
 		default:
@@ -136,24 +139,24 @@ function template_group() {
 			</TR>\n";
 
 		$roundQueryResults = array();
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT event, id
 			, IFNULL(SUM(points),'&nbsp;') AS points
 			" . ($champ_type == 'D' ? ", MIN(position) AS position, SUM(ep_penalty_points) AS pp" : ", NULL AS position, NULL AS pp") . "
 			, is_dropped
 			FROM {$lm2_db_prefix}event_points
 			JOIN {$lm2_db_prefix}event_entries ON id_event_entry = event_entry
-			WHERE championship = $champ
+			WHERE championship = {int:champ}
 			GROUP BY event, id
-			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+			", array('champ'=>$champ));
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$roundQueryResults[$row['id']][] = $row;
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		$old_pos = -1;
 		// The CAST is a nasty hack because PHP butchers large integers...
-		$query = db_query("SELECT * FROM (
+		$query = $smcFunc['db_query'](null, "SELECT * FROM (
 			(SELECT CAST(id AS CHAR) AS id
 			, position
 			, $field AS name
@@ -165,14 +168,14 @@ function template_group() {
 			, tokens
 			, CONCAT(manuf_name, ' ', car_name) AS single_car
 			FROM $table
-			JOIN {$lm2_db_prefix}championship_points ON $id_field = id AND championship = $champ
+			JOIN {$lm2_db_prefix}championship_points ON $id_field = id AND championship = {int:champ}
 			LEFT JOIN {$lm2_db_prefix}cars ON single_car = id_car
 			$left_joins
 			WHERE position IS NOT NULL)
 			$union) AS actual_and_registered
 			ORDER BY IFNULL(position, 999), status, name
-			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+			", array('champ'=>$champ, 'guest_id'=>$lm2_guest_member_id));
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$name = $row['name'];
 			$status = " {$row['status']}";
 			$id = $row['id'];
@@ -227,7 +230,7 @@ function template_group() {
 
 			echo "</TR>\n";
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 	}
 
 	function format_penalty_points($penalty_points, $points_lost) {
@@ -392,8 +395,6 @@ function template_group() {
 	}
 
 	function lm2_show_round_scores($champ, $id, $use_colors, $events, $queryResults) {
-		global $lm2_db_prefix, $db_prefix;
-
 		$scores = array();
 		$htmlClasses = array();
 
@@ -411,7 +412,7 @@ function template_group() {
 		}
 	}
 
-	global $context, $boardurl, $db_prefix, $lm2_db_prefix, $lm2_circuit_html_clause, $lm2_class_style_clause, $colsep, $lm2_champ_types, $settings;
+	global $context, $boardurl, $smcFunc, $lm2_db_prefix, $lm2_circuit_html_clause, $lm2_class_style_clause, $colsep, $lm2_champ_types, $settings;
 	$flag_prefix = "/images/flags-22x14/";
 
 	echo "<table border='0' width='100%'><tr><td valign='top'>";
@@ -433,8 +434,8 @@ function template_group() {
 		}
 		echo lm2_table_open($block_title) . $context['lm2']['group']['block_text'] . lm2_table_close();
 	} else if ($pid = $context['lm2']['group']['pid']) {
-		$query = db_query("SELECT title, content FROM mkp_pages WHERE id = '$pid'", __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("can't find page $pid for group $group");
+		$query = $smcFunc['db_query'](null, "SELECT title, content FROM mkp_pages WHERE id = {string:pid}", array('pid'=>$pid));
+		($row = $smcFunc['dbl_fetch_assoc']($query)) || die("can't find page $pid for group $group");
 		echo lm2_table_open(stripslashes($row['title'])) . stripslashes($row['content']) . lm2_table_close();
 		mysql_free_result($query);
 	}
@@ -448,7 +449,7 @@ function template_group() {
 
 	$opener = lm2_table_open("Drivers and Standings") . "<TABLE BORDER=1>\n";
 	$closer = "";
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT id_championship
 		, champ_class_desc
 		, champ_type
@@ -460,10 +461,10 @@ function template_group() {
 		JOIN {$lm2_db_prefix}scoring_schemes ON scoring_scheme = id_scoring_scheme
 		JOIN {$lm2_db_prefix}event_groups ON event_group = id_event_group
 		JOIN {$lm2_db_prefix}penalty_groups USING (penalty_group)
-		WHERE id_event_group " . (is_null($group) ? "IS NULL" : "= $group") . "
+		WHERE id_event_group = {int:group}
 		ORDER BY champ_sequence, champ_class_desc, champ_type
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('group'=>$group));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo $opener;
 		$opener = "";
 		$closer = "</TABLE>\n" . lm2_table_close();
@@ -474,7 +475,7 @@ function template_group() {
 		$penalty_group = $row['penalty_group'];
 		$penalty_group_months = $row['penalty_group_months'];
 
-		$query2 = db_query("SELECT id_event, smf_topic"
+		$query2 = $smcFunc['db_query'](null, "SELECT id_event, smf_topic"
 			. ", $lm2_circuit_html_clause AS circuit_html"
 			. ", smf_topic, event_date"
 			. ", LOWER(iso3166_code) AS iso3166_code"
@@ -489,9 +490,9 @@ function template_group() {
 			. ", {$lm2_db_prefix}event_group_tree"
 			. ", {$lm2_db_prefix}iso3166)"
 			. " LEFT JOIN {$lm2_db_prefix}event_entries ON event = id_event"
-			. " LEFT JOIN {$lm2_db_prefix}event_points ON event_entry = id_event_entry AND championship = $champ_id"
+			. " LEFT JOIN {$lm2_db_prefix}event_points ON event_entry = id_event_entry AND championship = {int:champ}"
 			. " WHERE event_group = {$lm2_db_prefix}event_group_tree.contained"
-			. " AND {$lm2_db_prefix}event_group_tree.container = $group"
+			. " AND {$lm2_db_prefix}event_group_tree.container = {int:group}"
 			. " AND event_type = 'C'"
 			. " AND id_iso3166 = iso3166_code"
 			. " AND circuit_location = id_circuit_location"
@@ -500,14 +501,14 @@ function template_group() {
 			. " GROUP BY event_date, id_event"
 			. " HAVING points_ch > 0 OR entries = 0"
 			. (($group == 92 || $group == 93) ? " ORDER BY circuit_html, event_date" : "") // Fiddle for UKGPL Season 1 with double-headers
-			, __FILE__, __LINE__);
+			, array('champ'=>$champ_id, 'group'=>$group));
 		$events = array();
-		while ($row2 = mysql_fetch_assoc($query2)) {
+		while ($row2 = $smcFunc['db_fetch_assoc']($query2)) {
 			$row2['event_date'] = format_event_date($row2);
 			$row2['flag'] = "$flag_prefix{$row2['iso3166_code']}.gif";
 			array_push($events, $row2);
 		}
-		mysql_free_result($query2);
+		$smcFunc['db_free_result']($query2);
 
 		$event_headers = '';
 		foreach ($events AS $row2) {
@@ -527,12 +528,13 @@ function template_group() {
 		}
 		echo "\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	echo $closer;
 
-	$_SESSION['ID_THEME'] = 0; // Don't allow it to become sticky...
+//XXX: should be able to remove this once we're setting it correctly in other places (not via URL)
+	unset($_SESSION['id_theme']); // Don't allow it to become sticky...
 
-	$query = db_query("SELECT id_event, smf_topic"
+	$query = $smcFunc['db_query'](null, "SELECT id_event, smf_topic"
 		. ", $lm2_circuit_html_clause AS circuit_html"
 		. ", event_date"
 		. ", entries_c AS entries"
@@ -544,19 +546,19 @@ function template_group() {
 		. ", {$lm2_db_prefix}circuit_locations"
 	//	. ", {$lm2_db_prefix}iso3166"
 		. ", {$lm2_db_prefix}sim_circuits)"
-		. " LEFT JOIN {$db_prefix}topics ON smf_topic = {$db_prefix}topics.id_topic"
-		. " LEFT JOIN {$db_prefix}messages ON id_first_msg = id_msg"
-		. " WHERE event_group " . (is_null($group) ? "IS NULL" : "= $group")
+		. " LEFT JOIN {db_prefix}topics ON smf_topic = {db_prefix}topics.id_topic"
+		. " LEFT JOIN {db_prefix}messages ON id_first_msg = id_msg"
+		. " WHERE event_group = {int:group}"
 		. " AND (event_type <> 'C' OR points_c = 0 AND entries_c > 0)"
 		. " AND circuit_location = id_circuit_location"
 		. " AND id_sim_circuit = {$lm2_db_prefix}events.sim_circuit"
 		. " AND id_circuit = {$lm2_db_prefix}sim_circuits.circuit"
 	//	. " AND id_iso3166 = iso3166_code"
 		. " ORDER BY event_date, id_event"
-		, __FILE__, __LINE__);
+		, array('group'=>$group));
 	$pre = lm2_table_open("Non-Championship Races") . "<TABLE ID='nch'>\n";
 	$post = '';
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo $pre;
 		$pre = '';
 		$post = "</TABLE>\n" . lm2_table_close();
@@ -573,19 +575,19 @@ function template_group() {
 		echo "<TR><TD$tooltip>$url$desc</A></TD>"
 			. "$colsep<TD>{$row['circuit_html']}</TD></TR>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	echo $post;
 
 	/*
-	$query = db_query("SELECT moderator, realName AS name"
-		. " FROM {$db_prefix}members"
+	$query = $smcFunc['db_query'](null, "SELECT moderator, realName AS name"
+		. " FROM {db_prefix}members"
 		. ", {$lm2_db_prefix}event_groups"
 		. ", {$lm2_db_prefix}event_group_tree"
-		. " WHERE $group = contained AND container = id_event_group"
+		. " WHERE {int:group} = contained AND container = id_event_group"
 		. " AND moderator IS NOT NULL"
 		. " AND id_member = moderator"
 		. " ORDER BY depth ASC"
-		, __FILE__, __LINE__);
+		, array('group'=>$group));
 	while ($row = mysql_fetch_assoc($query)) {
 		echo "<P>The series moderator is <A HREF='$boardurl/index.php?action=pm;sa=send;u={$row['moderator']}'>{$row['name']}</A></P>\n";
 		break;
@@ -666,7 +668,7 @@ function template_stats() {
 }
 
 function template_circuits() {
-	global $context, $boardurl, $lm2_db_prefix;
+	global $context, $boardurl, $lm2_db_prefix, $smcFunc;
 
 	echo "<table width='100%' border='0'><tr><td valign='top'>\n";
 
@@ -683,14 +685,14 @@ function template_circuits() {
 
 	echo lm2_table_open("Circuits");
 
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT id_circuit_location, full_name, is_fantasy
 		FROM {$lm2_db_prefix}circuit_locations
 		WHERE id_circuit_location <> -1
 		ORDER BY brief_name
-		" , __FILE__, __LINE__);
+		");
 	$sep = "";
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo "$sep<A HREF='$boardurl/index.php?action=LM2R&location={$row['id_circuit_location']}&circuit=0'>{$row['full_name']}</A>";
 		if ($row['is_fantasy']) {
 			echo " (fantasy)";
@@ -698,7 +700,7 @@ function template_circuits() {
 		echo "\n";
 		$sep = "<BR/>";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	echo lm2_table_close();
 

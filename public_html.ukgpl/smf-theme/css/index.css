@@ -1,0 +1,39 @@
+@import url(http://www.simracing.org.uk/smf/Themes/default/css/index.css);
+@import url(http://www.simracing.org.uk/smf/Themes/srou/css/lm2style.css);
+body { background-color: #dfd; }
+/*
+body, td, th, tr { color: #EEE; }
+.windowbg, #preview_body { color: #EEE; background-color: #003900; }
+.windowbg:nth-of-type(even) { color: #EEE; background-color: #304900; }
+.windowbg:nth-of-type(odd) { color: #EEE; background-color: #004930; }
+a:link { color: #AAAA00; }
+a:visited { color: #339933; }
+.nav, .nav:link, .nav:visited { color: #EEEEEE; }
+a.nav:hover { color: #FFFFFF; }
+input, textarea, button { color: black; }
+hr, .hrcolor { color: #999999; background-color: #999999; }
+.quote { color: #EEEEEE; background-color: #114411; border: #FFFFFF; }
+.code { color: #FFFFFF; background-color: #202020; border: 1px solid #FFFFFF; }
+.quoteheader, .codeheader { color: #EEEEEE; }
+.highlight { color: white; }
+.calendar_today { background-color: #000000; }
+.titlebg, tr.titlebg th, tr.titlebg td, .titlebg2, tr.titlebg2 th, tr.titlebg2 td {
+	color: #00F000;
+	background: #205020;
+	border-bottom: solid 1px #E0E0E0;
+}
+.titlebg, .titlebg a:link, .titlebg a:visited { color: #E0FFE0; }
+.titlebg a:hover { color: #D0D0D0; }
+.titlebg2 a:link, .titlebg2 a:visited { color: #88FF88; }
+.catbg , tr.catbg td , .catbg3 , tr.catbg3 td { background: #10A010; }
+.catbg2 , tr.catbg2 td { background: #30FF30; }
+.catbg, .catbg2, .catbg3 { border-bottom: solid 1px #F0F0F0; }
+.catbg3, tr.catbg3 td, .catbg3 a:link, .catbg3 a:visited { color: #20FF20; }
+.catbg a:link, .catbg a:visited , .catbg2 a:link, .catbg2 a:visited { color: green; }
+.catbg a:hover, .catbg2 a:hover, .catbg3 a:hover { color: #E0E0E0; }
+.bordercolor { background-color: #17D017; }
+.tborder { background-color: black; }
+.maintab_first, .maintab_back, .maintab_last, .maintab_active_first, .maintab_active_back, .maintab_active_last { color: white; }
+.maintab_back, .maintab_active_back { color: white; }
+#ajax_in_progress { background: #C0CFC0; color: black; }
+*/

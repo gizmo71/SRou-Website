@@ -432,7 +432,7 @@ function parseGPLTime($h, $m, $s) {
 }
 
 function translateRetirementReason($retirementReason) {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 
 	if (is_null($retirementReason) || $retirementReason == '') {
 		return null;
@@ -465,11 +465,11 @@ function translateRetirementReason($retirementReason) {
 		FROM {$lm2_db_prefix}retirement_reasons
 		WHERE LOWER(reason_desc) = " . sqlString($retirementReason) . "
 		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		is_null($code) || die("ambiguous retirement reason '$retirementReason'");
 		$code = $row['retirement_reason'];
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	// ... and if we don't find one, add it.
 
@@ -480,9 +480,9 @@ function translateRetirementReason($retirementReason) {
 			SELECT MAX(retirement_reason) AS max_reason
 			FROM {$lm2_db_prefix}retirement_reasons
 			", __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("wot, no reasons?");
+		($row = $smcFunc['db_fetch_assoc']($query)) || die("wot, no reasons?");
 		$code = $row['max_reason'] + 1;
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		$query = db_query("
 			INSERT INTO {$lm2_db_prefix}retirement_reasons

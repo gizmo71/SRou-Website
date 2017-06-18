@@ -14,9 +14,9 @@ require('include.php');
 ob_start();
 
 $query = lm2_query("SELECT team_name FROM ${lm2_db_prefix}teams WHERE id_team = $team", __FILE__, __LINE__);
-($row = mysql_fetch_assoc($query)) || die("unknown team ID $team");
+($row = $smcFunc['db_fetch_assoc']($query)) || die("unknown team ID $team");
 $team_name = $row['team_name'];
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 $doc = new DOMDocument('1.0', 'iso-8859-1');
 $doc->appendChild($rss = $doc->createElement('rss'));
@@ -74,7 +74,7 @@ $query = lm2_query("SELECT id_event"
 $sep = "";
 $sep2 = " ";
 $event = -1;
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	if ($event != $row['id_event']) {
 		$event = $row['id_event'];
 		// Consider formatting date without year and only pulling from last 12 months.
@@ -89,7 +89,7 @@ while ($row = mysql_fetch_assoc($query)) {
 	}
 	$sep2 = ", ";
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 if ($desc) {
 	make_item("$team_name recent results",
@@ -122,13 +122,13 @@ $query = lm2_query("SELECT position"
 	. " ORDER BY last_event DESC"
 	. " LIMIT 6"
 	, __FILE__, __LINE__);
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	add_team_champ_item($channel, $row);
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 function add_team_champ_item($channel, $rowC) {
-	global $lm2_db_prefix, $team;
+	global $lm2_db_prefix, $team, $smcFunc;
 
 	$sep = "";
 	$desc = "";
@@ -143,7 +143,7 @@ function add_team_champ_item($channel, $rowC) {
 		. " AND ((position BETWEEN {$rowC['position']}-1 AND {$rowC['position']}+1) OR position = 1)"
 		. " ORDER BY position"
 		, __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$name = htmlentities($row['team_name'], ENT_QUOTES);
 		if ($team == $row['id_team']) {	
 			$name = "<B>$name</B>";
@@ -151,7 +151,7 @@ function add_team_champ_item($channel, $rowC) {
 		$desc .= $sep . positionify($row['position']) . " $name {$row['points']}pts";
 		$sep = "; ";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	$query = lm2_query("SELECT id_championship"
 		. " FROM {$lm2_db_prefix}championships"
@@ -159,10 +159,10 @@ function add_team_champ_item($channel, $rowC) {
 		. " AND event_group = {$rowC['id_event_group']}"
 		. " AND champ_type = 'D'"
 		, __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$desc .= add_driver_champ($row['id_championship']);
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	make_item("{$rowC['event_group_desc']} {$rowC['champ_class_desc']}",
 		"http://www.simracing.org.uk/index.php?ind=lm2&group={$rowC['id_event_group']}#ch{$rowC['id_championship']}",
@@ -170,7 +170,7 @@ function add_team_champ_item($channel, $rowC) {
 }
 
 function add_driver_champ($champ) {
-	global $lm2_db_prefix, $team;
+	global $lm2_db_prefix, $team, $smcFunc;
 
 	$sep = "<BR>";
 	$desc = "";
@@ -189,11 +189,11 @@ function add_driver_champ($champ) {
 		. " AND member = driver_member"
 		. " ORDER BY position"
 		, __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$desc .= $sep . positionify($row['position']) . " {$row['driver_name']} {$row['points']}pts";
 		$sep = "; ";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	return $desc;
 }

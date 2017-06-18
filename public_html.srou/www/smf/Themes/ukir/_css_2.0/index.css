@@ -1,0 +1,15 @@
+@import url("../../default/css/index.css?fin20");
+@import url("../../srou/css/lm2style.css?fin20");
+
+body { background: red; }
+
+.forumtitle img { width: 274px; height: 80px; position: relative; }
+
+.forumtitle a::after {
+	content: "by SimRacing.org.uk";
+	font-size: 8pt;
+	position: relative;
+	bottom: 2px;
+	right: 150px;
+	color: #c0c0ff;
+}

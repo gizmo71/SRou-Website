@@ -18,11 +18,11 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 			JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON event_group = container
 			ORDER BY depth
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$url .= "{$row['smf_board']};";
 			break;
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$extra .= "/lm2group={$_REQUEST['group']}"
 			. "/lm2simCircuit={$_REQUEST['simcircuit']}"
@@ -33,11 +33,11 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 			. " FROM {$db_prefix}topics t, {$db_prefix}calendar c"
 			. " WHERE t.id_topic = $smf_topic AND t.id_topic = c.id_topic"
 			, __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("topic $smf_topic not found");
+		($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) || die("topic $smf_topic not found");
 		$event = $row['id_event'];
 		$msg = $row['id_msg'];
-		mysql_fetch_assoc($query) && die("topic $smf_topic found more than once!");
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_fetch_assoc']($query) && die("topic $smf_topic found more than once!");
+		$GLOBALS['smcFunc']['db_free_result']($query);
 		$url .= "post&msg=$msg&topic=$smf_topic.0&calendar&eventid=$event&";
 	}
 	$url .= "sesc=$sc";
@@ -131,7 +131,7 @@ $classRefDataFieldFK = new RefDataFieldFK("class",
 	. " ORDER BY display_sequence");
 $memberRefDataFieldFK = new RefDataFieldFK("member",
 	"SELECT driver_member AS id
-	, CONCAT(driver_name, IF(driver_member > 10000000, ' (UKGPL historic)', IF(id_member IS NULL AND driver_member <> 10000000, ' (defunct)', IF(driver_member <> $guest_member_id AND memberName <> realName, CONCAT(' (', memberName, ')'), '')))) AS description, 1 AS is_html
+	, CONCAT(driver_name, IF(driver_member > 10000000, ' (UKGPL historic)', IF(id_member IS NULL AND driver_member <> 10000000, ' (defunct)', IF(driver_member <> $guest_member_id AND member_name <> real_name, CONCAT(' (', member_name, ')'), '')))) AS description, 1 AS is_html
 	, id_member IS NULL AND driver_member NOT IN (SELECT member FROM {$lm2_db_prefix}sim_drivers UNION SELECT member FROM {$lm2_db_prefix}event_entries) AND driver_member <> 10000000 AS hide
 	FROM {$lm2_db_prefix}drivers
 	LEFT JOIN {$db_prefix}members ON id_member = driver_member
@@ -162,9 +162,9 @@ function moderatorRefDataFieldFKSQL(/*$group...*/) {
 	$groups = func_get_args();
 
 	return "
-		SELECT id_member AS id, realName AS description, 1 AS is_html
+		SELECT id_member AS id, real_name AS description, 1 AS is_html
 		FROM {$db_prefix}members
-		WHERE CONCAT(',', id_group, ',', additionalGroups, ',') REGEXP ',(" . implode("|", $groups) . "),'
+		WHERE CONCAT(',', id_group, ',', additional_groups, ',') REGEXP ',(" . implode("|", $groups) . "),'
 		ORDER BY description
 	";
 }
@@ -239,10 +239,10 @@ class Cars extends RefData {
 			FROM {$this->lm2_db_prefix}manufacturers
 			ORDER BY manuf_name
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['m']['nested']["m{$row['id_manuf']}"] = array(name=>$row['manuf_name'], predicate=>"manuf = " . sqlString($row['id_manuf']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -364,10 +364,10 @@ class SimCars extends RefData {
 			FROM {$this->lm2_db_prefix}sims
 			WHERE id_sim <> -1
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$combo = "CONCAT(sim, '/', IFNULL(type, 'null'))";
 		$query = lm2_query("
@@ -377,16 +377,16 @@ class SimCars extends RefData {
 			WHERE sim <> -1
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['o']['nested']["o{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"$combo = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query($GLOBALS['carRefDataFieldFKSQL'], __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"car = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -445,26 +445,26 @@ class Classification extends RefData {
 			JOIN {$this->lm2_db_prefix}car_classification ON id_class = car_class
 			ORDER BY display_sequence
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'], predicate=>"car_class = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT id_event_group AS id, short_desc AS description
 			FROM {$this->lm2_db_prefix}event_groups
 			WHERE id_event_group IN (SELECT event_group FROM {$this->lm2_db_prefix}car_classification) OR NOT is_protected
 			ORDER BY description", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['g']['nested']["g{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf("event_group = %d", $row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query($GLOBALS['carRefDataFieldFKSQL'], __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"car = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -489,10 +489,10 @@ class Classification extends RefData {
 			WHERE car_class_c <> IFNULL(car_class, '-')
 			GROUP BY car_class_c, car_class, eg_c.short_desc, eg_e.short_desc
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			echo "<BR/>Mismatch? " . htmlentities(print_r($row, true), ENT_QUOTES) . "\n";
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 	}
 }
 
@@ -526,10 +526,10 @@ function rebuildClassificationCache($parent = null, $group = null) {
 		SELECT id_event_group FROM {$lm2_db_prefix}event_groups
 		WHERE parent " . (is_null($group) ? "IS NULL" : "= " . $group) . "
 		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 		rebuildClassificationCache($group, $row['id_event_group']);
 	}
-	mysql_free_result($query);
+	$GLOBALS['smcFunc']['db_free_result']($query);
 }
 
 class Classes extends RefData {
@@ -604,21 +604,21 @@ class SimCircuits extends RefData {
 
 		$query = lm2_query("SELECT id_sim AS id, sim_name AS description"
 			. " FROM {$this->lm2_db_prefix}sims", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = db_query("
 			SELECT id_circuit_location AS id, CONCAT(brief_name, ' (', iso3166_code, ')') AS description
 			FROM {$this->lm2_db_prefix}circuit_locations
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'],
 				predicate=>sprintf("circuit IN (SELECT id_circuit FROM {$this->lm2_db_prefix}circuits WHERE circuit_location = %s)", sqlString($row['id'])));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -687,10 +687,10 @@ class Circuits extends CircuitRefData {
 			FROM {$this->lm2_db_prefix}circuit_locations
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'], predicate=>"circuit_location = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -741,10 +741,10 @@ class Locations extends CircuitRefData {
 			FROM {$this->lm2_db_prefix}iso3166
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"iso3166_code = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$filters[''] = array(name=>'None', predicate=>'1');
 		return $filters;
@@ -811,10 +811,10 @@ class RefDataFieldFKPollChoice extends RefDataFieldFK {
 					WHERE id_championship = $champ
 					ORDER BY description
 					", __FILE__, __LINE__);
-				while ($row = mysql_fetch_assoc($query)) {
+				while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 					array_push($map, $row);
 				}
-				mysql_free_result($query);
+				$GLOBALS['smcFunc']['db_free_result']($query);
 			}
 
 			$champMaps[$champ] = $map;
@@ -839,7 +839,7 @@ class Championships extends RefData {
 			new RefDataFieldFK("scoring_scheme", scoringSchemeRefDataFieldFKSQL("1"), false, "12em"),
 			new RefDataFieldEdit("class", 10),
 			new RefDataFieldFK("reg_class_regexp", "
-				SELECT class_regexp AS id, CONCAT(description, ' - ^(', class_regexp, ')\$') AS description
+				SELECT class_regexp AS id, CONCAT('^(', class_regexp, ')\$ - ', description) AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
 				WHERE class_regexp IS NOT NULL
 				UNION SELECT '.*', 'Any (or no) class'
@@ -882,10 +882,10 @@ class Championships extends RefData {
 			FROM {$this->lm2_db_prefix}event_groups
 			ORDER BY is_protected < 2, is_protected > 0, description
 			" , __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['g']['nested']["g{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"event_group = {$row['id']}");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -945,15 +945,15 @@ class RefDataFieldFKSmfTopic extends RefDataFieldFK {
 	function __construct() {
 		global $db_prefix, $lm2_db_prefix;
 		parent::__construct("smf_topic", "SELECT DISTINCT {$db_prefix}topics.id_topic AS id
-			, CONCAT(DATE_FORMAT(startDate, '%m%d'), ' ', title) AS description
-			, startDate < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 35 DAY) OR smf_topic IS NOT NULL AS hide
+			, CONCAT(DATE_FORMAT(start_date, '%m%d'), ' ', title) AS description
+			, start_date < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 35 DAY) OR smf_topic IS NOT NULL AS hide
 			, 1 AS is_html
 			FROM ({$db_prefix}topics, {$db_prefix}calendar, {$db_prefix}messages)
 			LEFT JOIN {$lm2_db_prefix}events ON smf_topic = {$db_prefix}topics.id_topic
 			WHERE {$db_prefix}calendar.id_topic = {$db_prefix}topics.id_topic
-			AND startDate BETWEEN DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 60 DAY) AND DATE_ADD(" . php2timestamp(time()) . ", INTERVAL 1 YEAR)
+			AND start_date BETWEEN DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 60 DAY) AND DATE_ADD(" . php2timestamp(time()) . ", INTERVAL 1 YEAR)
 			AND {$db_prefix}messages.id_msg = {$db_prefix}topics.id_first_msg
-			ORDER BY startDate DESC
+			ORDER BY start_date DESC
 			" , true, "12em");
 	}
 
@@ -983,7 +983,7 @@ class RefDataFieldFKIncidentTopic extends RefDataFieldFK {
 			. " LEFT JOIN {$lm2_db_prefix}events ON t.id_topic = incident_topic"
 			. " WHERE t.id_board = $incidentReportForum AND id_msg = id_first_msg AND m.id_board = t.id_board"
 			. " AND subject LIKE 'Incident report%'"
-			. " ORDER BY modifiedTime DESC"
+			. " ORDER BY modified_time DESC"
 			, true, "7em");
 	}
 
@@ -1070,10 +1070,10 @@ class Events extends RefData {
 			WHERE $pred
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['s']['nested']["s{$row['id']}"] = array(name=>$row['description'], predicate=>"$pred AND sim = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT id_event_group AS id, short_desc AS description
@@ -1081,10 +1081,10 @@ class Events extends RefData {
 			JOIN {$this->lm2_db_prefix}events ON id_event_group = event_group
 			WHERE NOT is_protected
 			ORDER BY description", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['g']['nested']["g{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf("event_group = %d", $row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT pg.id_event_group AS id, pg.short_desc AS description
@@ -1092,24 +1092,24 @@ class Events extends RefData {
 			JOIN {$this->lm2_db_prefix}event_groups cg ON cg.parent = pg.id_event_group
 			JOIN {$this->lm2_db_prefix}events ON cg.id_event_group = event_group
 			ORDER BY description", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['p']['nested']["p{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf(
 				"(event_group = %d OR event_group IN (SELECT id_event_group FROM {$this->lm2_db_prefix}event_groups WHERE parent = %d))", $row['id'], $row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		global $circuit_html_clause;
-		$query = db_query("
+		$query = lm2_query("
 			SELECT id_circuit AS id, $circuit_html_clause AS description
 			FROM {$this->lm2_db_prefix}circuits
 			JOIN {$this->lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['t']['nested']["lt{$row['id']}"] = array(name=>$row['description'],
 				predicate=>sprintf("sim_circuit IN (SELECT id_sim_circuit FROM {$this->lm2_db_prefix}sim_circuits WHERE circuit = %d)", $row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -1155,7 +1155,7 @@ class EventEntries extends RefData {
 				FROM {$lm2_db_prefix}teams
 				ORDER BY description", true, "10em"),
 			new RefDataFieldFK("reg_class", "
-				SELECT class_code AS id, CONCAT(description, ' - ', class_code) AS description
+				SELECT class_code AS id, CONCAT(class_code, ' - ', description) AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
 				WHERE class_code IS NOT NULL
 				ORDER BY description
@@ -1222,7 +1222,7 @@ class EventEntries extends RefData {
 			" . ($ID_MEMBER == 1 ? "" : "WHERE is_protected_c = 0") . "
 			ORDER BY id
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			if (array_key_exists($row['id'], $isProtectedValueMap)) {
 				$row['description'] = "Prot? {$isProtectedValueMap[$row['id']]}";
 			}
@@ -1235,7 +1235,7 @@ class EventEntries extends RefData {
 					$notMig AND is_protected_c = {$row['id']} AND member <> sim_driver_member$pred");
 			}
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$filters['t']['nested']['tANY'] = array(name=>'Any', predicate=>"
 			$notProtNotMig AND IF(member = $lm2_guest_member_id, 1, 0) <> IF(driver_type IS NULL, 0, 1)");
@@ -1245,11 +1245,11 @@ class EventEntries extends RefData {
 			WHERE id_sim IN (SELECT sim FROM {$this->lm2_db_prefix}sim_drivers)
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['t']['nested']["t{$row['id']}"] = array(name=>$row['description'], predicate=>"
 				{$filters['t']['nested']['tANY']['predicate']} AND event IN (SELECT id_event FROM {$this->lm2_db_prefix}events WHERE sim = {$row['id']})");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT id_event AS id, CONCAT(short_desc, ' ', brief_name) AS description
@@ -1261,10 +1261,10 @@ class EventEntries extends RefData {
 			WHERE entries_c > 0 AND NOT is_protected
 			ORDER BY event_date DESC
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['e']['nested']["e{$row['id']}"] = array(name=>$row['description'], predicate=>"event = {$row['id']}");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT driver_member AS id, CONCAT(driver_name, IF(driver_member > 10000000, ' (UKGPL historic)', '')) AS description
@@ -1272,10 +1272,10 @@ class EventEntries extends RefData {
 			WHERE driver_member IN (SELECT member FROM {$this->lm2_db_prefix}event_entries)
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['d']['nested']["d{$row['id']}"] = array(name=>$row['description'], predicate=>"member = {$row['id']} AND NOT is_protected_c");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		if (array_key_exists('s', $filters)) {
 			$query = lm2_query("
@@ -1285,10 +1285,10 @@ class EventEntries extends RefData {
 				WHERE id_sim_drivers IN (SELECT sim_driver FROM {$this->lm2_db_prefix}event_entries WHERE IF(member = $lm2_guest_member_id, 1, 0) <> IF(driver_type IS NULL, 0, 1))
 				ORDER BY IF(member = $lm2_guest_member_id, 1, 0), description
 				", __FILE__, __LINE__);
-			while ($row = mysql_fetch_assoc($query)) {
+			while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 				$filters['s']['nested']["s{$row['id']}"] = array(name=>$row['description'], predicate=>"sim_driver = {$row['id']}");
 			}
-			mysql_free_result($query);
+			$GLOBALS['smcFunc']['db_free_result']($query);
 		}
 
 		$query = lm2_query("
@@ -1298,10 +1298,10 @@ class EventEntries extends RefData {
 			WHERE id_car IN (SELECT car FROM {$this->lm2_db_prefix}sim_cars JOIN {$this->lm2_db_prefix}event_entries ON id_sim_car = sim_car)
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"sim_car IN (SELECT id_sim_car FROM {$this->lm2_db_prefix}sim_cars WHERE car = {$row['id']})");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -1429,10 +1429,10 @@ class EventGroups extends RefData {
 			SELECT id_event_group, parent, full_desc FROM {$this->lm2_db_prefix}event_groups
 			WHERE parent IS NULL OR parent <> id_event_group
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$this->write_tree($row['id_event_group'], $row['parent'], $row['full_desc']);
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$dispSeq = 0;
 		$this->set_seq(0, $dispSeq, 0);
@@ -1477,14 +1477,14 @@ class EventGroups extends RefData {
 					SELECT contained from {$this->lm2_db_prefix}event_group_tree WHERE container = id_event_group)
 			) DESC, long_desc
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			lm2_query("UPDATE {$this->lm2_db_prefix}event_groups
 				SET sequence_c = " . ++$dispSeq . ", depth_c = $depth
 				WHERE id_event_group = {$row['id_event_group']}
 				", __FILE__, __LINE__);
 			$this->set_seq($row['id_event_group'], $dispSeq, $depth + 1);
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 	}
 
 	function fullName($group) {
@@ -1494,12 +1494,12 @@ class EventGroups extends RefData {
 		$sep = '';
 		while ($group) {
 			$query = db_query("SELECT parent, long_desc FROM {$lm2_db_prefix}event_groups WHERE id_event_group = $group", __FILE__, __LINE__);
-			($row = mysql_fetch_assoc($query)) || die("can't find group $group");
+			($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) || die("can't find group $group");
 			$desc = "{$row['long_desc']}$sep$desc";
 			$sep = ' ';
 			$group = $row['parent'];
-			mysql_fetch_assoc($query) && die("multiple groups matching $group!");
-			mysql_free_result($query);
+			$GLOBALS['smcFunc']['db_fetch_assoc']($query) && die("multiple groups matching $group!");
+			$GLOBALS['smcFunc']['db_free_result']($query);
 		}
 		return $desc;
 	}
@@ -1528,10 +1528,10 @@ class EventGroups extends RefData {
 				SELECT parent FROM {$this->lm2_db_prefix}event_groups
 				WHERE id_event_group = $parent
 				", __FILE__, __LINE__);
-			($row = mysql_fetch_assoc($query)) || die("parent $parent not found");
+			($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) || die("parent $parent not found");
 			$parent = $row['parent'];
-			mysql_fetch_assoc($query) && die("parent $parent ambiguous");
-			mysql_free_result($query);
+			$GLOBALS['smcFunc']['db_fetch_assoc']($query) && die("parent $parent ambiguous");
+			$GLOBALS['smcFunc']['db_free_result']($query);
 		}
 	}
 
@@ -1551,10 +1551,10 @@ class EventGroups extends RefData {
 			WHERE id_event_group IN (SELECT parent FROM {$this->lm2_db_prefix}event_groups)
 			ORDER BY description", __FILE__, __LINE__);
 		$filters['p']['nested']["pNULL"] = array('name'=>"Root", predicate=>"parent IS NULL");
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['p']['nested']["p{$row['id']}"] = array('name'=>$row['description'], predicate=>"parent = {$row['id']}");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -1628,10 +1628,10 @@ function simDriverIsUsed($id_sim_driver, $row) {
 		. " FROM {$lm2_db_prefix}event_entries"
 		. " WHERE sim_driver = $id_sim_driver",
 		__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 		$entries = max($entries, $row['entries']);
 	}
-	mysql_free_result($query);
+	$GLOBALS['smcFunc']['db_free_result']($query);
 
 	return $entries == 0;
 }
@@ -1667,12 +1667,12 @@ class SimDrivers extends RefData {
 			WHERE id_sim <> -1
 			", __FILE__, __LINE__);
 		$filters['g']['nested']["gAny"] = array('name'=>"{Any sim}", 'predicate'=>"member = $guest_member_id");
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
 			$filters['g']['nested']["g{$row['id']}"] = 
 				array('name'=>$row['description'], 'predicate'=>"member = $guest_member_id AND sim = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT driver_member AS id, CONCAT(driver_name,IF(driver_member > 10000000,' (UKGPL historic)','')) AS description
@@ -1680,10 +1680,10 @@ class SimDrivers extends RefData {
 			WHERE driver_member IN (SELECT member FROM {$this->lm2_db_prefix}sim_drivers)
 			ORDER BY description
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$filters['d']['nested']["d{$row['id']}"] = array(name=>$row['description'], predicate=>"member = {$row['id']}");
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		return $filters;
 	}
@@ -1694,7 +1694,7 @@ class SimDrivers extends RefData {
 			FROM {$this->lm2_db_prefix}sim_drivers
 			WHERE member = 10000000
 			" , __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$id = $this->getNextFreeHistoricId();
 			echo "<P>{$row['id_sim_drivers']} = " . htmlentities($row['name'], ENT_QUOTES) . " -> $id</P>\n";
 			db_query("
@@ -1708,7 +1708,7 @@ class SimDrivers extends RefData {
 				WHERE id_sim_drivers = {$row['id_sim_drivers']}
 				" , __FILE__, __LINE__);
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 	}
 
 	function getNextFreeHistoricId() {
@@ -1717,9 +1717,9 @@ class SimDrivers extends RefData {
 			FROM {$this->lm2_db_prefix}drivers
 			WHERE driver_member < 16000000
 			" , __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			return $row['id'];
-			mysql_free_result($query);
+			$GLOBALS['smcFunc']['db_free_result']($query);
 		}
 		die("err... how can there be no ID?!");
 	}
@@ -1745,19 +1745,19 @@ class SimDrivers extends RefData {
 			SELECT DISTINCT driving_name, CONCAT(driver_name, ' (', sim_name, ')') AS member_name
 			FROM {$this->lm2_db_prefix}sim_drivers
 			LEFT JOIN {$this->lm2_db_prefix}driver_details USING (driving_name)
-			LEFT JOIN {$this->db_prefix}members ON memberName = driving_name OR driving_name SOUNDS LIKE memberName OR driving_name SOUNDS LIKE realName
+			LEFT JOIN {$this->db_prefix}members ON member_name = driving_name OR driving_name SOUNDS LIKE member_name OR driving_name SOUNDS LIKE real_name
 			JOIN {$this->lm2_db_prefix}drivers ON driver = driver_member
 			JOIN {$this->lm2_db_prefix}sims ON {$this->lm2_db_prefix}driver_details.sim = id_sim
 			WHERE member IN ($matchMemberIds) $sdSimClause
 			" , __FILE__, __LINE__);
 		$closer = '';
 		$sep = '<P>';
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			echo "{$sep}<TT>{$row['driving_name']}</TT> may be <TT>{$row['member_name']}</TT>\n";
 			$sep = '<BR/>';
 			$closer = '</P>';
 		}
-		mysql_free_result($query);
+		$GLOBALS['smcFunc']['db_free_result']($query);
 		echo $closer;
 	}
 }
@@ -2044,7 +2044,7 @@ echo "\n<!-- XXX $sql -->\n";
 	$rownum = 0;
 
 	$rows = array();
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 		array_push($rows, $row);
 	}
 
@@ -2072,7 +2072,7 @@ echo "\n<!-- XXX $sql -->\n";
 			make_row($row, $refData, $rownum++);
 		}
 	}
-	mysql_free_result($query);
+	$GLOBALS['smcFunc']['db_free_result']($query);
 
 	echo "</TABLE>\n";
 }

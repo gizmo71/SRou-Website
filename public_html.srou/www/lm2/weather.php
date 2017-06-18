@@ -15,8 +15,8 @@ if (($location = $_REQUEST['location'])) {
 		FROM {$lm2_db_prefix}circuit_locations
 		WHERE id_circuit_location = $location
 		" , __FILE__, __LINE__);
-	($location_row = mysql_fetch_assoc($query)) || die("can't find location $location");
-	mysql_free_result($query);
+	($location_row = $smcFunc['db_fetch_assoc']($query)) || die("can't find location $location");
+	$smcFunc['db_free_result']($query);
 
 	$links = lm2MakeWeatherLinks($location_row);
 
@@ -135,8 +135,8 @@ function lookup_conditions($conditions, $null_if_missing = false) {
 	$conditions = sqlString($conditions);
 	
 	$query = lm2_query("SELECT condition_gtr AS value FROM {$lm2_db_prefix}wu_conditions WHERE condition_text = $conditions", __FILE__, __LINE__);
-	$row = mysql_fetch_assoc($query);
-	mysql_free_result($query);
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
 
 	if ($row) {
 		if (!is_null($row['value']))

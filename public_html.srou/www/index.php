@@ -1,4 +1,9 @@
 <?php
+global $context;
+$context['page_title'] = 'SimRacing.org.uk';
+$ssi_layers = array('html', 'body');
+global $options;
+$options['collapse_header'] = 1;
 require_once("smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
 
@@ -7,21 +12,21 @@ require_once("$sourcedir/Subs-LM2.php");
 if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 	if ($driver = lm2ArrayValue($_REQUEST, 'driver')) {
 		if ($driver == 'self' || !is_numeric($driver)) {
-			$driver = $ID_MEMBER;
+			$driver = $user_info['user_id'];
 		}
 		$u = $driver;
 
-		$query = db_query("
-			SELECT driver_name AS realName, memberName
-			FROM {$lm2_db_prefix}drivers
-			LEFT JOIN {$db_prefix}members ON id_member = driver_member
-			WHERE driver_member = $driver
-		", __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("unknown driver $driver");
-		if (is_null($membername = $row['memberName'])) {
+		$query = $smcFunc['db_query'](null, "
+			SELECT driver_name AS realName, member_name AS memberName
+			FROM {lm2_prefix}drivers
+			LEFT JOIN {db_prefix}members ON id_member = driver_member
+			WHERE driver_member = {int:driver}
+		", array('driver'=>$driver));
+		($row = $smcFunc['db_fetch_assoc']($query)) || die("unknown driver $driver");
+		if (is_null($row['memberName'])) {
 			$u = $lm2_guest_member_id;
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		header("Location: $boardurl/index.php?action=profile&u=$u&sa=racing_history&driver=$driver");
 		exit;
@@ -51,11 +56,13 @@ if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 			exit;
 		} else {
 			if (!$location) {
-				$query = db_query("SELECT circuit_location AS location FROM {$lm2_db_prefix}circuits WHERE id_circuit = $circuit", __FILE__, __LINE__);
-				($row = mysql_fetch_assoc($query)) || die("unknown circuit $circuit");
+				$query = $smcFunc['db_query'](null, "
+					SELECT circuit_location AS location FROM {$lm2_db_prefix}circuits WHERE id_circuit = {int:circuit}
+					", array('circuit'=>$circuit));
+				($row = $smcFunc['db_fetch_assoc']($query)) || die("unknown circuit $circuit");
 				$location = $row['location'];
-				mysql_fetch_assoc($query) && die("ambiguous circuit $circuit");
-				mysql_free_result($query);
+				$smcFunc['db_fetch_assoc']($query) && die("ambiguous circuit $circuit");
+				$smcFunc['db_free_result']($query);
 			} else {
 				$circuit = 0; // Not trying to bring a particular layout to the top.
 			}
@@ -64,30 +71,18 @@ if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 		}
 	}
 }
-?>
 
-<HTML><HEAD>
-<LINK rel="stylesheet" type="text/css" href="smf/Themes/srou/style.css" />
-</HEAD><BODY>
+$events = lm2RecentUpcoming(null);
 
-<?php
-global $boarddir;
-include_once("$boarddir/../layout-header.php");
-makeSrouLayoutHeader();
-
-ssi_menubar();
-
-$events = lm2RecentUpcoming($event);
-
-echo "<BR/><TABLE WIDTH='100%'><TR>
+echo "<br/><TABLE WIDTH='100%'><TR>
 	<TD VALIGN='TOP'>" . format_event_rows($events["recent"], "Recent Events", 'left') . "</TD>
 	<TD VALIGN='TOP'>" . lm2_table_open("Welcome to SRou!") . "
 SimRacing.org.uk is an umbrella organisation formed to expand UKGTR's horizons to encompass GT Legends and beyond.
 SimRacing.org.uk was founded by Dave Gymer, founder of UKGTR and long time technical administrator of UKGPL.
 <BR/><BR/>
-We currently have active leagues for GTR2, Power & Glory 2, iRacing and GT Legends.
+We currently have active leagues for GTR2, Power & Glory 2 and GT Legends.
 <BR/><BR/>
-Please visit our <A HREF='smf/index.php?board=40'>Start Here! board</A> if you would like to participate, or just want to know more about the league.
+Please visit our <A HREF='$boardurl/index.php?board=40'>Start Here! board</A> if you would like to participate, or just want to know more about the league.
 <BR/><BR/>
 Existing members may wish to jump directly to the list of <A HREF='$boardurl/index.php?action=unread;all'>all unread posts</A>.
 " . lm2_table_close() . "</TD>

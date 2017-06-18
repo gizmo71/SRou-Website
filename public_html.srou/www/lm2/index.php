@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <STYLE>
 .navbar { background: #dddddd; border: solid 1px }
+body { background: #fee; }
 </STYLE>
 <?php
 require_once('include.php');
@@ -31,7 +32,7 @@ $actions = array(
 		'title'=>'Migration',   	   'page'=>'migration'),
 );
 
-mysql_query("ROLLBACK"); // Just in case somebody left one open...
+mysqli_query($db_connection, "ROLLBACK"); // Just in case somebody left one open...
 ?>
   <TITLE>LM2i</TITLE>
 </HEAD>
@@ -58,9 +59,9 @@ if (!$user_info['is_guest']) {
 	echo "</TR></TABLE>\n";
 
 	if (!is_null($content_page)) {
-		mysql_query("BEGIN"); // Turns off auto-commit as a side effect.
+		mysqli_query($db_connection, "BEGIN"); // Turns off auto-commit as a side effect.
 		include("$content_page.php");
-		mysql_query("COMMIT");
+		mysqli_query($db_connection, "COMMIT");
 	} else {
 		//echo "<H1>Welcome to League Manager 2 interim.</H1>\n";
 		echo "<P>Please selection an action from the navigation bar.</P>\n";
@@ -84,7 +85,7 @@ if ($user_info['is_guest']) {
 }
 ?></I></TD>
 <TD><A HREF="index.php"><I>LM2</I></A></TD>
-<TD><A HREF="http://www.simracing.org.uk/"><I>SimRacing.org.uk</I></A></TD>
+<TD><A HREF="/"><I>SimRacing.org.uk</I></A></TD>
 </TR></TABLE>
 
 </BODY>

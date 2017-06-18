@@ -1,10 +1,220 @@
 <?php
+//XXX: remove!
+//global $db_show_debug;
+//$db_show_debug = true;
+
 /*TODO: move more stuff from include.php - might need to rename carefully...
- * Using a convention that externally access stuff is lm2CamelCase and internal is lm2_under_scores.
+ * Using a convention that externally accessed stuff is lm2CamelCase and internal is lm2_under_scores.
  */
 
 if (!defined('SMF'))
 	die('Hacking attempt...');
+
+function lm2AddButtons(&$buttons) {
+	global $context, $settings, $board_info;
+
+	if (!$context['user']['is_logged'])
+		return;
+
+	global $scripturl;
+
+//TODO: not if UKGPL
+//TODO: style button with ID button_srou_start_here bold if not old user
+	$buttons = array('srou_start_here' => array(
+		'title' => 'Start Here',
+		'href' => $scripturl . '?board=40',
+		'show' => true,
+//TODO: why doesn't this work?
+		'active_button' => isset($board_info['id']) && $board_info['id'] == 40
+	)) + $buttons;
+
+	$buttons['srou'] = array(
+		'title' => $settings['name'], // Theme name
+		'href' => $settings['srou_home'], //TODO: link to league home page or home home page
+		'show' => true,
+		'active_button' => false,
+		'sub_buttons' => array()
+	);
+
+	if (isset($settings['srou_downloads_topic'])) {
+		$buttons['srou']['sub_buttons'][] = array(
+			'title' => 'Downloads',
+			'href' => $scripturl . '?topic=' . $settings['srou_downloads_topic'] . "#main_content_section",
+			'show' => true,
+			'active_button' => false);
+	}
+
+	if (isset($settings['srou_rules_topic'])) {
+		$settings['srou_rules_url'] = $scripturl . "?topic=" . $settings['srou_rules_topic'] . "#main_content_section";
+	}
+	if (isset($settings['srou_rules_url'])) {
+		$buttons['srou']['sub_buttons'][] = array(
+			'title' => 'Rules',
+			'href' => $settings['srou_rules_url'],
+			'show' => true,
+			'active_button' => false);
+	}
+
+	if (isset($settings['srou_links_topic'])) {
+		$settings['srou_links_url'] = $scripturl . "?topic=" . $settings['srou_links_topic'];
+	}
+	if (isset($settings['srou_links_url'])) {
+		$buttons['srou']['sub_buttons'][] = array(
+			'title' => 'Links',
+			'href' => $settings['srou_links_url'],
+			'show' => true,
+			'active_button' => false);
+	}
+
+	if (isset($settings['srou_replay_url'])) {
+		$buttons['srou']['sub_buttons'][] = array(
+			'title' => 'Replays',
+			'href' => $settings['srou_replay_url'],
+			'show' => true,
+			'active_button' => false);
+	}
+
+	$buttons['srou']['sub_buttons'][] = array(
+		'title' => 'Circuits',
+		'href' => $scripturl . '?action=LM2R&circuit=*',
+		'show' => true,
+		'active_button' => false);
+
+	$buttons['srou']['sub_buttons'][] = array(
+		'title' => 'Teams',
+		'href' => $scripturl . '?action=LM2R&team=',
+		'show' => true,
+		'active_button' => false,
+		'sub_buttons' => array(array(
+			'title' => 'Manage Team Membership',
+			'href' => '/lm2/index.php?action=teams',
+			'show' => true,
+			'active_button' => false)
+		)
+	);
+
+	$buttons['srou']['sub_buttons'][] = array(
+		'title' => 'League Manager 2 interim',
+		'href' => '/lm2/index.php',
+		'show' => true,
+		'active_button' => false);
+
+	$buttons['profile']['sub_buttons'][] = array(
+		'title' => 'Racing History',
+		'href' => $scripturl . '?action=profile;area=racing_history',
+		'show' => true,
+		'active_button' => false);
+
+	$buttons['profile']['sub_buttons'][] = array(
+		'title' => 'Driver Details',
+		'href' => $scripturl . '?action=profile;area=driver_info',
+		'show' => allowedTo(array('profile_extra_any', 'profile_extra_own')),
+		'active_button' => false);
+
+//echo "<!-- FOO FOO ", print_r($GLOBALS, true), " -->";
+}
+
+function lm2AddPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {
+	global $txt;
+
+	$txt['permissiongroup_srou'] = 'SimRacing.org.uk';
+	$txt['permissiongroup_simple_srou'] = 'SimRacing.org.uk';
+
+	$permissionList['membergroup']['eat_fish'] = array(false, 'srou', 'srou');
+	$txt['permissionname_eat_fish'] = "Eat fish";
+
+	$permissionList['membergroup']['eat_meat'] = array(false, 'srou', 'srou');
+	$txt['permissionname_eat_meat'] = "Eat meat";
+}
+
+function lm2AddActions(&$actions) {
+	$actions['LM2R'] = array('lm2r.php', 'lm2r');
+	$actions['ReportIncident'] = array('ReportIncident.php', 'ReportIncident');
+	$actions['ManageTeam'] = array('ManageTeam.php', 'ManageTeam');
+}
+
+function lm2AddProfileAreas(&$profileAreas) {
+	global $context;
+
+	$profileAreas['lm2profile'] = array(
+		'title' => 'League Info',
+		'areas' => array(
+			'racing_history' => array(
+				'label' => 'Racing History',
+				'enabled' => true,
+				'file' => 'Profile-RacingHistory.php',
+				'function' => 'lm2ProfileRacingHistory',
+				'permission' => array(
+					'own' => array('profile_view_any', 'profile_view_own'),
+					'any' => 'profile_view_any',
+				)
+			),
+			'driver_info' => array(
+				'label' => 'Driver Details',
+				'enabled' => $context['user']['is_owner'],
+				'file' => 'Profile-DriverInfo.php',
+				'function' => 'lm2ProfileDriverInfo',
+				'permission' => array(
+					'own' => array('profile_extra_any', 'profile_extra_own'),
+					'any' => 'profile_extra_any',
+				)
+			),
+		),
+	);
+}
+
+function loadThemeData() {
+	global $context;
+
+	$context['theme_settings'][] = array(
+		'id' => 'srou_home',
+		'label' => 'Home',
+		'description' => 'URL to home page',
+		'type' => 'text',
+		'default' => 'http://www.simracing.org.uk/'
+	);
+	//TODO: add all the other old settings, like rules, downloads etc
+
+	global $settings, $context, $boarddir;
+	$events = lm2RecentUpcoming(-1, lm2ArrayValue($context, 'current_topic'));
+	if (!array_key_exists('site_slogan', $settings)) $settings['site_slogan'] = '';
+	$settings['site_slogan'] .= '		<table style="font-size: 0.5em; line-height: initial;"><tr>';
+	if ($_SERVER['SCRIPT_FILENAME'] == "$boarddir/index.php") {
+		$settings['site_slogan'] .= '
+			<td valign="top"><B>Series</B>
+			<BR/>' . implode('<BR/>', $events['champs']) . '</td>
+			<td valign="top"><B>Recent</B>
+				<A HREF="/lm2/icalendar.php"><IMG ALIGN="RIGHT" SRC="/images/ical.gif" BORDER="0" WIDTH="36" HEIGHT="14" /></A>
+			<BR/>' . implode('<BR/>', $events['recent']) . '</td>
+			<td valign="top"><B>Forthcoming</B>
+			<BR/>' . implode('<BR/>', $events['coming']) . '</td>';
+	}
+	ob_start();
+
+	if (file_exists("{$settings['actual_theme_dir']}/header-ads.php"))
+		include("{$settings['actual_theme_dir']}/header-ads.php");
+	else if (file_exists("{$settings['default_theme_dir']}/header-ads.php"))
+		include("{$settings['default_theme_dir']}/header-ads.php");
+	$settings['site_slogan'] .= ob_get_contents();
+
+	ob_clean();
+	$settings['site_slogan'] .= '</tr></table>';
+
+	// http://www.projecthoneypot.org/
+	$honeypots = array(
+		// '<a href="http://www.simracing.org.uk/frequent.php"><img src="nonchalant-unilinear.gif" height="1" width="1" border="0"></a>',
+		'<a href="http://www.simracing.org.uk/frequent.php"><!-- nonchalant-unilinear --></a>',
+		'<a href="http://www.simracing.org.uk/frequent.php" style="display: none;">nonchalant-unilinear</a>',
+		'<div style="display: none;"><a href="http://www.simracing.org.uk/frequent.php">nonchalant-unilinear</a></div>',
+		'<a href="http://www.simracing.org.uk/frequent.php"></a>',
+		'<!-- <a href="http://www.simracing.org.uk/frequent.php">nonchalant-unilinear</a> -->',
+		'<div style="position: absolute; top: -250px; left: -250px;"><a href="http://www.simracing.org.uk/frequent.php">nonchalant-unilinear</a></div>',
+		'<a href="http://www.simracing.org.uk/frequent.php"><span style="display: none;">nonchalant-unilinear</span></a>',
+		'<a href="http://www.simracing.org.uk/frequent.php"><div style="height: 0px; width: 0px;"></div></a>'
+	);
+	$index = array_rand($honeypots);
+	$settings['site_slogan'] .= "\n{$honeypots[$index]}\n";
+}
 
 function lm2_table_open($title = null, $align = 'center') {
 	return "<table cellpadding='3' cellspacing='0' border='0' width='100%' class='tborder' style='padding-top: 0; margin-bottom: 1ex;'>"
@@ -16,8 +226,21 @@ function lm2_table_close() {
 	return "</td></tr></table>\n";
 }
 
+function show_messages($messages) {
+	if (!empty($messages)) {
+		array_walk($messages, create_function('&$s', '$s = htmlentities($s);'));
+		echo '<div class="errorbox" id="errors">
+			<dl>
+				<dt class="error" id="error_list">
+					', implode('<br />', $messages), '
+				</dt>
+			</dl>
+		</div>';
+	}
+}
+
 function lm2MakeSeriesTree($group, $showAll = false, $extraParams = '') {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 	if ($showAll) {
 		$text = "All Series";
 		if (!$group) {
@@ -25,25 +248,25 @@ function lm2MakeSeriesTree($group, $showAll = false, $extraParams = '') {
 		}
 		echo sprintf("<NOBR>%s</NOBR><BR/>\n", lm2MakeEventGroupLink(0, $text, null, null, $extraParams));
 	}
-	$query = db_query(((is_null($group) || $group == '') ? "" : "
+	$query = $smcFunc['db_query'](null, ((is_null($group) || $group == '') ? "" : "
 		SELECT id_event_group, long_desc, depth_c AS depth, sequence_c, series_theme
-		FROM {$lm2_db_prefix}event_groups
-		, {$lm2_db_prefix}event_group_tree t
+		FROM {lm2_prefix}event_groups
+		, {lm2_prefix}event_group_tree t
 " . /* Parents */ "
-		WHERE t.contained = $group AND t.container = id_event_group 
+		WHERE t.contained = {int:group} AND t.container = id_event_group 
 " . /* Siblings */ "
-		OR t.contained = $group AND t.container IN (SELECT container FROM {$lm2_db_prefix}event_group_tree t2 WHERE t2.contained = id_event_group AND t2.depth = 1)
+		OR t.contained = {int:group} AND t.container IN (SELECT container FROM {lm2_prefix}event_group_tree t2 WHERE t2.contained = id_event_group AND t2.depth = 1)
 " . /* Children */ "
-		OR t.container = $group AND t.contained = id_event_group AND t.depth = 1
+		OR t.container = {int:group} AND t.contained = id_event_group AND t.depth = 1
 		GROUP BY id_event_group
 		UNION ") . "
 " . /* Always get the root groups. */ "
 		SELECT id_event_group, long_desc, depth_c AS depth, sequence_c, series_theme
-		FROM {$lm2_db_prefix}event_groups
+		FROM {lm2_prefix}event_groups
 		WHERE parent IS NULL
 		ORDER BY sequence_c
-		" , __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('group'=>$group));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$text = $row['long_desc'];
 		if ($row['id_event_group'] == $group) {
 			$text = "<B>$text</B>";
@@ -52,11 +275,11 @@ function lm2MakeSeriesTree($group, $showAll = false, $extraParams = '') {
 			str_repeat("&nbsp;", ($row['depth'] + ($showAll ? 1 : 0)) * 2),
 			lm2MakeEventGroupLink($row['id_event_group'], $text, $row['series_theme'], null, $extraParams));
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function lm2Staff($returnContent = false, $group = null, $show_title = true) {
-	global $db_prefix, $lm2_db_prefix, $lm2_guest_member_id, $boardurl;
+	global $db_prefix, $lm2_db_prefix, $lm2_guest_member_id, $boardurl, $smcFunc;
 
 	//FIXME: once MkPortal is gone we can remove this and the default.
 	if (is_null($group)) {
@@ -67,19 +290,19 @@ function lm2Staff($returnContent = false, $group = null, $show_title = true) {
 	$tdo = "<td" . ($returnContent ? "" : " class='smalltext'");
 	if (!isset($content)) $content = ""; // If not being called from MkPortal block.
 
-	$query = db_query("
-		SELECT DISTINCT id_team, team_name, id_member, realName, userTitle AS userTitle
-		FROM {$db_prefix}members
-		LEFT JOIN {$lm2_db_prefix}team_drivers ON member = id_member AND date_to IS NULL
-		LEFT JOIN {$lm2_db_prefix}teams ON team = id_team
+	$query = $smcFunc['db_query']('', "
+		SELECT DISTINCT id_team, team_name, id_member, real_name AS realName, usertitle AS userTitle
+		FROM {db_prefix}members
+		LEFT JOIN {lm2_prefix}team_drivers ON member = id_member AND date_to IS NULL
+		LEFT JOIN {lm2_prefix}teams ON team = id_team
 		WHERE id_member <> $lm2_guest_member_id
-		AND CONCAT(',', id_group, ',', additionalGroups, ',') REGEXP CONCAT(',', $group, ',')
+		AND CONCAT(',', id_group, ',', additional_groups, ',') REGEXP CONCAT(',', {int:group}, ',')
 		ORDER BY realName, team_name
-		" , __FILE__, __LINE__);
+		" , array('group'=>$group));
 	$row = null;
 	$closer = "";
 	for (;;) {
-		$newrow = mysql_fetch_assoc($query);
+		$newrow = $smcFunc['db_fetch_assoc']($query);
 
 		if ($newrow == null || $newrow['id_member'] != $row['id_member']) {
 			if ($row != null) {
@@ -95,7 +318,7 @@ function lm2Staff($returnContent = false, $group = null, $show_title = true) {
 
 			$row = $newrow;
 			$content .= "
-			<TR>$tdo ALIGN='RIGHT'><NOBR><A HREF='$boardurl/index.php?action=profile&u={$row['id_member']}&sa=racing_history&driver={$row['id_member']}'>{$row['realName']}</A></NOBR></TD>
+			<TR>$tdo ALIGN='RIGHT'><NOBR><A HREF='$boardurl/index.php?action=profile&u={$row['id_member']}&area=racing_history&driver={$row['id_member']}'>{$row['realName']}</A></NOBR></TD>
 				<TD WIDTH='5%'></TD>$tdo ALIGN='LEFT'><NOBR>";
 			$sep = "(";
 			$closer = "";
@@ -108,7 +331,7 @@ function lm2Staff($returnContent = false, $group = null, $show_title = true) {
 			$sep = ", ";
 		}
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	if ($returnContent) {
 		return $content;
@@ -119,21 +342,26 @@ function lm2Staff($returnContent = false, $group = null, $show_title = true) {
 }
 
 // General purpose hook for adding stuff to topics.
-function lm2AddTopicDetails() {
-	lm2FormatEventDetails();
+function lm2AddTopicDetails(&$topic_selects, &$topic_tables, &$topic_parameters) {
+	global $context;
+
+	ob_start();
+	lm2FormatEventDetails($topic_parameters['current_topic']);
+	$context['lm2TopicHtml'] = ob_get_contents();
+	ob_end_clean();
 }
 
-function lm2FormatEventDetails() {
-	global $context, $user_info, $boardurl, $settings;
-	global $lm2_guest_member_id, $lm2_mods_group, $lm2_db_prefix, $lm2_circuit_link_clause;
+function lm2FormatEventDetails($current_topic) {
+	global $user_info, $boardurl, $settings, $smcFunc, $board_info;
+	global $lm2_guest_member_id, $lm2_mods_group, $lm2_circuit_link_clause;
 
 	$seenExtra = array();
 
-	global $modSettings;
-	$modSettings['disableQueryCheck'] = true;
-	$request = db_query("
+	//global $modSettings;
+	//$modSettings['disableQueryCheck'] = true;
+	$request = $smcFunc['db_query'](null, "
 		SELECT id_event
-		, event_date, TIMESTAMPDIFF(HOUR, " . lm2Php2timestamp() . ", event_date) AS tminus
+		, event_date, TIMESTAMPDIFF(HOUR, {string:now}, event_date) AS tminus
 		, id_event_group, full_desc, series_theme
 		, length_metres
 		, id_circuit
@@ -144,32 +372,32 @@ function lm2FormatEventDetails() {
 		, $lm2_circuit_link_clause AS circuit_html
 		, IFNULL(server_starter_override, server_starter) AS server_starter
 		, event_password AS password
-		, {$lm2_db_prefix}events.sim
+		, {lm2_prefix}events.sim
 		, IFNULL(eb_name, driving_name) AS eb_name
 		, IFNULL(IFNULL(eb_ballast, handicap_ballast), 0) AS eb_ballast
-		"/* . ", IF(SELECT COUNT(*) FROM {$lm2_db_prefix}championships
-			JOIN {$lm2_db_prefix}classes ON id_class REGEXP CONCAT('^(',{$lm2_db_prefix}championships.class,')\$')
+		"/* . ", IF(SELECT COUNT(*) FROM {lm2_prefix}championships
+			JOIN {lm2_prefix}classes ON id_class REGEXP CONCAT('^(',{lm2_prefix}championships.class,')\$')
 			WHERE event_group = id_event_group
 			AND class_ballast_scheme IS NOT NULL) > 0, 8, 0) AS ballast_hours" */. "
-		, IF({$lm2_db_prefix}events.sim = 4, 8, 0) AS ballast_hours 
-		, (SELECT COUNT(*) FROM {$lm2_db_prefix}event_ballasts WHERE id_event = eb_event AND eb_driver <> $lm2_guest_member_id) AS got_ballasts
+		, IF({lm2_prefix}events.sim = 4, 8, 0) AS ballast_hours 
+		, (SELECT COUNT(*) FROM {lm2_prefix}event_ballasts WHERE id_event = eb_event AND eb_driver <> $lm2_guest_member_id) AS got_ballasts
 		, sim_weather
 		, iracing_subsession
-		FROM {$lm2_db_prefix}events
-		JOIN {$lm2_db_prefix}sims ON id_sim = {$lm2_db_prefix}events.sim
-		JOIN {$lm2_db_prefix}event_groups ON id_event_group = event_group
-		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-		JOIN {$lm2_db_prefix}circuits ON id_circuit = circuit
-		JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
-		LEFT JOIN {$lm2_db_prefix}event_ballasts ON id_event = eb_event AND eb_driver = {$context['user']['id']}
-		LEFT JOIN {$lm2_db_prefix}driver_details ON (
-			{$lm2_db_prefix}driver_details.driver = {$context['user']['id']} AND
-			{$lm2_db_prefix}driver_details.sim = {$lm2_db_prefix}events.sim)
-		WHERE smf_topic = {$context['current_topic']}
+		FROM {lm2_prefix}events
+		JOIN {lm2_prefix}sims ON id_sim = {lm2_prefix}events.sim
+		JOIN {lm2_prefix}event_groups ON id_event_group = event_group
+		JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = sim_circuit
+		JOIN {lm2_prefix}circuits ON id_circuit = circuit
+		JOIN {lm2_prefix}circuit_locations ON id_circuit_location = circuit_location
+		LEFT JOIN {lm2_prefix}event_ballasts ON id_event = eb_event AND eb_driver = {int:userId}
+		LEFT JOIN {lm2_prefix}driver_details ON (
+			{lm2_prefix}driver_details.driver = {int:userId} AND
+			{lm2_prefix}driver_details.sim = {lm2_prefix}events.sim)
+		WHERE smf_topic = {int:current_topic}
 		ORDER BY event_date
-	", __FILE__, __LINE__);
-	$context['lm2_event_types'] = array();
-	while ($row = mysql_fetch_assoc($request)) {
+	", array('now'=>lm2Php2timestamp(), 'current_topic'=>$current_topic, 'userId'=>$user_info['id']));
+	//$context['lm2_event_types'] = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request)) {
 		$when = lm2Timestamp2php($row['event_date']);
 		$row['event_date'] = timeformat($when, true);
 		$row['event_date'] = "<A HREF=\"$boardurl/index.php?action=calendar;" . strftime("year=%Y;month=%m", $when) . "\">{$row['event_date']}</A>";
@@ -188,20 +416,21 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 			}
 			
 			if ($row['server_starter']) {
-				$request2 = db_query("
+				$request2 = $smcFunc['db_query'](null, "
 					SELECT driver_member AS id_member
 					, driver_name AS realName
-					FROM {$lm2_db_prefix}drivers
-					WHERE driver_member = {$row['server_starter']}
-				", __FILE__, __LINE__);
-				($row['server_starter'] = mysql_fetch_assoc($request2)) || die("can't find server starter member");
-				mysql_fetch_assoc($request2) && die("ambiguous server starters");
-				mysql_free_result($request2);
+					FROM {lm2_prefix}drivers
+					WHERE driver_member = {int:server_starter}
+				", array('server_starter'=>$row['server_starter']));
+				($row['server_starter'] = $smcFunc['db_fetch_assoc']($request2)) || die("can't find server starter member");
+				$smcFunc['db_fetch_assoc']($request2) && die("ambiguous server starters");
+				$smcFunc['db_free_result']($request2);
 			}
 
 			$closer = "";
 			$sep = "<p>";
-			if ($row['sim_weather'] != 'N') { // Some sims don't have weather.
+if (false) { //TODO: restore weather
+//			if ($row['sim_weather'] != 'N') { // Some sims don't have weather.
 				$links = lm2MakeWeatherLinks($row);
 				if ($links['weatherLink']) {
 					echo "$sep{$links['weatherLink']}";
@@ -244,15 +473,17 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 			$row['server_starter'] = null;
 			$row['password'] = null;
 
-			$query2 = db_query("SELECT MIN(qual_best_lap_time) AS best_qual_time
-				FROM {$lm2_db_prefix}event_entries
-				WHERE event = {$row['id_event']}
-			"/* . " AND car_class_c = id_class"*/, __FILE__, __LINE__);
+			$query2 = $smcFunc['db_query'](null, "
+				SELECT MIN(qual_best_lap_time) AS best_qual_time
+				FROM {lm2_prefix}event_entries
+				WHERE event = {int:event}
+				"/* . " AND car_class_c = id_class
+				"*/, array('event'=>$row['id_event']));
 			$row['best_qual_time'] = null; //FIXME: qualifying best per class?
-			while ($row2 = mysql_fetch_assoc($query2)) {
+			while ($row2 = $smcFunc['db_fetch_assoc']($query2)) {
 				$row['best_qual_time'] = $row2['best_qual_time'];
 			}
-			mysql_free_result($query2);
+			$smcFunc['db_free_result']($query2);
 		} // End if some entries.
 
 		if ($row['password'] && !$user_info['is_guest']) {
@@ -288,7 +519,7 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 		} else if ($row['entries_c'] > 0) {
 			echo "<P ALIGN='CENTER'><I>Results are provisional pending moderator's review.</I>";
 			if (lm2FindEventModerator($row['id_event'])) {
-				echo "<BR /><B><A HREF='/lm2/index.php?action=increp&event={$row['id_event']}'>Submit an incident report</A></B>";
+				echo "<BR /><B><A HREF='", $boardurl, "?action=ReportIncident&board=", $board_info['id'], "&event=", $row['id_event'], "'>Submit an incident report</A></B>";
 			}
 			echo "</P>\n";
 		}
@@ -306,23 +537,23 @@ ts3viewer.php?ID=14187&bg=transparent&type=&type_size=9&type_family=1&info=0&cha
 			$seenExtra[$key] = true;
 		}
 	}
-	mysql_free_result($request);
+	$smcFunc['db_free_result']($request);
 }
 
 function lm2_show_gen_ballasts($event) {
 	global $lm2_db_prefix, $lm2_guest_member_id;
 	echo "<H2>Voluntary Handicap Ballasts</H2><TABLE BORDER='1' CELLSPACING='0' CELLPADDING='3'>\n";
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT driver_name AS name, eb_ballast
-		FROM {$lm2_db_prefix}event_ballasts
-		LEFT JOIN {$lm2_db_prefix}drivers ON driver_member = eb_driver
+		FROM {lm2_prefix}event_ballasts
+		LEFT JOIN {lm2_prefix}drivers ON driver_member = eb_driver
 		WHERE eb_event = $event AND eb_driver <> $lm2_guest_member_id
 		ORDER BY eb_name
 		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		printf("<TR><TD>%s</TD><TD ALIGN='RIGHT'>%skg</TD></TR>\n", $row['name'], $row['eb_ballast']);
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	echo "</TABLE>\n";
 }
 
@@ -331,7 +562,7 @@ function lm2ArrayValue($array, $key) {
 }
 
 function lm2RecentUpcoming($event = -1, $topic = -1) {
-	global $lm2_db_prefix, $lm2_circuit_html_clause, $lm2_mods_group, $user_info, $ID_MEMBER, $settings;
+	global $lm2_db_prefix, $lm2_circuit_html_clause, $lm2_mods_group, $user_info, $settings, $smcFunc;
 
 	$ukgpl = ($settings['theme_id'] == 6); // If any other leagues were to join we could put a theme-lock in the event group table.
 
@@ -340,48 +571,48 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 	global $modSettings;
 	$modSettings['disableQueryCheck'] = true;
 
-	$query = db_query("
+	$query = $smcFunc['db_query']('', "
 		SELECT DISTINCT id_event_group, short_desc, series_theme
-		FROM {$lm2_db_prefix}event_groups
-		JOIN {$lm2_db_prefix}championships ON event_group = id_event_group
-		JOIN {$lm2_db_prefix}events ON {$lm2_db_prefix}events.event_group = id_event_group
-		AND id_event_group " . ($ukgpl ? "" : "NOT "). "IN (SELECT contained FROM {$lm2_db_prefix}event_group_tree WHERE container = 64)
-		WHERE event_date BETWEEN DATE_ADD(" . lm2Php2timestamp() . ", INTERVAL -45 DAY) AND DATE_ADD(" . lm2Php2timestamp() . ", INTERVAL 45 DAY)
+		FROM {lm2_prefix}event_groups
+		JOIN {lm2_prefix}championships ON event_group = id_event_group
+		JOIN {lm2_prefix}events ON {lm2_prefix}events.event_group = id_event_group
+		AND id_event_group " . ($ukgpl ? "" : "NOT "). "IN (SELECT contained FROM {lm2_prefix}event_group_tree WHERE container = 64)
+		WHERE event_date BETWEEN DATE_ADD({string:now}, INTERVAL -45 DAY) AND DATE_ADD({string:now}, INTERVAL 45 DAY)
 		ORDER BY short_desc
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('now'=>lm2Php2timestamp()));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$text = lm2MakeEventGroupLink($row['id_event_group'], $row['short_desc'], $row['series_theme']);
 		if (lm2ArrayValue($_REQUEST, 'action') == 'LM2R' && lm2ArrayValue($_REQUEST, 'group') == $row['id_event_group']) {
 			$text = "<B>$text</B>";
 		}
 		$events["champs"][] = $text;
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
-	$query = db_query("
+	$query = $smcFunc['db_query']('', "
 		SELECT id_event, smf_topic
 		, id_event_group
-		, $lm2_circuit_html_clause AS circuit_html
 		, short_desc AS event_group
 		, event_date
+		, $lm2_circuit_html_clause AS circuit_html
 		, SUM(id_event_entry) AS entries
 		, IFNULL(server_starter_override, server_starter) AS server_starter
 		, full_desc AS event_group_full
-		, {$lm2_db_prefix}sims.sim_name AS sim_desc
-		FROM {$lm2_db_prefix}events
-		JOIN {$lm2_db_prefix}sims ON sim = id_sim
-		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-		JOIN {$lm2_db_prefix}circuits ON id_circuit = {$lm2_db_prefix}sim_circuits.circuit
-		JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
-		JOIN {$lm2_db_prefix}event_groups ON event_group = id_event_group
-		LEFT JOIN {$lm2_db_prefix}event_entries ON id_event = event
-		WHERE event_date BETWEEN DATE_ADD(" . lm2Php2timestamp() . ", INTERVAL -15 DAY) AND DATE_ADD(" . lm2Php2timestamp() . ", INTERVAL 15 DAY)
+		, {lm2_prefix}sims.sim_name AS sim_desc
+		FROM {lm2_prefix}events
+		JOIN {lm2_prefix}sims ON sim = id_sim
+		JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = sim_circuit
+		JOIN {lm2_prefix}circuits ON id_circuit = {lm2_prefix}sim_circuits.circuit
+		JOIN {lm2_prefix}circuit_locations ON id_circuit_location = circuit_location
+		JOIN {lm2_prefix}event_groups ON event_group = id_event_group
+		LEFT JOIN {lm2_prefix}event_entries ON id_event = event
+		WHERE event_date BETWEEN DATE_ADD({string:now}, INTERVAL -15 DAY) AND DATE_ADD({string:now}, INTERVAL 15 DAY)
 		AND id_circuit <> -1
-		AND {$lm2_db_prefix}events.sim " . ($ukgpl ? "=" : "<>") . " 8
+		AND {lm2_prefix}events.sim " . ($ukgpl ? "=" : "<>") . " 8
 		GROUP BY IFNULL(smf_topic, CONCAT(id_sim_circuit, '/', id_event_group))
 		ORDER BY event_date ASC
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('now'=>lm2Php2timestamp()));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$content = "";
 
 		$max_link_len = ($event == $row['id_event'] || $topic == $row['smf_topic']) ? 20 : 23; // Bold ones are longer...
@@ -392,7 +623,7 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		if (!$row['entries']) {
 			$cssClass = null;
 			if (in_array($lm2_mods_group, $user_info['groups'])) {
-				if ($row['server_starter'] == $ID_MEMBER) {
+				if ($row['server_starter'] == $user_info['id']) {
 					$cssClass = 'lm2eventAmStarter';
 				} else if (is_null($row['server_starter'])) {
 					$cssClass = 'lm2eventNoStarter';
@@ -409,7 +640,7 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 
 		$events[$row['entries'] ? "recent" : "coming"][] = $content;
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	return $events;
 }
@@ -429,7 +660,7 @@ function lm2_make_password_link($row) {
 
 //FIXME: merge this into above?
 function lm2_registration_status($event_group) {
-	global $user_info, $lm2_db_prefix, $db_prefix;
+	global $user_info, $smcFunc;
 
 	$texts = array(
 		'F'=>"full time",
@@ -440,24 +671,25 @@ function lm2_registration_status($event_group) {
 
 	$text = "";
 	$reg_needed = false;
-	$query = db_query("SELECT DISTINCT IF(champ_group_poll_choice IS NULL, NULL, id_group) AS group_id, champ_class_desc, champ_group_type, champ_group_poll_choice
-		FROM {$lm2_db_prefix}championships
-		, ${lm2_db_prefix}champ_groups
-		, {$db_prefix}membergroups AS g
-		, {$lm2_db_prefix}event_group_tree
-		WHERE id_championship = champ_group_champ AND event_group = container AND contained = $event_group" /*FIXME: consider using a sub-SELECT */ . "
+	$query = $smcFunc['db_query'](null, "SELECT DISTINCT IF(champ_group_poll_choice IS NULL, NULL, id_group) AS group_id, champ_class_desc, champ_group_type, champ_group_poll_choice
+		FROM {lm2_prefix}championships
+		, {lm2_prefix}champ_groups
+		, {db_prefix}membergroups AS g
+		, {lm2_prefix}event_group_tree
+		" /*FIXME: consider using a sub-SELECT: */ . "
+		WHERE id_championship = champ_group_champ AND event_group = container AND contained = {int:event_group}
 		AND champ_group_membergroup = g.id_group
 		ORDER BY IFNULL(champ_group_poll_choice, -1) DESC
 		, CASE champ_group_type WHEN 'L' THEN 0 WHEN 'F' THEN 1 WHEN '1' THEN 2 WHEN '2' THEN 3 ELSE 99 END
 		, champ_sequence
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('event_group'=>$event_group));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$in_group = $row['group_id'] !== null && in_array($row['group_id'], $user_info['groups']);
 		if ($row['champ_group_type'] == 'L') {
 			if ($in_group) {
 				continue; // They are licensed.
 			} else {
-				mysql_free_result($query);
+				$smcFunc['db_free_result']($query);
 				return null; // If there's a licensing group and they're not in it, they cannot join, so stop now.
 			}
 		} else if ($in_group) {
@@ -469,7 +701,7 @@ function lm2_registration_status($event_group) {
 		}
 		$reg_needed = true; // If we got here then some sort of registration is needed.
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	if ($text) {
 		$text = "you are $text";
@@ -483,19 +715,19 @@ function lm2_registration_status($event_group) {
 }
 
 function lm2MakeSmfCalendarEvents($low_date, $high_date, &$events) {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 
-	$result = db_query("
+	$result = $smcFunc['db_query'](null, "
 		SELECT DISTINCT DATE(event_date) AS event_date, short_desc, brief_name, smf_topic
-		FROM {$lm2_db_prefix}events
-		JOIN {$lm2_db_prefix}event_groups ON event_group = id_event_group
-		JOIN {$lm2_db_prefix}sim_circuits ON sim_circuit = id_sim_circuit
-		JOIN {$lm2_db_prefix}circuits ON circuit = id_circuit
-		JOIN {$lm2_db_prefix}circuit_locations ON circuit_location = id_circuit_location
-		WHERE DATE(event_date) BETWEEN '$low_date' AND '$high_date'
+		FROM {lm2_prefix}events
+		JOIN {lm2_prefix}event_groups ON event_group = id_event_group
+		JOIN {lm2_prefix}sim_circuits ON sim_circuit = id_sim_circuit
+		JOIN {lm2_prefix}circuits ON circuit = id_circuit
+		JOIN {lm2_prefix}circuit_locations ON circuit_location = id_circuit_location
+		WHERE DATE_FORMAT(event_date, {string:dateFmt}) BETWEEN {string:low_date} AND {string:high_date}
 		AND smf_topic IS NULL
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($result)) {
+		", array('low_date'=>$low_date, 'high_date'=>$high_date, 'dateFmt'=>'%Y-%m-%d'));
+	while ($row = $smcFunc['db_fetch_assoc']($result)) {
 		$desc = "{$row['short_desc']} {$row['brief_name']}";
 		$events[$row['event_date']][] = array(
 			'link' => $desc, // It's not really a link, it's just HTML...
@@ -514,11 +746,11 @@ function lm2MakeSmfCalendarEvents($low_date, $high_date, &$events) {
 			'allowed_groups' => array(),
 		);
 	}
-	mysql_free_result($result);
+	$smcFunc['db_free_result']($result);
 }
 
 function lm2_show_event($event) {
-	global $db_prefix, $lm2_db_prefix, $lm2_guest_member_id, $lm2_class_style_clause, $boardurl;
+	global $smcFunc, $lm2_guest_member_id, $lm2_class_style_clause, $boardurl;
 	global $lm2_ukgpl_migration_sim_driver;
 ?>
 <TABLE BORDER="1" CELLSPACING="0" ALIGN="CENTER">
@@ -551,28 +783,28 @@ function lm2_show_event($event) {
   </TR>
 <?php
 //XXX: doesn't account for any default ballast
-	$query = db_query("
-		SELECT {$lm2_db_prefix}event_entries.*
+	$query = $smcFunc['db_query'](null, "
+		SELECT {lm2_prefix}event_entries.*
 		" . lm2MakeBallastFields("'&nbsp;'", "''") . "
 		, IF(IFNULL(eb_ballast, 0) = IFNULL(ballast_driver, 0), NULL, eb_ballast) AS correct_ballast
 		, IF(IFNULL(eb_name, driving_name) = driving_name, NULL, eb_name) AS correct_name
-		, CONCAT('<B>', {$lm2_db_prefix}cars.car_name, '</B>', IFNULL(CONCAT(' (#',number,')'),'')) AS car_name
-		, CONCAT({$lm2_db_prefix}sim_cars.vehicle, IFNULL(CONCAT('/', {$lm2_db_prefix}sim_cars.team), '')) AS sim_car_name
+		, CONCAT('<B>', {lm2_prefix}cars.car_name, '</B>', IFNULL(CONCAT(' (#',number,')'),'')) AS car_name
+		, CONCAT({lm2_prefix}sim_cars.vehicle, IFNULL(CONCAT('/', {lm2_prefix}sim_cars.team), '')) AS sim_car_name
 		, class_description, reg_class
 		, $lm2_class_style_clause
 		, driver_name AS realName
 		, LOWER(iso3166_code) AS iso3166_code
 		, iso3166_name
 		, IFNULL(reason_desc, retirement_reason) AS retirement_reason
-		, {$lm2_db_prefix}teams.id_team
-		, {$lm2_db_prefix}teams.team_name
-		, {$lm2_db_prefix}sim_cars.tyres
-		, {$lm2_db_prefix}tyres.tyre_description AS tyre_name
-		, CONCAT({$lm2_db_prefix}tyres.id_tyre,'.gif') AS tyre_image
-		, {$lm2_db_prefix}tyres.url AS tyre_url
-		, {$lm2_db_prefix}tyres.width AS tyre_width
-		, {$lm2_db_prefix}tyres.height AS tyre_height
-		, {$lm2_db_prefix}tyres.bgcolor AS tyre_bgcolor
+		, {lm2_prefix}teams.id_team
+		, {lm2_prefix}teams.team_name
+		, {lm2_prefix}sim_cars.tyres
+		, {lm2_prefix}tyres.tyre_description AS tyre_name
+		, CONCAT({lm2_prefix}tyres.id_tyre,'.gif') AS tyre_image
+		, {lm2_prefix}tyres.url AS tyre_url
+		, {lm2_prefix}tyres.width AS tyre_width
+		, {lm2_prefix}tyres.height AS tyre_height
+		, {lm2_prefix}tyres.bgcolor AS tyre_bgcolor
 		, manuf_url
 		, manuf_name
 		, manuf_image
@@ -584,26 +816,26 @@ function lm2_show_event($event) {
 		, driver_type
 		, incident_points
 		, laps_led
-		FROM {$lm2_db_prefix}event_entries
-		LEFT JOIN {$lm2_db_prefix}teams ON {$lm2_db_prefix}event_entries.team = id_team
-		LEFT JOIN {$lm2_db_prefix}sim_drivers ON sim_driver = id_sim_drivers
-		LEFT JOIN {$db_prefix}members ON {$lm2_db_prefix}event_entries.member = id_member
-		LEFT JOIN {$lm2_db_prefix}event_ballasts ON {$lm2_db_prefix}event_entries.member = eb_driver AND event = eb_event
-		LEFT JOIN {$lm2_db_prefix}retirement_reasons USING (retirement_reason)  
-		JOIN {$lm2_db_prefix}sim_cars ON sim_car = id_sim_car
-		JOIN {$lm2_db_prefix}cars ON id_car = {$lm2_db_prefix}sim_cars.car
-		JOIN {$lm2_db_prefix}classes ON car_class_c = id_class
-		JOIN {$lm2_db_prefix}tyres ON id_tyre = tyres
-		JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
-		JOIN {$lm2_db_prefix}drivers ON driver_member = {$lm2_db_prefix}event_entries.member
-		JOIN {$lm2_db_prefix}iso3166 ON iso3166_code = id_iso3166
-		WHERE event = {$event['id_event']}
+		FROM {lm2_prefix}event_entries
+		LEFT JOIN {lm2_prefix}teams ON {lm2_prefix}event_entries.team = id_team
+		LEFT JOIN {lm2_prefix}sim_drivers ON sim_driver = id_sim_drivers
+		LEFT JOIN {db_prefix}members ON {lm2_prefix}event_entries.member = id_member
+		LEFT JOIN {lm2_prefix}event_ballasts ON {lm2_prefix}event_entries.member = eb_driver AND event = eb_event
+		LEFT JOIN {lm2_prefix}retirement_reasons USING (retirement_reason)  
+		JOIN {lm2_prefix}sim_cars ON sim_car = id_sim_car
+		JOIN {lm2_prefix}cars ON id_car = {lm2_prefix}sim_cars.car
+		JOIN {lm2_prefix}classes ON car_class_c = id_class
+		JOIN {lm2_prefix}tyres ON id_tyre = tyres
+		JOIN {lm2_prefix}manufacturers ON id_manuf = manuf
+		JOIN {lm2_prefix}drivers ON driver_member = {lm2_prefix}event_entries.member
+		JOIN {lm2_prefix}iso3166 ON iso3166_code = id_iso3166
+		WHERE event = {int:event}
 		ORDER BY IFNULL(race_pos, 999), IFNULL(race_laps, -999) DESC, IFNULL(qual_pos, 999)
-	", __FILE__, __LINE__);
+	", array('event'=>$event['id_event']));
 	$prev_race_laps = $winners_race_laps = null;
 	$prev_race_time = null;
 	$entries = 0;
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		//printf("<!-- %s -->\n", print_r($row, true));
 		$rowStyle = sprintf(' CLASS="windowbg%d"', ($entries++ & 1) + 2);
 
@@ -617,7 +849,7 @@ function lm2_show_event($event) {
 				$realName = sprintf("<SPAN TITLE='Expected: %s' STYLE='color: red'>$realName</SPAN>",
 					htmlentities($row['correct_name'], ENT_QUOTES));
 			}
-			$driver_name = "<B><A HREF='$boardurl/index.php?action=profile&u={$row['id_member']}&sa=racing_history&driver={$row['member']}#aliases'>$realName</A></B>";
+			$driver_name = "<B><A HREF='$boardurl/index.php?action=profile&u={$row['id_member']}&area=racing_history&driver={$row['member']}#aliases'>$realName</A></B>";
 		}
 		$driver_tooltip = lm2_make_driver_tooltip($row, $event['sim']);
 		echo "  <TD CLASS='smalltext' ROWSPAN=\"2\"$driver_tooltip>$driver_name\n
@@ -714,7 +946,7 @@ function lm2_show_event($event) {
 		echo "  <TD COLSPAN='2' CLASS='smalltext' ALIGN=RIGHT>{$row['ballast']}</TD>\n";
 		echo "</TR>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 ?>
 </TABLE>
 <?php
@@ -750,33 +982,33 @@ function lm2_make_driver_tooltip($row, $id_sim) {
 }
 
 function lm2_add_points($entry) {
-	global $lm2_db_prefix;
+	global $smcFunc;
 
 	$text = "";
-	$query = db_query("SELECT champ_class_desc, position, points, champ_type
-		FROM {$lm2_db_prefix}event_points, {$lm2_db_prefix}championships
-		WHERE event_entry = $entry AND championship = id_championship
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	$query = $smcFunc['db_query'](null, "SELECT champ_class_desc, position, points, champ_type
+		FROM {lm2_prefix}event_points, {lm2_prefix}championships
+		WHERE event_entry = {int:entry} AND championship = id_championship
+		", array('entry'=>$entry));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$text .= $row['champ_class_desc'] . "/" . $row['champ_type'] . "=" . $row['position'] . "/" . $row['points'] . "&#10;";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	
 	return $text;
 }
 
 function lm2_show_penalties($event) {
-	global $lm2_db_prefix;
+	global $smcFunc;
 
 	echo "<DIV ALIGN='LEFT' CLASS='smalltext'>\n";
-	$query = db_query("SELECT id_incident, replay_time, description, is_comment, sim
-		FROM {$lm2_db_prefix}incidents
-		JOIN {$lm2_db_prefix}events ON id_event = event
-		WHERE event = $event
+	$query = $smcFunc['db_query'](null, "SELECT id_incident, replay_time, description, is_comment, sim
+		FROM {lm2_prefix}incidents
+		JOIN {lm2_prefix}events ON id_event = event
+		WHERE event = {int:event}
 		ORDER BY replay_time
-	", __FILE__, __LINE__);
+	", array('event'=>$event));
 	$rows = 0;
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$replay_time = lm2_format_incident_time($row['replay_time'], $row['sim']);
 		$description = nl2br(htmlentities($row['description'], ENT_QUOTES));
 		$is_comment = $row['is_comment'] == 1;
@@ -788,7 +1020,7 @@ function lm2_show_penalties($event) {
 		lm2AddPenalties($row['id_incident'], $row['is_comment']);
 		echo "</UL></P>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	echo "</DIV>\n";
 }
 
@@ -804,12 +1036,11 @@ function lm2_format_incident_time($seconds, $sim) {
 }
 
 function lm2AddPenalties($incident, $is_comment) {
-	global $lm2_db_prefix;
-	global $db_prefix;
+	global $smcFunc;
 	global $lm2_penalty_types;
 	global $lm2_ukgpl_migration_sim_driver;
 
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT driver_name AS realName
 		, IF(sim_driver <> $lm2_ukgpl_migration_sim_driver, IF(driving_name <> '', driving_name, lobby_name), NULL) AS gameName
 		, driver_member AS member
@@ -822,15 +1053,15 @@ function lm2AddPenalties($incident, $is_comment) {
 		, penalty_type
 		, IFNULL(victim_report, 'Y') AS victim_report
 		, IFNULL(excluded, 'N') AS excluded
-		FROM {$lm2_db_prefix}penalties
-		JOIN {$lm2_db_prefix}event_entries ON id_event_entry = event_entry
-		JOIN {$lm2_db_prefix}drivers ON driver_member = {$lm2_db_prefix}event_entries.member
-		JOIN {$lm2_db_prefix}sim_drivers ON id_sim_drivers = sim_driver
-		WHERE incident = $incident
+		FROM {lm2_prefix}penalties
+		JOIN {lm2_prefix}event_entries ON id_event_entry = event_entry
+		JOIN {lm2_prefix}drivers ON driver_member = {lm2_prefix}event_entries.member
+		JOIN {lm2_prefix}sim_drivers ON id_sim_drivers = sim_driver
+		WHERE incident = {int:incident}
 		ORDER BY realName
-		", __FILE__, __LINE__);
+		", array('incident'=>$incident));
 	$rows = 0;
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$who = $row['realName'];
 		$whoGame = $row['gameName'];
 		if ($whoGame && $whoGame != $who) {
@@ -894,7 +1125,7 @@ function lm2AddPenalties($incident, $is_comment) {
 	
 		++$rows;
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	if ($rows == 0 && !$is_comment) {
 		echo "<LI>Racing incident</LI>\n";
@@ -933,12 +1164,11 @@ function lm2MakeWeatherLinks($location_row) {
 }
 
 function lm2MakeRssWeather($links) {
-return; //TODO: fix weather
 	if (file_exists($links['rssFile']) && ($rssXml = file_get_contents($links['rssFile']))) {
 		//TODO: share some of this with the generator?
 		//XXX: figure out how to not bother if it's very old
 
-		if (!($dom = DOMDocument::loadXML($rssXml))) return;
+		($dom = DOMDocument::loadXML($rssXml)) || die("Error while loading RSS");
 
 		$root = $dom->documentElement;
 		($root->localName == 'rss') || die("root node is not rss");
@@ -1011,357 +1241,8 @@ function lm2SqlString($s, $emptyIfNull = false) {
 			$s = null;
 		}
 	}
-	return is_null($s) ? "NULL" : "'" . mysql_real_escape_string($s) . "'";
-}
-
-function lm2ShowDriverInfo($context) {
-	global $lm2_db_prefix, $db_prefix, $lm2_ukgpl_prefix;
-
-	echo lm2_table_open("Driver Details");
-	$iso3166_code = lm2GetRequestParam('iso3166_code');
-	$gplrank = lm2GetRequestParam('gplrank');
-
-	if (!is_numeric($gplrank)) {
-		$gplrank = 'NULL';
-	}
-
-	if (!is_null($iso3166_code)) {
-		global $modSettings;
-		$modSettings['disableQueryCheck'] = true;
-		db_query("
-			INSERT INTO {$lm2_db_prefix}drivers
-			(driver_member, driver_name, iso3166_code, gplrank) VALUES (
-			{$context['member']['id']}
-			, '{$context['member']['name']}'
-			, " . lm2SqlString($iso3166_code) . "
-			, $gplrank)
-			ON DUPLICATE KEY
-			UPDATE iso3166_code = " . lm2SqlString($iso3166_code) . "
-			, gplrank = $gplrank
-			", __FILE__, __LINE__);
-
-		$query = db_query("SELECT id_sim FROM {$lm2_db_prefix}sims WHERE use_driver_details = 'Y'",__FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
-			if ($row['name'] = lm2GetRequestParam("sim{$row['id_sim']}_name")) {
-				$row['name'] = lm2SqlString($row['name']);
-				db_query("
-					INSERT INTO {$lm2_db_prefix}driver_details
-					(driver, sim, driving_name) VALUES (
-					{$context['member']['id']}, {$row['id_sim']}, {$row['name']}
-					) ON DUPLICATE KEY UPDATE driving_name = {$row['name']}
-					", __FILE__, __LINE__);
-			}
-		}
-		mysql_free_result($query);
-	}
-
-	if (is_numeric($ukgpl_driver = lm2GetRequestParam('ukgpl_driver'))) {
-		db_query("
-			INSERT IGNORE INTO {$lm2_ukgpl_prefix}_map_drivers
-			(hist_driver, live_driver, approved)
-			VALUES ($ukgpl_driver, {$context['member']['id']}, 0)
-			", __FILE__, __LINE__);
-	}
-
-	$query = db_query("
-		SELECT iso3166_code, gplrank
-		FROM {$lm2_db_prefix}drivers
-		WHERE driver_member = {$context['member']['id']}
-		",__FILE__, __LINE__);
-	if ($row = mysql_fetch_assoc($query)) {
-		$iso3166_code = $row['iso3166_code'];
-		if (is_numeric($gplrank = $row['gplrank']) && $gplrank >= 0) {
-			$gplrank = "+$gplrank";
-		}
-	} else {
-		$iso3166_code = 'XX';
-		$gplrank = '';
-	}
-	mysql_free_result($query);
-
-	echo "<FORM METHOD='POST'><TABLE>
-		<TR><TD>Country:</TD><TD><SELECT NAME='iso3166_code'>";
-	$query = db_query("SELECT id_iso3166 AS id, iso3166_name AS description FROM {$lm2_db_prefix}iso3166 ORDER BY description",__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		$sel = "";
-		if ($iso3166_code == $row['id']) {
-			$sel = " SELECTED";
-			$iso3166_code = null;
-		}
-		echo "<OPTION VALUE='{$row['id']}'$sel>{$row['description']}</OPTION>\n";
-	}
-	mysql_free_result($query);
-	if ($iso3166_code) {
-		echo "<OPTION VALUE='$iso3166_code'>$iso3166_code</OPTION>\n";
-	}
-	echo "</SELECT></TD></TR>\n";
-
-	$query = db_query("
-		SELECT id_sim, sim_name, driving_name
-		FROM {$lm2_db_prefix}sims
-		LEFT JOIN {$lm2_db_prefix}driver_details ON sim = id_sim AND driver = {$context['member']['id']}
-		WHERE use_driver_details = 'Y'
-		",__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		$row['driving_name'] = $row['driving_name'] ? htmlentities($row['driving_name'], ENT_QUOTES) : $context['member']['name'];
-		echo "<TR><TD COLSPAN='3'><B><U>{$row['sim_name']}</U></B></TD></TR>
-			<TR><TD>Driving Name:</TD>
-				<TD><INPUT TYPE='EDIT' NAME='sim{$row['id_sim']}_name' VALUE='{$row['driving_name']}' SIZE='30' MAXLENGTH='32'></TD>
-				<TD ALIGN='LEFT'><I>This is <B>CASE SENSITIVE!</B> and should be at least 2 characters</I></TD></TR>\n";
-	}
-	mysql_free_result($query);
-
-	echo "<TR><TD COLSPAN='3'><B><U>Grand Prix Legends</U></B></TD></TR>
-		<TR><TD><A HREF='http://gplrank.schuerkamp.de/'>GPLRank</A>:</TD>
-			<TD><INPUT TYPE='EDIT' NAME='gplrank' VALUE='$gplrank' SIZE='8' MAXLENGTH='8'></TD>
-			<TD ALIGN='LEFT'><I>eg. +123.456, or -13.666</I></TD></TR>
-		<TR><TD>Historic identity:</TD><TD COLSPAN='2'><SELECT NAME='ukgpl_driver'>
-				<OPTION VALUE='none'></OPTION>\n";
-	$query = db_query("
-		SELECT driver_member AS id, driver_name AS name, approved
-		FROM {$lm2_db_prefix}drivers
-		LEFT JOIN {$lm2_ukgpl_prefix}_map_drivers ON driver_member = hist_driver
-		WHERE driver_member > 10000000
-		AND (live_driver = {$context['member']['id']} OR approved IS NULL)
-		ORDER BY name
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		switch ($row['approved']) {
-		case null: // Otherwise the 0 picks it up!
-			break;
-		case 0:
-			$row['name'] .= " (pending)";
-			break;
-		case 1:
-			$row['name'] .= " (actioned)";
-			break;
-		}
-		echo "<OPTION VALUE='{$row['id']}'" . (is_null($row['approved']) ? "" : " SELECTED") . ">{$row['name']}</OPTION>\n";
-	}
-	mysql_free_result($query);
-	echo "</SELECT></TD></TR>
-			<TR><TD COLSPAN='3' ALIGN='RIGHT'><INPUT TYPE='SUBMIT' VALUE='Update Details'></TD></TR>
-		</TABLE></FORM>\n";
-	echo lm2_table_close();
-}
-
-function lm2ShowDriverProfile($driver) {
-	global $lm2_circuit_link_clause, $lm2_circuit_html_clause, $lm2_penalty_points_clause;
-	global $colsep;
-	global $ID_MEMBER, $boardurl;
-	global $context, $lm2_db_prefix, $db_prefix;
-	
-	echo lm2_table_open("Aliases");
-?><A NAME="aliases"></A>
-	<TABLE BORDER='1' CELLPADDING='2' CELLSPACING='0'>
-	<TR><TH>Sims</TH><TH>Driving Names</TH><TH>Lobby Names</TH></TR>
-<?php
-	$query = db_query("SELECT sim_name, driving_name, lobby_name
-		FROM {$lm2_db_prefix}sim_drivers
-		JOIN {$lm2_db_prefix}sims ON sim = id_sim
-		WHERE member = $driver
-		",__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		echo "<TR><TD>";
-		echo $row['sim_name'];
-		echo "</TD><TD>";
-		if ($name = $row['driving_name']) {
-			echo $name;
-		}
-		echo "</TD><TD>";
-		if ($name = $row['lobby_name']) {
-			echo $name;
-		}
-		echo "</TD></TR>\n";
-	}
-	mysql_free_result($query);
-?>
-	</TABLE>
-<?php
-	echo lm2_table_close();
-
-	$header = lm2_table_open("Championship Registrations and Licenses") . "<TABLE>\n";
-	$footer = "";
-	$query = db_query("
-		SELECT groupName, champ_group_type, id_event_group, full_desc, series_theme, champ_class_desc
-		FROM {$lm2_db_prefix}champ_groups
-		JOIN ${lm2_db_prefix}championships ON id_championship = champ_group_champ
-		JOIN {$lm2_db_prefix}event_groups ON id_event_group = event_group
-		JOIN {$db_prefix}members
-		JOIN {$db_prefix}membergroups AS g ON g.id_group = champ_group_membergroup
-		WHERE id_member = $driver
-		AND CONCAT(',', additionalGroups, ',') REGEXP CONCAT(',', g.id_group, ',')
-		GROUP BY g.id_group, id_event_group
-		ORDER BY champ_sequence
-		" , __FILE__, __LINE__);
-	while (($row = mysql_fetch_assoc($query))) {
-		echo $header;
-		$header = "";
-		$footer = "</TABLE>\n" . lm2_table_close();
-		switch ($row['champ_group_type']) {
-		case 'F':
-			$type = 'Full Time';
-			break;
-		case '1':
-			$type = 'First Reserve';
-			break;
-		case '2':
-			$type = 'Second Reserve';
-			break;
-		case '2':
-			$type = 'Third Reserve';
-			break;
-		case 'L':
-			$type = 'Licensed';
-			break;
-		default:
-			$type = $row['champ_group_type'];
-		}
-		echo "<TR TITLE='{$row['groupName']}'>
-			<TD>" . lm2MakeEventGroupLink($row['id_event_group'], $row['full_desc'], $row['series_theme']) . "</TD>
-			<TD>{$row['champ_class_desc']}</TD>
-			<TD>$type</TD>
-			</TR>\n";
-	}
-	echo $footer;
-	mysql_free_result($query);
-	
-	$header = lm2_table_open("Team History") . "<TABLE><TR><TH>Team</TH>$colsep<TH>Series</TH>$colsep<TH>Joined</TH>$colsep<TH>Left</TH></TR>\n";
-	$footer = "";
-	$query = db_query("SELECT team_name, date_from, date_to, id_team, short_desc"
-		. " FROM (${lm2_db_prefix}teams, ${lm2_db_prefix}team_drivers)"
-		. " LEFT JOIN ${lm2_db_prefix}event_groups ON event_group = id_event_group"
-		. " WHERE team = id_team"
-		. " AND date_from IS NOT NULL"
-		. " AND member = $driver"
-		. " ORDER BY date_from, date_to"
-		, __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		echo $header;
-		$header = "";
-		$footer = "</TABLE>\n" . lm2_table_close();
-		if (is_null($series = $row['short_desc'])) {
-			$series = "<I>all</I>";
-		}
-		echo "<TR><TD>" . lm2FormatTeam($row['id_team'], $row['team_name']) . "</TD>"
-			. "$colsep<TD>$series</TD>"
-			. "$colsep<TD>" . lm2FormatTimestamp(lm2Timestamp2php($row['date_from']), false) . "</TD>"
-			. "$colsep<TD>" . lm2FormatTimestamp(lm2Timestamp2php($row['date_to']), false) . "</TD>"
-			. "</TR>\n";
-	}
-	mysql_free_result($query);
-	echo $footer;
-
-	echo lm2_table_open("Career Statistics") . "<TABLE>\n";
-	$query = db_query("SELECT COUNT(*) AS events_entered"
-		. " FROM {$lm2_db_prefix}event_entries"
-		. " WHERE member = $driver",
-		__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
-		echo "<TR><TD>Events entered</TD>$colsep<TD COLSPAN=3 ALIGN=RIGHT>{$row['events_entered']}</TD>\n";
-	}
-	mysql_free_result($query);
-	
-	echo "<TR><TD></TD>$colsep<TH ALIGN=RIGHT>Outright</TH>$colsep<TH ALIGN=RIGHT>In class</TH>\n";
-	$query = db_query("
-		SELECT MIN(race_pos) AS best_race_pos
-		, MIN(race_pos_class) AS best_race_pos_class
-		, AVG(race_pos) AS avg_race_pos
-		, AVG(race_pos_class) AS avg_race_pos_class
-		, MIN(qual_pos) AS best_qual_pos
-		, MIN(qual_pos_class) AS best_qual_pos_class
-		, MAX(start_pos - race_pos) AS best_climb
-		, MAX(start_pos_class - race_pos_class) AS best_climb_class
-		, AVG(start_pos - race_pos) AS avg_climb
-		, AVG(start_pos_class - race_pos_class) AS avg_climb_class" /*FIXME: add this!*/ . "
-		, SUM(IF(qual_pos=1,1,0)) AS poles
-		, SUM(IF(qual_pos_class=1,1,0)) AS poles_class
-		, SUM(IF(race_pos=1,1,0)) AS wins
-		, SUM(IF(race_pos_class=1,1,0)) AS wins_class
-		, SUM(IF(race_pos IN (1,2,3),1,0)) AS podiums
-		, SUM(IF(race_pos_class IN (1,2,3),1,0)) AS podiums_class
-		, SUM(IF(race_best_lap_pos=1,1,0)) AS fastest
-		, SUM(IF(race_best_lap_pos_class=1,1,0)) AS fastest_class
-		FROM {$lm2_db_prefix}event_entries WHERE member = $driver
-		", __FILE__, __LINE__); //FIXME: consider only including non-fun race event_types
-	while ($row = mysql_fetch_assoc($query)) {
-		echo "<TR><TD>Best qualifying position</TD>$colsep<TD ALIGN=RIGHT>{$row['best_qual_pos']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['best_qual_pos_class']}</TD></TR>\n";
-		echo "<TR><TD>Poles</TD>$colsep<TD ALIGN=RIGHT>{$row['poles']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['poles_class']}</TD></TR>\n";
-		echo "<TR><TD>Best finishing position</TD>$colsep<TD ALIGN=RIGHT>{$row['best_race_pos']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['best_race_pos_class']}</TD></TR>\n";
-		echo "<TR><TD>Wins</TD>$colsep<TD ALIGN=RIGHT>{$row['wins']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['wins_class']}</TD></TR>\n";
-		echo "<TR><TD>Podiums</TD>$colsep<TD ALIGN=RIGHT>{$row['podiums']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['podiums_class']}</TD></TR>\n";
-		echo "<TR><TD>Average finishing position</TD>$colsep<TD ALIGN=RIGHT>{$row['avg_race_pos']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['avg_race_pos_class']}</TD></TR>\n";
-		echo "<TR><TD>Most positions gained</TD>$colsep<TD ALIGN=RIGHT>{$row['best_climb']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['best_climb_class']}</TD></TR>\n";
-		echo "<TR><TD>Average positions gained</TD>$colsep<TD ALIGN=RIGHT>{$row['avg_climb']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['avg_climb_class']}</TD></TR>\n";
-		echo "<TR><TD>Fastest laps</TD>$colsep<TD ALIGN=RIGHT>{$row['fastest']}</TD>"
-			. "$colsep<TD ALIGN=RIGHT>{$row['fastest_class']}</TD></TR>\n";
-	}
-	mysql_free_result($query);
-
-	lm2MakeChampStats('D', $driver);
-
-	echo lm2_table_close() . "</TABLE>\n";
-
-	lm2ShowLapRecords($driver, null, null, null);
-	
-	// License endorsements.
-	$query = db_query("
-		SELECT SUM($lm2_penalty_points_clause) AS penalty_points
-		, $lm2_circuit_html_clause AS circuit_html
-		, id_event_group
-		, id_event, smf_topic
-		, short_desc
-		, event_date
-		, IFNULL(victim_report, 'Y') AS victim_report
-		, penalty_group_desc
-		, report_published AS start_date
-		, DATE_ADD(report_published, INTERVAL penalty_group_months MONTH) AS end_date
-		FROM {$lm2_db_prefix}event_entries
-		JOIN {$lm2_db_prefix}events ON id_event = event
-		JOIN {$lm2_db_prefix}penalties ON event_entry = id_event_entry
-		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-		JOIN {$lm2_db_prefix}circuits ON id_circuit = circuit
-		JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
-		JOIN {$lm2_db_prefix}event_groups ON id_event_group = event_group
-		JOIN {$lm2_db_prefix}penalty_groups USING (penalty_group)
-		WHERE $driver = member
-		AND event_status IN ('O', 'H')
-		GROUP BY penalty_group, id_event, IFNULL(victim_report, 'Y')
-		HAVING penalty_points > 0
-		AND end_date >= " . lm2Php2timestamp() . "
-		", __FILE__, __LINE__);
-	$closer = "";
-	$currentGroupDesc = null;
-	while ($row = mysql_fetch_assoc($query)) {
-		$url = lm2MakeEventLink($row['id_event'], $row['smf_topic']);
-		if ($currentGroupDesc != $row['penalty_group_desc']) {
-			$currentGroupDesc = $row['penalty_group_desc'];
-			echo $closer
-				. lm2_table_open("Current License Endorsements - $currentGroupDesc")
-				. "<TABLE>\n<TR><TH>Series</TH><TH>Circuit</TH><TH>Date</TH><TH ALIGN='LEFT' COLSPAN='2'>Penalty Points</TH><TH>Expires</TH></TR>\n";
-			$closer = "</TABLE>\n" . lm2_table_close();
-		}
-		echo "<TR>
-			<TD>$url{$row['short_desc']}</A></TD>
-			<TD>$url{$row['circuit_html']}</A></TD>
-			<TD>$url" . lm2FormatTimestamp(lm2Timestamp2php($row['event_date']), false) . "</A></TD>
-			<TD ALIGN='RIGHT'>$url{$row['penalty_points']}</A></TD>
-			<TD>" . ($row['victim_report'] != 'Y' ? "<I>(reduced to caution)</I>" : "") . "</TD>
-			<TD TITLE='Issued " . lm2FormatTimestamp(lm2Timestamp2php($row['start_date']), true) . "'>" . lm2FormatTimestamp(lm2Timestamp2php($row['end_date']), true) . "</TD>
-			</TR>\n";
-	}
-	echo $closer;
-	mysql_free_result($query);
-
-	lm2MakeEventList("member", $driver, "Full Event Entry List");
+	global $db_connection;
+	return is_null($s) ? "NULL" : "'" . mysqli_real_escape_string($db_connection, $s) . "'";
 }
 
 // Returns member ID, or null if none found.
@@ -1372,20 +1253,20 @@ function lm2FindEventModerator($event) {
 //
 //	$mod_id = null;
 //
-//	$query = db_query("SELECT moderator"
-//		. " FROM {$lm2_db_prefix}events"
-//		. ", {$lm2_db_prefix}event_groups"
-//		. ", {$lm2_db_prefix}event_group_tree"
+//	$query = $smcFunc['db_query'](null, "SELECT moderator"
+//		. " FROM {lm2_prefix}events"
+//		. ", {lm2_prefix}event_groups"
+//		. ", {lm2_prefix}event_group_tree"
 //		. " WHERE event_group = contained AND container = id_event_group"
 //		. " AND id_event = $event"
 //		. " AND moderator IS NOT NULL"
 //		. " ORDER BY depth ASC"
 //		, __FILE__, __LINE__);
-//	while ($row = mysql_fetch_assoc($query)) {
+//	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 //		$mod_id = $row['moderator'];
 //		break;
 //	}
-//	mysql_free_result($query);
+//	$smcFunc['db_free_result']($query);
 //	return $mod_id;
 }
 
@@ -1393,10 +1274,10 @@ function lm2FindEventModerator($event) {
 function lm2FullEventGroupName($group) {
 	global $lm2_db_prefix;
 
-	$query = db_query("SELECT full_desc FROM {$lm2_db_prefix}event_groups WHERE id_event_group = $group", __FILE__, __LINE__);
-	($row = mysql_fetch_assoc($query)) || die("can't find group $group");
-	mysql_fetch_assoc($query) && die("multiple groups matching $group!");
-	mysql_free_result($query);
+	$query = $smcFunc['db_query'](null, "SELECT full_desc FROM {lm2_prefix}event_groups WHERE id_event_group = $group", __FILE__, __LINE__);
+	($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find group $group");
+	$smcFunc['db_fetch_assoc']($query) && die("multiple groups matching $group!");
+	$smcFunc['db_free_result']($query);
 
 	return $row['full_desc'];
 }
@@ -1488,18 +1369,33 @@ function lm2MakeEventLink($event, $smf_topic = null) {
 	return "<A HREF='$boardurl/index.php?topic=$smf_topic#event$event'>";
 }
 
-//XXX: change all occurrences to pass theme and text...
+//XXX: change all occurrences to pass theme (or board!) and text...
 function lm2MakeEventGroupLink($group, $text = null, $theme = null, $anchor = null, $extraParams = '') {
 	global $boardurl;
 	if (is_null($text)) {
 		$text = lm2FullEventGroupName($group);
 		$title = "";
 	} else if ($group) {
-		$title = ' TITLE="' . lm2FullEventGroupName($group) . '"';
+		$title = ' TITLE="FIXME:lm2FullEventGroupName($group)"';
 	} else {
 		$title = '';
 	}
-	$theme = "&theme=" . (is_null($theme) ? 4 : $theme);
+	if (is_numeric($group)) {
+		global $smcFunc;
+		$query = $smcFunc['db_query'](null, "
+			SELECT smf_board
+			FROM {lm2_prefix}event_boards
+			JOIN {lm2_prefix}event_group_tree ON contained = {int:group}
+			JOIN {lm2_prefix}event_groups ON event_group = container
+			ORDER BY depth LIMIT 1
+			", array('group'=>$group));
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
+			$theme = '&board=' . $row['smf_board'];
+		}
+		$smcFunc['db_free_result']($query);
+	} else {
+		$theme = '';
+	}
 	$anchor = is_null($anchor) ? '' : "#$anchor";
 	return "<A HREF='$boardurl/index.php?action=LM2R&group=$group$theme$extraParams$anchor'$title>$text</A>";
 }
@@ -1524,8 +1420,8 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 	</tr><tr><td width='5%' valign='top' class='windowbg' align='center'><table>
 	", $closing = "</table></td></tr></table>")
 {
-	global $lm2_lap_record_clause, $lm2_lap_record_types, $lm2_db_prefix, $db_prefix, $lm2_circuit_link_clause, $lm2_class_style_clause;
-	$query = db_query("
+	global $lm2_lap_record_clause, $lm2_lap_record_types, $lm2_db_prefix, $smcFunc, $lm2_circuit_link_clause, $lm2_class_style_clause;
+	$query = $smcFunc['db_query'](null, "
 		SELECT class_description
 		, $lm2_class_style_clause
 		, lap_record_type
@@ -1543,30 +1439,30 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 		, id_event_group, short_desc, series_theme
 		, event_date
 		, driver_member AS id_member
-		" . lm2MakeBallastFields("''", "'<BR/>'") . "
+		" . lm2MakeBallastFields("{string:blank}", "{string:br}") . "
 		" . ($id_circuit ? "" : ", $lm2_circuit_link_clause AS circuit_link, id_event_group") . "
-		, {$lm2_db_prefix}sims.sim_name
-		FROM {$lm2_db_prefix}event_entries
-		JOIN {$lm2_db_prefix}events ON id_event = event" . ($id_event ? " AND id_event = $id_event" : ""). "
-		JOIN {$lm2_db_prefix}sim_cars ON id_sim_car = sim_car
-		JOIN {$lm2_db_prefix}cars ON id_car = car
-		JOIN {$lm2_db_prefix}classes ON id_class = car_class_c
-		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = {$lm2_db_prefix}events.sim_circuit
-		JOIN {$lm2_db_prefix}circuits ON id_circuit = {$lm2_db_prefix}sim_circuits.circuit" . ($id_circuit ? " AND id_circuit = $id_circuit" : "") . "
-		JOIN {$lm2_db_prefix}lap_records ON id_class = record_class AND id_circuit = record_circuit
-		JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
-		JOIN {$lm2_db_prefix}event_groups ON id_event_group = event_group
-		JOIN {$lm2_db_prefix}sims ON id_sim = {$lm2_db_prefix}events.sim AND id_sim = {$lm2_db_prefix}lap_records.sim
-		" . ($id_sim ? " AND id_sim = $id_sim" : "") . "
-		JOIN {$lm2_db_prefix}drivers ON member = driver_member" . ($id_driver ? " AND $id_driver = driver_member" : "") . "
-		JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
-		WHERE $lm2_lap_record_clause" . ($id_team ? " AND $id_team = {$lm2_db_prefix}event_entries.team" : "") . "
+		, {lm2_prefix}sims.sim_name
+		FROM {lm2_prefix}event_entries
+		JOIN {lm2_prefix}events ON id_event = event" . ($id_event ? " AND id_event = {int:event}" : ""). "
+		JOIN {lm2_prefix}sim_cars ON id_sim_car = sim_car
+		JOIN {lm2_prefix}cars ON id_car = car
+		JOIN {lm2_prefix}classes ON id_class = car_class_c
+		JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = {lm2_prefix}events.sim_circuit
+		JOIN {lm2_prefix}circuits ON id_circuit = {lm2_prefix}sim_circuits.circuit" . ($id_circuit ? " AND id_circuit = {int:circuit}" : "") . "
+		JOIN {lm2_prefix}lap_records ON id_class = record_class AND id_circuit = record_circuit
+		JOIN {lm2_prefix}circuit_locations ON id_circuit_location = circuit_location
+		JOIN {lm2_prefix}event_groups ON id_event_group = event_group
+		JOIN {lm2_prefix}sims ON id_sim = {lm2_prefix}events.sim AND id_sim = {lm2_prefix}lap_records.sim
+		" . ($id_sim ? " AND id_sim = {int:sim}" : "") . "
+		JOIN {lm2_prefix}drivers ON member = driver_member" . ($id_driver ? " AND {int:driver} = driver_member" : "") . "
+		JOIN {lm2_prefix}manufacturers ON id_manuf = manuf
+		WHERE $lm2_lap_record_clause" . ($id_team ? " AND {int:team} = {lm2_prefix}event_entries.team" : "") . "
 		GROUP BY brief_name, lap_record_type, class_description, sim_name
 		ORDER BY brief_name, display_sequence, lap_record_type, sim_name, record_lap_time, event_date
-		", __FILE__, __LINE__);
+		", array('driver'=>$id_driver, 'team'=>$id_team, 'circuit'=>$id_circuit, 'event'=>$id_event, 'sim'=>$id_sim, 'blank'=>'', 'br'=>'<BR/>'));
 	$sep = $opening;
 	$closer = '';
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$url = $row['id_event'] == $id_event ? "<A>" : lm2MakeEventLink($row['id_event'], $row['smf_topic']);
 		echo "{$sep}<TR>"
 			. ($id_circuit ? "" : "<TD CLASS='smalltext'>{$row['circuit_link']}</TD>")
@@ -1586,7 +1482,7 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 		$closer = $closing;
 	}
 	echo $closer;
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function lm2FormatTimestamp($time, $date_only) {
@@ -1600,7 +1496,7 @@ function lm2Php2timestamp($php_time = null, $utc = false) {
 		$php_time = time();
 	}
 	$date_func = $utc ? 'gmdate' : 'date';
-	return is_null($php_time) ? "NULL" : "'" . $date_func('YmdHis', $php_time) . "'";
+	return is_null($php_time) ? "NULL" : $date_func('YmdHis', $php_time);
 }
 
 function lm2Timestamp2php($mysql_timestamp, $utc = false) {
@@ -1610,110 +1506,10 @@ function lm2Timestamp2php($mysql_timestamp, $utc = false) {
 	return $mkdate_func($hour, $minute, $second, $month, $day, $year);
 }
 
-function LM2R() {
-	global $context, $db_prefix, $lm2_db_prefix, $ID_MEMBER, $boardurl;
-
-	loadTemplate('lm2r');
-
-	if (($team = lm2ArrayValue($_REQUEST, 'team')) == '*' || $team === '') {
-		$context['page_title'] = "Registered Teams";
-		$context['sub_template'] = 'teams';
-	} else if (!is_null($team)) {
-		is_numeric($team) || die("$team is not numeric");
-		$query = db_query("SELECT * FROM {$lm2_db_prefix}teams WHERE id_team = $team", __FILE__, __LINE__);
-		($context['lm2']['team'] = mysql_fetch_assoc($query)) || die("unknown team $team");
-		mysql_fetch_assoc($query) && die("ambiguous team $team");
-		mysql_free_result($query);
-		$context['page_title'] = "Team Profile - {$context['lm2']['team']['team_name']}";
-		$context['sub_template'] = 'team';
-	} else if (($circuit = lm2ArrayValue($_REQUEST, 'circuit')) == '*') {
-		$context['sub_template'] = 'circuits';
-		$context['page_title'] = "Circuits";
-	} else if (!is_null($circuit) && !is_null($location = lm2ArrayValue($_REQUEST, 'location'))) {
-		is_numeric($circuit) || die("$circuit is not numeric");
-		is_numeric($location) || die("$location is not numeric");
-		$context['sub_template'] = 'circuit';
-
-		global $colsep;
-	
-		$query = db_query("
-			SELECT id_circuit_location
-			, full_name
-			, brief_name
-			, is_fantasy
-			, iso3166_name
-			, LOWER(iso3166_code) AS iso3166_code
-			, wu_station
-			, location_url
-			, latitude_n
-			, longitude_e
-			FROM {$lm2_db_prefix}circuit_locations
-			, {$lm2_db_prefix}iso3166
-			 WHERE id_circuit_location = $location
-			   AND id_iso3166 = iso3166_code
-			", __FILE__, __LINE__);
-		($context['lm2']['location'] = mysql_fetch_assoc($query)) || die("unknown location $location");
-		mysql_fetch_assoc($query) && die("ambiguous location $location");
-		mysql_free_result($query);
-	
-		$context['page_title'] = "Circuit Information - {$context['lm2']['location']['brief_name']}";
-
-		$query = db_query("
-			SELECT id_circuit, layout_name
-			FROM {$lm2_db_prefix}circuits
-			WHERE circuit_location = $location
-			ORDER BY id_circuit <> $circuit, layout_name
-		", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
-			$context['lm2']['circuits'][] = $row;
-		}
-		mysql_free_result($query);
-	} else if (!is_null($group = lm2ArrayValue($_REQUEST, 'group'))) {
-		is_numeric($group) || fatal_error("'$group' is not a number (referer " . lm2ArrayValue($_SERVER, 'HTTP_REFERER') . ")", true);
-		$stats = lm2ArrayValue($_REQUEST, 'stats');
-		if ((int)$group == 0) {
-			$context['lm2']['group'] = array('full_desc'=>'All Series', 'block_text'=>null, 'id_event_group'=>null);
-		} else {
-			$query = db_query("
-				SELECT full_desc, id_event_group, SUM(id_event IS NOT NULL) AS events, reg_topic, series_details
-				, subject AS block_title, body AS block_text, smileysEnabled, mkp_pid AS pid
-				FROM {$lm2_db_prefix}event_groups
-				LEFT JOIN {$lm2_db_prefix}events ON event_group = id_event_group
-				LEFT JOIN {$db_prefix}messages ON series_details = id_msg
-				WHERE id_event_group = $group
-				GROUP BY id_event_group
-				", __FILE__, __LINE__);
-			$context['lm2']['group'] = mysql_fetch_assoc($query);
-			mysql_free_result($query);
-		}
-		if ($context['lm2']['group']) {
-			$context['page_title'] = htmlentities($context['lm2']['group']['full_desc'], ENT_QUOTES);
-			$context['sub_template'] = 'group';
-			if (!is_null($stats)) {
-				$context['page_title'] .= " - Statistics";
-				$context['lm2']['group']['stats'] = $stats;
-				$context['sub_template'] = 'stats';
-			} else if ($context['lm2']['group']['events'] > 0) {
-				$context['page_title'] .= " - Schedule and Standings";
-			}
-			if (is_null($stats) && !is_null($context['lm2']['group']['block_text'])) {
-				$context['lm2']['group']['block_text'] = parse_bbc(
-					$context['lm2']['group']['block_text'],
-					!!$context['lm2']['group']['smileysEnabled'],
-					"LM2i_GRP=$group" /*cache ID*/);
-			}
-		} else {
-			$context['page_title'] = "Unknown event group $group";
-		}
-	} else {
-		$context['page_title'] = "LM2 unknown";
-	}
-}
-
-//XXX: need to move the functions below to the template when MkPortal goes
+//XXX: need to move the functions below to the action and template
 
 function lm2ShowTeamMembers($current_team_id = null, $show_previous = true) {
-	global $lm2_db_prefix, $db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 
 ?>
 <TABLE><TR>
@@ -1730,7 +1526,7 @@ function lm2ShowTeamMembers($current_team_id = null, $show_previous = true) {
 		echo "Resigned";
 	}
 	echo "</TH>\n</TR>\n";
-	$query = db_query("SELECT DISTINCT driver_member AS id_member
+	$query = $smcFunc['db_query'](null, "SELECT DISTINCT driver_member AS id_member
 		, short_desc AS group_desc
 		, driver_name AS realName
 		, id_team
@@ -1742,14 +1538,14 @@ function lm2ShowTeamMembers($current_team_id = null, $show_previous = true) {
 		JOIN ${lm2_db_prefix}drivers ON driver_member = member
 		LEFT JOIN ${lm2_db_prefix}event_groups ON event_group = id_event_group
 		WHERE NOT team_is_fake
-		" . ($current_team_id == null ? "" : " AND id_team = $current_team_id") . "
+		" . ($current_team_id == null ? "" : " AND id_team = {int:team_id}") . "
 		AND date_from IS NOT NULL
 		" . ($show_previous ? "" : " AND date_to IS NULL") . "
 		AND (parent IS NULL OR parent <> event_group)
 		ORDER BY " . lm2_team_name_order_by('team_name') . ", realName
-		", __FILE__, __LINE__);
+		", array('team_id'=>$current_team_id));
 	$who = null;
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		if ($current_team_id != $row['id_team']) {
 			$text = lm2FormatTeam(($current_team_id = $row['id_team']), $row['team_name']);
 			echo "<TR><TD COLSPAN='5' ALIGN='LEFT'><B><BIG>$text</BIG></B></TD></TR>\n";
@@ -1766,7 +1562,7 @@ function lm2ShowTeamMembers($current_team_id = null, $show_previous = true) {
 		}
 		echo "<TR><TD></TD><TD ALIGN=\"LEFT\">$driver_name</TD><TD>$group</TD><TD>$from</TD><TD>$to</TD></TR>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	echo "</TABLE>\n";
 }
@@ -1793,34 +1589,34 @@ function lm2_team_name_order_by($nameColumn) {
 }
 
 function lm2MakeEventList($field, $id, $title = null) {
-	global $colsep, $lm2_db_prefix, $lm2_circuit_link_clause, $lm2_guest_member_id;
+	global $colsep, $lm2_db_prefix, $lm2_circuit_link_clause, $lm2_guest_member_id, $smcFunc;
 
 	$driver_name = "IF(driver_member = $lm2_guest_member_id, IFNULL(IF(TRIM(driving_name) = '', NULL, driving_name), lobby_name), driver_name)";
-	$query = db_query("SELECT id_event_group, id_event, smf_topic
+	$query = $smcFunc['db_query'](null, "SELECT id_event_group, id_event, smf_topic
 		, short_desc, event_date
-		" . ($field == 'id_circuit' ? ", {$lm2_db_prefix}event_entries.member, $driver_name AS driving_name, length_metres, race_time_adjusted AS race_time, race_laps, length_metres" : "") . "
+		" . ($field == 'id_circuit' ? ", {lm2_prefix}event_entries.member, $driver_name AS driving_name, length_metres, race_time_adjusted AS race_time, race_laps, length_metres" : "") . "
 		, MIN(race_pos_class) AS best_race_pos_class
 		" . ($field == 'id_circuit' ? "" : ", $lm2_circuit_link_clause AS circuit_link") . "
 		, IF(MIN(race_best_lap_pos) = 1, 'FL', IF(MIN(race_best_lap_pos_class) = 1, 'FL (C)', NULL)) AS fastest_race_lap
 		, IF(MIN(qual_pos) = 1, 'Pole', IF(MIN(qual_pos_class) = 1, 'Pole (C)', NULL)) AS pole
 		, driver_type
-		FROM {$lm2_db_prefix}event_groups
-		JOIN {$lm2_db_prefix}events ON id_event_group = event_group
-		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-		JOIN {$lm2_db_prefix}circuits ON id_circuit = {$lm2_db_prefix}sim_circuits.circuit
-		JOIN {$lm2_db_prefix}event_entries ON id_event = event
-		LEFT JOIN {$lm2_db_prefix}sim_drivers ON sim_driver = id_sim_drivers
-		" . ($field == 'id_circuit' ? ", {$lm2_db_prefix}drivers" : ", {$lm2_db_prefix}circuit_locations") . "
-		WHERE " . ($field == 'member' ? "{$lm2_db_prefix}event_entries." : "") . "$field = $id
+		FROM {lm2_prefix}event_groups
+		JOIN {lm2_prefix}events ON id_event_group = event_group
+		JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = sim_circuit
+		JOIN {lm2_prefix}circuits ON id_circuit = {lm2_prefix}sim_circuits.circuit
+		JOIN {lm2_prefix}event_entries ON id_event = event
+		LEFT JOIN {lm2_prefix}sim_drivers ON sim_driver = id_sim_drivers
+		" . ($field == 'id_circuit' ? ", {lm2_prefix}drivers" : ", {lm2_prefix}circuit_locations") . "
+		WHERE " . ($field == 'member' ? "{lm2_prefix}event_entries." : "") . "$field = {int:id}
 		AND " . ($field == 'id_circuit'
-		   ? "race_pos = 1 AND driver_member = {$lm2_db_prefix}event_entries.member"
+		   ? "race_pos = 1 AND driver_member = {lm2_prefix}event_entries.member"
 		   : "id_circuit_location = circuit_location") . "
 		GROUP BY id_event
 		ORDER BY event_date
-		", __FILE__, __LINE__);
+		", array('id'=>$id));
 	$sep = ($title ? lm2_table_open("$title") : "") . "<TABLE>\n";
 	$closer = "";
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo $sep;
 		$sep = "";
 		$closer = "</TABLE>\n" . ($title ? lm2_table_close() : "");
@@ -1852,17 +1648,17 @@ function lm2MakeEventList($field, $id, $title = null) {
 		echo "</TR>\n";
 	}
 	echo $closer;
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function lm2MakeChampStats($champ_type, $id) {
-	global $lm2_db_prefix, $colsep;
+	global $lm2_db_prefix, $colsep, $smcFunc;
 
 	$suffix = "$colsep<TH ALIGN='CENTER'>Class</TH>$colsep<TH ALIGN='RIGHT'>Position</TH>$colsep<TH ALIGN='RIGHT'>Points</TH>\n";
 	$official_title = "<TR><TH ALIGN='LEFT'>Championship Results</TH>$suffix";
 	$current_title = "<TR><TH ALIGN='LEFT'>Current Standings</TH>$suffix";
 	$ranking_title = "<TR><TH ALIGN='LEFT'>Current Rankings</TH>$suffix";
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT position
 		, points
 		, id_event_group AS event_group, series_theme, full_desc AS event_group_desc
@@ -1870,16 +1666,16 @@ function lm2MakeChampStats($champ_type, $id) {
 		, MAX(event_date) AS last_event
 		, SUM(event_status = 'U') > 0 AS some_unofficial
 		, scoring_type
-		FROM {$lm2_db_prefix}championship_points
-		JOIN {$lm2_db_prefix}championships ON id_championship = championship
-		JOIN {$lm2_db_prefix}scoring_schemes ON id_scoring_scheme = scoring_scheme
-		JOIN {$lm2_db_prefix}event_groups ON id_event_group = {$lm2_db_prefix}championships.event_group
-		JOIN {$lm2_db_prefix}events ON id_event_group = {$lm2_db_prefix}events.event_group
-		WHERE id = $id AND champ_type = '$champ_type'
+		FROM {lm2_prefix}championship_points
+		JOIN {lm2_prefix}championships ON id_championship = championship
+		JOIN {lm2_prefix}scoring_schemes ON id_scoring_scheme = scoring_scheme
+		JOIN {lm2_prefix}event_groups ON id_event_group = {lm2_prefix}championships.event_group
+		JOIN {lm2_prefix}events ON id_event_group = {lm2_prefix}events.event_group
+		WHERE id = {int:id} AND champ_type = {string:champ_type}
 		GROUP BY id_championship
 		ORDER BY some_unofficial, scoring_type = 'C' AND 0, last_event
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('id'=>$id, 'champ_type'=>$champ_type));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		if (!$row['some_unofficial']) {
 			echo $official_title;
 			$official_title = '';
@@ -1895,39 +1691,41 @@ function lm2MakeChampStats($champ_type, $id) {
 			. "$colsep<TD ALIGN='CENTER'>{$row['champ_class_desc']}</TD>"
 			. "$colsep<TD ALIGN='RIGHT' CLASS='lm2position{$row['position']}'>{$row['position']}</TD>$colsep<TD ALIGN=RIGHT>{$row['points']}</TD></TR>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function lm2MaybeAddEventText() {
+	global $smcFunc;
+
 	if (isset($_REQUEST['lm2group']) && isset($_REQUEST['lm2simCircuit']) && isset($_REQUEST['lm2sim'])) {
 		is_numeric($_REQUEST['lm2group']) && is_numeric($_REQUEST['lm2simCircuit']) && is_numeric($_REQUEST['lm2sim']) || die('hacker be gone!');
 		global $lm2_db_prefix, $db_prefix, $context, $func, $boardurl, $txt;
 
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT full_desc, short_desc, series_theme
-			FROM {$lm2_db_prefix}event_groups
-			WHERE id_event_group = {$_REQUEST['lm2group']}
-			", __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("group {$_REQUEST['lm2group']} not found");
+			FROM {lm2_prefix}event_groups
+			WHERE id_event_group = {int:lm2group}
+			", array('lm2group'=>$_REQUEST['lm2group']));
+		($row = $smcFunc['db_fetch_assoc']($query)) || die("group {$_REQUEST['lm2group']} not found");
 		$group = $row['short_desc'];
 		$groupFull = $row['full_desc'];
 		$groupTheme = $row['series_theme'];
-		mysql_fetch_assoc($query) && die("topic {$_REQUEST['lm2group']} found more than once!");
-		mysql_free_result($query);
+		$smcFunc['db_fetch_assoc']($query) && die("topic {$_REQUEST['lm2group']} found more than once!");
+		$smcFunc['db_free_result']($query);
 
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT id_circuit, brief_name AS name
-			FROM {$lm2_db_prefix}sim_circuits
-			, {$lm2_db_prefix}circuits
-			, {$lm2_db_prefix}circuit_locations
-			WHERE id_sim_circuit = {$_REQUEST['lm2simCircuit']}
+			FROM {lm2_prefix}sim_circuits
+			, {lm2_prefix}circuits
+			, {lm2_prefix}circuit_locations
+			WHERE id_sim_circuit = {int:lm2simCircuit}
 			AND id_circuit = circuit AND id_circuit_location = circuit_location
-			" , __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("circuit {$_REQUEST['lm2simCircuit']} not found");
+			" , array('lm2simCircuit'=>$_REQUEST['lm2simCircuit']));
+		($row = $smcFunc['db_fetch_assoc']($query)) || die("circuit {$_REQUEST['lm2simCircuit']} not found");
 		$circuit = $row['name'];
 		$id_circuit = $row['id_circuit'];
-		mysql_fetch_assoc($query) && die("topic {$_REQUEST['lm2simCircuit']} found more than once!");
-		mysql_free_result($query);
+		$smcFunc['db_fetch_assoc']($query) && die("topic {$_REQUEST['lm2simCircuit']} found more than once!");
+		$smcFunc['db_free_result']($query);
 
 		$_REQUEST['evtitle'] = "$group $circuit";
 		$_REQUEST['subject'] = "$groupFull - $circuit - {$txt['months_short'][$_REQUEST['month']]} {$_REQUEST['day']}";
@@ -1935,22 +1733,22 @@ function lm2MaybeAddEventText() {
 Password: [iurl=#event_password]see above[/iurl]
 (2) Driver lists can be found on the [url=$boardurl/index.php?action=LM2R;group={$_REQUEST['lm2group']}$groupTheme]championship standings page[/url]";
 
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT DISTINCT smf_topic, body
 			, (event_group = {$_REQUEST['lm2group']}) AS same_group
 			, (circuit = $id_circuit) AS same_circuit
-			FROM {$lm2_db_prefix}events
-			JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-			JOIN {$db_prefix}topics ON id_topic = smf_topic
-			JOIN {$db_prefix}messages ON id_first_msg = id_msg
-			WHERE (event_group = {$_REQUEST['lm2group']} OR circuit = $id_circuit)
-			AND {$lm2_db_prefix}events.sim = {$_REQUEST['lm2sim']}
+			FROM {lm2_prefix}events
+			JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = sim_circuit
+			JOIN {db_prefix}topics ON id_topic = smf_topic
+			JOIN {db_prefix}messages ON id_first_msg = id_msg
+			WHERE (event_group = {int:group} OR circuit = {int:circuit})
+			AND {lm2_prefix}events.sim = {int:sim}
 			AND smf_topic IS NOT NULL
 			ORDER BY same_group DESC, event_date DESC
-			", __FILE__, __LINE__);
+			", array('group'=>$_REQUEST['lm2group'], 'circuit'=>$id_circuit, 'sim'=>$_REQUEST['lm2sim']));
 		$seen_group = false;
 		$seen_circuit = false;
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$row['body'] = un_htmlspecialchars(un_preparsecode($row['body']) );
 			if (!$seen_group && $row['same_group']) {
 				$seen_group = true;
@@ -1962,7 +1760,7 @@ Password: [iurl=#event_password]see above[/iurl]
 				$_REQUEST['message'] .= "\n\n\n\n[quote author=MostRecentAtThisCircuit]{$row['body']}[/quote]";
 			}
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 	}
 }
 

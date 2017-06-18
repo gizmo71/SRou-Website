@@ -75,7 +75,7 @@ $db_user = 'gizmo71_smf';
 $db_passwd = 't$AQP1z[zUW8';
 $db_prefix = 'smf_';
 $db_persist = 0;
-$db_error_send = 0;
+$db_error_send = 1;
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
@@ -93,4 +93,11 @@ if (!file_exists($boarddir) && file_exists(dirname(__FILE__) . '/agreement.txt')
 if (!file_exists($sourcedir) && file_exists($boarddir . '/Sources'))
 	$sourcedir = $boarddir . '/Sources';
 
+$upgradeData = '';
+$image_proxy_secret = 'b05c67e6ba4c319a997d';
+$image_proxy_maxsize = 5190;
+$image_proxy_enabled = 0;
+$cachedir = '/home/gizmo71/public_html.srou/www/smf/cache';
+$packagesdir = '/home/gizmo71/public_html.srou/www/smf/Packages';
+$tasksdir = '/home/gizmo71/public_html.srou/www/smf/Sources/tasks';
 ?>

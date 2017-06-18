@@ -14,10 +14,10 @@ $query = db_query("
 	FROM {$lm2_db_prefix}events
 	WHERE id_event = $event
 	", __FILE__, __LINE__);
-($row = mysql_fetch_assoc($query)) || die("expected to get a row from the count!");
+($row = $smcFunc['db_fetch_assoc']($query)) || die("expected to get a row from the count!");
 $sim = $row['sim'];
-mysql_fetch_assoc($query) && die("didn't expect to get two rows from the count!");
-mysql_free_result($query);
+$smcFunc['db_fetch_assoc']($query) && die("didn't expect to get two rows from the count!");
+$smcFunc['db_free_result']($query);
 
 $temp_db_prefix = "{$lm2_db_prefix}TEMP_"; //TODO: put this into Settings.php?
 
@@ -88,12 +88,12 @@ $query = db_query("
 	WHERE eb_event = $event
 	ORDER BY driving_name
 	", __FILE__, __LINE__);
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	++$count;
 	($row['ballast'] >= 0 && $row['ballast'] <= 120) || die("ballast {$row['ballast']} outside allowable range");
 	$content .= sprintf("%s\r\n%d\r\n", $row['driving_name'], $row['ballast']);
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 header('Content-Type: text/plain');
 if (true) {

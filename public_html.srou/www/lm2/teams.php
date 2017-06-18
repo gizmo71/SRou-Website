@@ -31,21 +31,22 @@ if (($new_name = sqlString(get_request_param('new_name'))) != "NULL") {
 	echo "<P>New name $new_name</P>\n";
 
 	// Sanity check
-	$query = db_query("SELECT * FROM ${lm2_db_prefix}teams WHERE team_name = $new_name AND NOT team_is_fake", __FILE__, __LINE__);
-	$row = mysql_fetch_assoc($query);
-	mysql_free_result($query);
+	$query = $smcFunc['db_query'](NULL, "SELECT * FROM {lm2_prefix}teams WHERE team_name = {string:new_name} AND NOT team_is_fake", array('new_name'=>$new_name));
+	$row = $smcFunc['db_fetch_assoc']($query);
+	$smcFunc['db_free_result']($query);
 
 	if ($row) {
 		echo "<P STYLE='color: red'><B>Already got a team of that name - please contact one of its members to get invited.</B></P>\n";
 	} else {
-		db_query("INSERT INTO ${lm2_db_prefix}teams (team_name, created_by) VALUES ($new_name, $own_id)", __FILE__, __LINE__);
-		$id_team = db_insert_id();
-		db_query("
-			INSERT INTO ${lm2_db_prefix}team_drivers
+		$smcFunc['db_query'](NULL, "INSERT INTO {lm2_prefix}teams (team_name, created_by) VALUES ({string:new_name}, {int:own_id})",
+			array('new_name'=>$new_name, 'own_id'=>$own_id));
+		$id_team = $smcFunc['db_insert_id']('{lm2_prefix}teams', 'id_team');
+		$smcFunc['db_query'](NULL, "
+			INSERT INTO {lm2_prefix}team_drivers
 			(member, team, invitation_date)
-			VALUES ($own_id, $id_team, @now_then)
+			VALUES ({int:own_id}, {int:id_team}, @now_then)
 			",
-			__FILE__, __LINE__);
+			array('own_id'=>$own_id, 'id_team'=>$id_team));
 	}
 } else if (($team_name = sqlString(get_request_param('team_name'))) != "NULL") {
 	$url = sqlString(get_request_param('url'));
@@ -141,7 +142,7 @@ for ($limit = 100; $limit-- > 0; ) {
 		AND td2.date_from IS NOT NULL
 		LIMIT 1
 		", __FILE__, __LINE__);
-	if (!($row = mysql_fetch_assoc($query))) {
+	if (!($row = $smcFunc['db_fetch_assoc']($query))) {
 		break;
 	}
 	lm2_query("
@@ -164,7 +165,7 @@ $query = lm2_query("
 	AND date_to IS NULL
 	AND NOT team_is_fake
 	", __FILE__, __LINE__);
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	$id_team = $row['id_team'];
 	$team_name = htmlentities($row['team_name'], ENT_QUOTES);
 	$url = htmlentities($row['url'], ENT_QUOTES);
@@ -187,21 +188,19 @@ EOT;
 	show_entries($id_team);
 	show_invitation($id_team);
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 function show_entries($team) {
-	global $lm2_db_prefix;
-	global $db_prefix;
-	global $own_id;
+	global $lm2_db_prefix, $db_prefix, $smcFunc, $own_id;
 
-	$query = lm2_query("SELECT id_team_driver, member, realName, event_group, date_from, invitation_date"
+	$query = lm2_query("SELECT id_team_driver, member, real_name AS realName, event_group, date_from, invitation_date"
 		. " FROM ${lm2_db_prefix}team_drivers, ${db_prefix}members"
 		. " WHERE team = $team"
 		. " AND member = id_member"
 		. " AND date_to IS NULL"
-		. " ORDER BY member != $own_id, realName",
+		. " ORDER BY member != $own_id, real_name",
 		__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$member = $row['member'];
 		$name = $row['realName']; // Stored encoded.
 		$id_team_driver = $row['id_team_driver'];
@@ -240,27 +239,25 @@ function show_entries($team) {
 
 		echo "</FORM>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function show_invitation($team) {
-	global $lm2_db_prefix;
-	global $db_prefix;
-	global $own_id;
+	global $smcFunc, $lm2_db_prefix, $db_prefix, $own_id;
 
 	echo "<FORM METHOD=\"POST\">\n"
 		. "<INPUT TYPE=\"HIDDEN\" NAME=\"id_team\" VALUE=\"$team\">\n";
 	show_groups(null);
 	echo "<SELECT NAME=\"invite\" VALUE=\"$id_team_driver\">\n";
 
-	$query = lm2_query("SELECT id_member, memberName, realName, SUM(IF(invitation_date IS NULL, 0, 1)) AS invitations"
+	$query = lm2_query("SELECT id_member, member_name AS memberName, real_name AS realName, SUM(IF(invitation_date IS NULL, 0, 1)) AS invitations"
 		. " FROM ${db_prefix}members"
 		. " LEFT JOIN ${lm2_db_prefix}team_drivers ON team = $team AND member = id_member"
 		. " GROUP BY id_member"
 		. " HAVING invitations = 0 OR id_member = $own_id"
-		. " ORDER BY realName",
+		. " ORDER BY real_name",
 		__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$id = $row['id_member'];
 		$user = $row['memberName'];
 		$name = $row['realName'];
@@ -269,7 +266,7 @@ function show_invitation($team) {
 	echo "</SELECT>
 		<INPUT TYPE='BUTTON' VALUE='Send invitation' onClick=\"if (confirm('Are you sure?')) { submitform(form); }\" />
 		</FORM>\n";
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function show_button($text, $what) {
@@ -277,7 +274,7 @@ function show_button($text, $what) {
 }
 
 function show_groups($group, $parent = null, $prefix = '') {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 
 	if (is_null($parent)) {
 		echo "<SELECT NAME=\"event_group\">\n"
@@ -287,14 +284,14 @@ function show_groups($group, $parent = null, $prefix = '') {
 		. " FROM ${lm2_db_prefix}event_groups"
 		. " WHERE parent " . (is_null($parent) ? "IS NULL OR id_event_group = parent" : "= " . $parent)
 		. " ORDER BY name", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$sel = ($id = $row['id']) == $group ? " SELECTED" : "";
 		echo "  <OPTION VALUE=\"$id\"$sel>$prefix" . htmlentities($row['name'], ENT_QUOTES) . "</OPTION>\n";
 		if ($row['parent'] != $id) {
 			show_groups($group, $id, "$prefix&nbsp;&nbsp;");
 		}
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	if (is_null($parent)) {
 		echo "</SELECT>\n";
 	}

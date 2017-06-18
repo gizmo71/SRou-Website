@@ -1,5 +1,5 @@
 <?php
-require_once('../smf/Sources/Subs-Post.php');
+require_once("$boarddir/Sources/Subs-Post.php");
 
 $event = $_REQUEST['event'];
 $incident = $_REQUEST['incident'];
@@ -12,13 +12,13 @@ function nullIfEmpty($v) {
 }
 
 if (!is_null($event_status)) {
-	db_query("
+	lm2_query("
 		UPDATE {$lm2_db_prefix}events
 		SET event_status = " . sqlString($event_status) . "
 		WHERE id_event = $event
 		", __FILE__, __LINE__);
 	if ($event_status != 'U' && $event_status != 'H') {
-		db_query("
+		lm2_query("
 			UPDATE {$lm2_db_prefix}events
 			SET report_published = " . php2timestamp(time()) . "
 			WHERE id_event = $event AND report_published IS NULL
@@ -30,7 +30,7 @@ if (!is_null($event_status)) {
 } else if (!is_null($description)) {
 	$delete = $_REQUEST['delete'] == '1';
 	if ($delete) {
-		db_query("
+		lm2_query("
 			DELETE FROM {$lm2_db_prefix}incidents
 			WHERE event = $event AND id_incident = $incident
 			", __FILE__, __LINE__);
@@ -39,14 +39,14 @@ if (!is_null($event_status)) {
 		$is_comment = $_REQUEST['is_comment'] == '1' ? '1' : '0';
 		$description = sqlString($description);
 		if ($incident == "ADD") {
-			db_query("
+			lm2_query("
 				INSERT INTO {$lm2_db_prefix}incidents
 				(event, replay_time, description, is_comment)
 				VALUES ($event, $replay_time, $description, $is_comment)
 				", __FILE__, __LINE__);
-			$added_incident = $incident = db_insert_id();
+			$added_incident = $incident = mysqli_insert_id($db_connection);
 		} else {
-			db_query("
+			lm2_query("
 				UPDATE {$lm2_db_prefix}incidents
 				SET replay_time = $replay_time, description = $description, is_comment = $is_comment
 				WHERE event = $event AND id_incident = $incident
@@ -90,7 +90,7 @@ if (!is_null($event_status)) {
 			} // ... else ignore it.
 			if (!is_null($sql)) {
 				//echo "<P>$sql</P>";
-				db_query($sql, __FILE__, __LINE__);
+				lm2_query($sql, __FILE__, __LINE__);
 			}
 			++$rownum;
 		}
@@ -102,19 +102,19 @@ if (!is_null($event_status)) {
 		$is_comment = false;
 		$description = '';
 	} else {
-		$query = db_query("
+		$query = lm2_query("
 			SELECT replay_time, is_comment, description, sim
 			FROM {$lm2_db_prefix}incidents
 			JOIN {$lm2_db_prefix}events ON event = id_event
 			WHERE id_incident = $incident
 			" , __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("can't load incident $incident");
+		($row = mysqli_fetch_assoc($query)) || die("can't load incident $incident");
 		$replay_time = $row['replay_time'];
 		$is_comment = $row['is_comment'] == 1;
 		$description = $row['description'];
 		$sim = $row['sim'];
-		mysql_fetch_assoc($query) && die("incident $incident found more than once!");
-		mysql_free_result($query);
+		mysqli_fetch_assoc($query) && die("incident $incident found more than once!");
+		mysqli_free_result($query);
 	}
 ?>
 <FORM METHOD="POST" ACTION="#<?php echo $incident; ?>">
@@ -146,15 +146,15 @@ if (!is_null($event_status)) {
 <?php
 	$rows = 0;
 	if ($incident != 'ADD') {
-		$query = db_query("
+		$query = lm2_query("
 			SELECT *
 			FROM {$lm2_db_prefix}penalties
 			WHERE incident = $incident
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = mysqli_fetch_assoc($query)) {
 			show_penalty($rows++, $row['id_penalty'], $row['event_entry'], $row['description'], $row['seconds_added'], $row['positions_lost'], $row['points_lost'], $row['penalty_champ_type'], $row['penalty_type'], $row['victim_report'], $row['excluded']);
 		}
-		mysql_free_result($query);
+		mysqli_free_result($query);
 	}
 	do {
 		show_penalty($rows++, null, null, '', null, null, null, null, null, null, null);
@@ -168,13 +168,13 @@ if (!is_null($event_status)) {
 	generate_list($event);
 } else {
 	if (!is_null($_REQUEST['mod_event'])) {
-		db_query("
+		lm2_query("
 			UPDATE {$lm2_db_prefix}events
 			SET event_moderator = $ID_MEMBER, moderation_start = " . php2timestamp(time()) . "
 			WHERE id_event = {$_REQUEST['mod_event']} AND event_moderator IS NULL
 			" , __FILE__, __LINE__);
 	} else if (!is_null($_REQUEST['unmod_event'])) {
-		db_query("
+		lm2_query("
 			UPDATE {$lm2_db_prefix}events SET event_moderator = NULL, moderation_start = NULL
 			WHERE id_event = {$_REQUEST['unmod_event']} AND event_moderator = {$_REQUEST['who']}
 			" , __FILE__, __LINE__);
@@ -197,7 +197,7 @@ if (!is_null($event_status)) {
 	<TH>Moderator</TH>
 </TR>
 <?php
-	$query = db_query("
+	$query = lm2_query("
 		SELECT DISTINCT id_event
 		, $circuit_html_clause AS circuit_html
 		, short_desc AS event_group
@@ -224,10 +224,10 @@ if (!is_null($event_status)) {
 		AND (event_date > " . php2timestamp(time()) . " - INTERVAL 2 YEAR OR event_status NOT IN ('O', 'H'))
 		" . ($show_all ? "" : "AND event_status = 'U'") . "
 		GROUP BY id_event
-		ORDER BY IF(event_moderator = $ID_MEMBER, 0, 1), event_date DESC
+		ORDER BY IF(event_moderator = " . $user_info['id'] . ", 0, 1), event_date DESC
 		", __FILE__, __LINE__);
 	$rows = 0;
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = mysqli_fetch_assoc($query)) {
 		$url = "index.php?action=court&event={$row['id_event']}";
 		$prefix = "<A HREF=\"$url\">";
 		$suffix = "</A>";
@@ -270,7 +270,7 @@ if (!is_null($event_status)) {
 	        . "</TR>\n";
 	    ++$rows;
 	}
-	mysql_free_result($query);
+	mysqli_free_result($query);
 	if ($rows > 0) {
 ?>
 </TABLE>
@@ -283,7 +283,7 @@ function generate_list($event) {
 ?>
 <FORM METHOD="POST">
 <?php
-	$query = db_query("
+	$query = lm2_query("
 		SELECT $circuit_html_clause AS circuit_html
 		, short_desc AS event_group
 		, event_date
@@ -297,12 +297,12 @@ function generate_list($event) {
 		WHERE id_event = $event
 		ORDER BY event_date DESC
 		", __FILE__, __LINE__);
-	$row = mysql_fetch_assoc($query);
+	$row = mysqli_fetch_assoc($query);
 	$event_status = $row['event_status'];
     echo '<P><B>Incidents for ' . htmlentities($row['circuit_html']) . ' ' . $row['event_date'] . ' '
         . htmlentities($row['event_group']) . "</B>\n";
-    mysql_fetch_assoc($query) && die("multiple events matching $event!");
-	mysql_free_result($query);
+    mysqli_fetch_assoc($query) && die("multiple events matching $event!");
+	mysqli_free_result($query);
 ?>
 <INPUT TYPE=HIDDEN NAME="event" VALUE="<?php echo $event; ?>" />
 <BR/><INPUT TYPE=RADIO NAME="event_status" VALUE="U"<?php echo $event_status == 'U' ? ' CHECKED' : '' ?> /> Unofficial
@@ -321,14 +321,14 @@ function generate_list($event) {
 </FORM>
 <?php
 
-	$query = db_query("
+	$query = lm2_query("
 		SELECT id_incident, replay_time, description, is_comment, sim
 		FROM {$lm2_db_prefix}incidents
 		JOIN {$lm2_db_prefix}events ON id_event = event
 		WHERE event = $event
 		ORDER BY replay_time
 		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = mysqli_fetch_assoc($query)) {
 		$incident = $row['id_incident'];
 		global $added_incident;
 ?>
@@ -344,7 +344,7 @@ function generate_list($event) {
 </FORM>
 <?php
 	}
-	mysql_free_result($query);
+	mysqli_free_result($query);
 }
 
 function show_penalty($rownum, $id_penalty, $event_entry, $description, $seconds_added, $positions_lost, $points_lost, $champ_type, $type, $victim_report, $excluded) {
@@ -358,17 +358,17 @@ function show_penalty($rownum, $id_penalty, $event_entry, $description, $seconds
 <SELECT NAME="<?php echo "penalty{$rownum}event_entry"; ?>">
 <OPTION VALUE=""><?php if (!is_null($event_entry)) echo 'REMOVE'; ?></OPTION>
 <?php
-	$query = db_query("SELECT driver_name AS realName, id_event_entry"
+	$query = lm2_query("SELECT driver_name AS realName, id_event_entry"
 		. " FROM {$lm2_db_prefix}event_entries, {$lm2_db_prefix}drivers"
 		. " WHERE event = $event AND member = driver_member"
 		. " ORDER BY realName",
 		__FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = mysqli_fetch_assoc($query)) {
 		$id = $row['id_event_entry'];
 		$sel = $event_entry == $id ? ' SELECTED' : '';
 		echo "<OPTION VALUE=\"$id\"$sel>{$row['realName']}</OPTION>\n";
 	}
-	mysql_free_result($query);
+	mysqli_free_result($query);
 ?>
 </SELECT></TD>
 <TD><INPUT NAME="<?php echo "penalty{$rownum}description"; ?>" VALUE="<?php echo htmlentities($description, ENT_QUOTES); ?>" MAXLENGTH="75" SIZE="50" /></TD>
@@ -428,7 +428,7 @@ function inform_bad_boys($event) {
 	global $db_prefix, $lm2_db_prefix, $lm2_guest_member_id;
 
 	$drivers = array();
-	$query = db_query("
+	$query = lm2_query("
 		SELECT id_event_entry, id_member
 		FROM {$lm2_db_prefix}event_entries
 		JOIN {$lm2_db_prefix}penalties ON event_entry = id_event_entry
@@ -436,17 +436,17 @@ function inform_bad_boys($event) {
 		WHERE event = $event
 		AND IFNULL(informed_of_report, 0) <> 1
 	", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = mysqli_fetch_assoc($query)) {
 		if ($informed = ((is_null($row['id_member']) || $row['id_member'] == $lm2_guest_member_id) ? 0 : 1)) {
 			array_push($drivers, $row['id_member']);
 		}
-		db_query("
+		lm2_query("
 			UPDATE {$lm2_db_prefix}event_entries
 			SET informed_of_report = $informed
 			WHERE id_event_entry = {$row['id_event_entry']}
 			", __FILE__, __LINE__);
 	}
-	mysql_free_result($query);
+	mysqli_free_result($query);
 
 	if ($drivers) {
 		$recipients = array('to'=>array(), 'bcc'=>$drivers);

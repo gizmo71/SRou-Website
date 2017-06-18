@@ -1,0 +1,6 @@
+@import url("http://smf2.simracing.org.uk/smf/Themes/default/css/index.css?fin20");
+@import url("http://smf2.simracing.org.uk/smf/Themes/srou/css/lm2style.css?fin20");
+
+body { background: green; }
+
+.forumtitle img { width: 400px; height: 60px; position: relative; }

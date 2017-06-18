@@ -1,6 +1,7 @@
 <?php require("../smf/SSI.php"); ?>
 <?php
 // LM2 KML feed
+//XXX won't work after Feb 2015 - see https://developers.google.com/maps/support/kmlmaps - will need some sort of MyMaps thing
 
 is_numeric($location = $_REQUEST['location']) || $location = 0;
 
@@ -33,7 +34,7 @@ $query = lm2_query("SELECT latitude_n"
 	, __FILE__, __LINE__);
 $iso3166_code = null;
 $Folder = null;
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	if ($iso3166_code != $row['iso3166_code'] || !$Folder) {
 		$Document->appendChild($Folder = $doc->createElement('Folder'));
 		make_text_tag($doc, 'name', $row['iso3166_name'], $Folder);
@@ -60,7 +61,7 @@ while ($row = mysql_fetch_assoc($query)) {
 	$Placemark->appendChild($Point = $doc->createElement('Point'));
 	make_text_tag($doc, 'coordinates', "{$row['longitude_e']},{$row['latitude_n']},{$row['elevation']}", $Point);
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 // All the hard stuff done, bring it on home.
 

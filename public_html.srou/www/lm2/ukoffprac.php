@@ -11,18 +11,19 @@ require_once("include.php");
 $guestMemberGroupId = -1;
 $query = lm2_query("
 	SELECT subject
-	, name AS boardName
+	, name AS board_name
 	, id_msg
 	, id_topic
 	FROM {$db_prefix}messages
 	JOIN {$db_prefix}topics USING (id_topic, id_board)
 	JOIN {$db_prefix}boards USING (id_board)
 	WHERE body LIKE '%ukoffprac%'
-	AND CONCAT('START,', memberGroups, ',END') LIKE '%,$guestMemberGroupId,%'
+	AND CONCAT('START,', member_groups, ',END') LIKE '%,$guestMemberGroupId,%'
 	GROUP BY id_msg
-	ORDER BY posterTime
+	ORDER BY poster_time
 	" , __FILE__, __LINE__);
-while ($row = mysql_fetch_assoc($query)) {
+$count = 0;
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	printf("<TR>
 	<TD>%s</TD>
 	<TD><A HREF='http://www.simracing.org.uk/smf/index.php?action=post;msg=%d;topic=%d;sesc=%s#postmodify'>%s</A></TD>
@@ -32,9 +33,11 @@ while ($row = mysql_fetch_assoc($query)) {
 		$row['id_topic'],
 		$context['session_id'],
 		$row['subject']);
+	++$count;
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 ?>
 </TABLE>
+Found <?php echo $count; ?> posts.
 </BODY>
 </HTML>

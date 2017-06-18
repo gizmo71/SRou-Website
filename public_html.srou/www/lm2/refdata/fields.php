@@ -70,7 +70,7 @@ class RefDataFieldReadOnly extends RefDataField {
 		if (strlen($value) > $this->maxWidth) {
 			$extra = htmlentities($value, ENT_QUOTES);
 			$value = substr($value, 0, $this->maxWidth - 1);
-			$extraValue = "&hellip;";
+			$extraValue = '&hellip;';
 		} else {
 			$extra = null;
 		}
@@ -231,6 +231,8 @@ class RefDataFieldFK extends RefDataField {
 	}
 
 	function maybeLoadData() {
+		global $smcFunc;
+
 		if (is_null($this->sql)) {
 			return;
 		}
@@ -250,11 +252,11 @@ class RefDataFieldFK extends RefDataField {
 				}
 			} else  {
 				$query = lm2_query($this->sql, __FILE__, __LINE__);
-				while ($row = mysql_fetch_assoc($query)) {
+				while ($row = $smcFunc['db_fetch_assoc']($query)) {
 					array_push($this->map, $row);
 					$this->valueMap[$row['id']] = $row['description'];
 				}
-				mysql_free_result($query);
+				$smcFunc['db_free_result']($query);
 			}
 
 			$cacheEntry = array(name=>$this->name, map=>$this->map, vm=>$this->valueMap);

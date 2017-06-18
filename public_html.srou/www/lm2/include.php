@@ -1,4 +1,6 @@
 <?php
+$ID_MEMBER = $user_info['id']; //FIXME: remove and use standard everywhere
+
 $modSettings['disableQueryCheck'] = true; // We use UNION and friends...
 //FIXME: Get rid of these eventually and use the new Settings.php ones.
 $guest_member_id = $lm2_guest_member_id;
@@ -7,7 +9,8 @@ $incidentReportForum = $lm2_incident_report_forum;
 
 require_once("$sourcedir/Subs-LM2.php");
 
-set_magic_quotes_runtime(0);
+// Not in PHP 5.4 or better.
+//set_magic_quotes_runtime(0);
 
 //FIXME: remove and always call the LM2 ones.
 function get_request_param($name) { return lm2GetRequestParam($name); }
@@ -21,15 +24,15 @@ function rebuild_driver_cache() {
 	lm2_query("
 		INSERT INTO {$lm2_db_prefix}drivers
 		(driver_member, driver_name)
-		SELECT id_member, realName
+		SELECT id_member, real_name AS realName
 		FROM {$db_prefix}members
 		WHERE id_member NOT IN (SELECT driver_member FROM {$lm2_db_prefix}drivers)
 		", __FILE__, __LINE__);
 	lm2_query("
 		UPDATE {$lm2_db_prefix}drivers, {$db_prefix}members
-		SET driver_name = realName
+		SET driver_name = real_name
 		WHERE driver_member = id_member
-		AND IFNULL(driver_name <> realName, 1)
+		AND IFNULL(driver_name <> real_name, 1)
 		", __FILE__, __LINE__);
 }
 
@@ -61,20 +64,23 @@ function microtime_float() {
    return ((float) $usec + (float) $sec);
 }
 
+//TODO: change everywhere to call smcFunc thingy
 $inhibitTimings = false;
 function lm2_query($sql, $file, $line) {
-	global $inhibitTimings;
+	global $inhibitTimings, $db_connection;
 
 	$start = microtime_float();
-	$result = db_query($sql, $file, $line);
+	($result = mysqli_query($db_connection, $sql)) !== FALSE || die("<PRE>$sql\n" . mysqli_error($db_connection) . "\n$file $line\n</PRE>");
 	if ($inhibitTimings !== true) {
 		$end = microtime_float();
 		if (($ms = ($end - $start) * 1000.0) >= (is_numeric($inhibitTimings) ? $inhibitTimings : 500)) {
-			echo "<!-- $sql " . sprintf("%d", $ms) . "ms -->\n";
+			echo sprintf("<!-- %s %dms %s %s -->\n", $sql, $ms, $file, $line);
 		}
 	}
 	return $result;
 }
+//function mysql_free_result($q) { global $smcFunc; return $smcFunc['db_free_result']($q); }
+//function mysql_fetch_assoc($q) { global $smcFunc; return $smcFunc['db_fetch_assoc']($q); }
 
 //FIXME: remove and use LM2 version everywhere.
 function format_timestamp($time, $date_only) { return lm2FormatTimestamp($time, $date_only); }

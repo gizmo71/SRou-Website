@@ -1,10 +1,9 @@
 <?php
 $ssi_theme = 6;
-require_once(dirname(dirname(__FILE__)) . "/public_html.srou/www/smf/SSI.php");
-require_once("$sourcedir/Subs-LM2.php");
+$ssi_layers = array('html', 'body');
 
 $default_inc_file = "pages/about.php";
-$inc_file = "pages{$_SERVER['PATH_INFO']}.php";
+$inc_file = array_key_exists('PATH_INFO', $_SERVER) ? "pages{$_SERVER['PATH_INFO']}.php" : '';
 if (!file_exists($inc_file)) {
 	$inc_file = $default_inc_file;
 }
@@ -14,20 +13,15 @@ ob_start();
 include($inc_file);
 $contents = ob_get_contents();
 ob_end_clean();
-?>
+global $context;
+$context['page_title'] = $page_title;
 
-<HTML>
-<HEAD>
-	<TITLE><?php echo $page_title; ?></TITLE>
-	<LINK rel="stylesheet" type="text/css" href="/smf-theme/style.css" />
-</HEAD>
-<BODY>
+global $options;
+$options['collapse_header'] = 1;
+require_once("/home/gizmo71/public_html.srou/www/smf/SSI.php");
+require_once("$sourcedir/Subs-LM2.php");
 
-<?php
-include_once("$boarddir/../layout-header.php");
-makeSrouLayoutHeader();
-
-$events = lm2RecentUpcoming($event);
+$events = lm2RecentUpcoming(null);
 
 echo "<BR/><TABLE WIDTH='100%'><TR>
 	<TD VALIGN='TOP'>
@@ -62,21 +56,21 @@ echo lm2_table_open("Staff") . "<TABLE>" . lm2Staff(true, $lm2_mods_group_ukgpl)
 echo lm2_table_open("Former Staff") . "<TABLE>" . lm2Staff(true, 89, false) . "</TABLE>" . lm2_table_close();
 
 function list_seasons() {
-	global $lm2_db_prefix;
+	global $smcFunc;
 
 	$s = null;
 //XXX: sort by most recent event first
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT id_event_group, long_desc, series_theme
-		FROM {$lm2_db_prefix}event_groups
-		WHERE parent = 64
+		FROM {lm2_prefix}event_groups
+		WHERE parent = {int:ukgpl_root_event_group}
 		ORDER BY sequence_c
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		", array('ukgpl_root_event_group'=>64));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$s = is_null($s) ? '' : "$s<BR/>";
 		$s .= "<NOBR>" . lm2MakeEventGroupLink($row['id_event_group'], $row['long_desc'], $row['series_theme']) . "</NOBR>";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	return $s;
 }
@@ -92,9 +86,4 @@ function format_event_rows($events, $title, $align) {
 	return $content;
 }
 
-unset($_SESSION['ID_THEME']); // Don't allow it to become sticky...
-
 ?>
-
-</BODY>
-</HTML>

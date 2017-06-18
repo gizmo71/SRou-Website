@@ -1,0 +1,22 @@
+<?php
+include("$boarddir/Themes/default/index.template.php");
+
+function load_srou_theme() {
+	global $settings, $boardurl;
+
+	if (array_key_exists('srou_layout_header', $settings)) {
+		$settings['srou_layout_header'] = array_merge($settings['srou_layout_header'], array(
+			'homeUrl'=>"/index.php"
+		));
+	}
+
+	if (function_exists('srouCreateDonationHtml')) $settings['site_slogan'] = srouCreateDonationHtml();
+
+	$settings['srou_replay_url'] = 'http://replays.simracing.org.uk/';
+	$settings['srou_rules_topic'] = 3349;
+	$settings['srou_links_topic'] = 3354;
+}
+
+add_integration_function('integrate_load_theme', 'load_srou_theme', FALSE);
+
+?>

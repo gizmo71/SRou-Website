@@ -1,0 +1,24 @@
+<?php
+include("$boarddir/Themes/default/index.template.php");
+
+function load_ukir_theme() {
+	global $settings, $boardurl;
+
+	if (array_key_exists('srou_layout_header', $settings)) {
+		$settings['srou_layout_header'] = array_merge($settings['srou_layout_header'], array(
+			'imgAlt'=>'UKiR logo by Lazlow',
+			'centreCell'=>"<IMG ALIGN=RIGHT SRC='$boardurl/Themes/ukir/iRacing_square.jpg' WIDTH=8 HEIGHT=8>",//83x80
+			'homeUrl'=>"$boardurl/index.php?action=LM2R&group=229&theme=33" //FIXME: use lm2 link fn?
+		));
+	}
+
+	if (function_exists('srouCreateDonationHtml')) $settings['site_slogan'] = srouCreateDonationHtml();
+
+	$settings['srou_footer_html'] = "<A HREF='http://www.iRacing.com/'><IMG SRC='$boardurl/Themes/ukir/unofficial_iracing.jpg' WIDTH='243' HEIGHT='63'></A>";
+	$settings['srou_rules_topic'] = 3349;
+	$settings['srou_links_topic'] = 3354;
+}
+
+add_integration_function('integrate_load_theme', 'load_ukir_theme', FALSE);
+
+?>

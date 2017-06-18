@@ -50,7 +50,7 @@ $query = lm2_query("
 	WHERE event_date BETWEEN DATE_ADD(" . php2timestamp(time()) . ", INTERVAL -21 DAY) AND DATE_ADD(" . php2timestamp(time()) . ", INTERVAL 30 DAY)
 	ORDER BY event_date DESC
 	", __FILE__, __LINE__);
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	$ev = new iCalendar_event;
 
 	$url = $row['smf_topic'] ? "$boardurl?topic={$row['smf_topic']}" : null; //TODO: use appropriate base URL thingy
@@ -86,7 +86,7 @@ while ($row = mysql_fetch_assoc($query)) {
 
 	$a->add_component($ev);
 }
-mysql_free_result($query);
+$smcFunc['db_free_result']($query);
 
 function add_prop(&$event, $name, $value, $params = null) {
 	$event->add_property($name, $value, $params) || die("can't add $name=$value");

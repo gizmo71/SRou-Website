@@ -48,7 +48,8 @@ function driverRefDataFieldFKSQL($live) {
 	global $lm2_db_prefix, $db_prefix, $guest_member_id;
 	return "
 		SELECT driver_member AS id
-		, CONCAT(driver_name, IF(driver_member > 10000000, ' (UKGPL historic)', IF(id_member IS NULL, ' (defunct)', IF(driver_member <> $guest_member_id AND memberName <> realName, CONCAT(' (', memberName, ')'), '')))) AS description
+		, CONCAT(driver_name, IF(driver_member > 10000000, ' (UKGPL historic)', IF(id_member IS NULL, ' (defunct)',
+			IF(driver_member <> $guest_member_id AND member_name <> real_name, CONCAT(' (', member_name, ')'), '')))) AS description
 		, 1 AS is_html
 		, driver_member " . ($live ? ">" : "<=") . " 10000000 AS hide
 		FROM {$lm2_db_prefix}drivers
@@ -117,6 +118,8 @@ class CarRatings extends RefData {
 	}
 
 	function getFilters() {
+		global $smcFunc;
+
 		$filters = array(
 			''=>array('name'=>'None', 'predicate'=>'1'),
 			's'=>array('name'=>'Scheme', 'nested'=>array()),
@@ -127,10 +130,10 @@ class CarRatings extends RefData {
 			FROM {$this->lm2_db_prefix}scoring_schemes
 			JOIN " . $this->getTable() . " ON id_car_rating = id_scoring_scheme
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"rating_scoring_scheme = " . sqlString($row['id']));
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		return $filters;
 	}
@@ -150,17 +153,19 @@ class MapBase extends RefData {
 	function getTable() { global $lm2_ukgpl_prefix; return "{$lm2_ukgpl_prefix}_map_" . $this->getBaseEntity() . "s"; }
 	
 	function mapify($targetTable, $targetField, $joins = "") {
-		db_query("
+		global $smcFunc;
+
+		lm2_query("
 			UPDATE IGNORE $targetTable
 			$joins
 			JOIN " . $this->getTable() . " ON hist_" . $this->getBaseEntity() . " = $targetTable.$targetField AND approved
 			SET $targetTable.$targetField = live_" . $this->getBaseEntity() . "
 			", __FILE__, __LINE__);
-		printf(" %d&nbsp;<TT>%s</TT>...", db_affected_rows(), $targetTable);
+		printf(" %d&nbsp;<TT>%s</TT>...", $smcFunc['db_affected_rows'](), $targetTable);
 	}
 
 	function checkForOverlap() {
-		global $lm2_db_prefix;
+		global $lm2_db_prefix, $smcFunc;
 
 		$hist = "hist_" . $this->getBaseEntity();
 		$live = "live_" . $this->getBaseEntity();
@@ -169,7 +174,7 @@ class MapBase extends RefData {
 
 		// It's really important to verify that we're not merging two members or teams who appear in the same championship!
 		// We only do event points because champ points always follow as a result.
-		$query = db_query("
+		$query = lm2_query("
 			SELECT full_desc, id_championship, champ_type, champ_class_desc, $live, GROUP_CONCAT(DISTINCT $hist) AS hist, COUNT(DISTINCT ep.id) AS dep
 			FROM {$lm2_db_prefix}event_points AS ep
 			JOIN {$lm2_db_prefix}championships ON championship = id_championship AND champ_type = '" . $this->getChampType() . "'
@@ -178,18 +183,16 @@ class MapBase extends RefData {
 			GROUP BY id_championship, $live
 			HAVING dep > 1
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			echo "<BR/>" . print_r($row, true);
 			++$count;
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		return $count;
 	}
 
 	function rebuild() {
-		global $lm2_db_prefix;
-
 		if ($this->checkForOverlap() == 0) {
 			echo "<P>Migrating " . $this->getBaseEntity() . " data...\n";
 			$this->rebuildActual();
@@ -292,21 +295,21 @@ class DriverMap extends MapBase {
 }
 
 function teamIsDeletable($id_team, $row) {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 
 	$entries = 0;
 
 	$query = lm2_query("SELECT COUNT(*) AS entries FROM {$lm2_db_prefix}event_entries WHERE team = $id_team", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$entries += max($entries, $row['entries']);
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	$query = lm2_query("SELECT COUNT(*) AS entries FROM {$lm2_db_prefix}team_drivers WHERE team = $id_team", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$entries += max($entries, $row['entries']);
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	return $entries == 0;
 }
@@ -511,7 +514,7 @@ echo "\n<!-- XXX $sql -->\n";
 	$rownum = 0;
 
 	$rows = array();
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		array_push($rows, $row);
 	}
 
@@ -539,7 +542,7 @@ echo "\n<!-- XXX $sql -->\n";
 			make_row($row, $refData, $rownum++);
 		}
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 }
 
 function make_row($row, $refData, $rownum) {

@@ -2,20 +2,18 @@
 <?php
 
 require_once("$sourcedir/Subs-Post.php");
-ini_set('display_errors', 'stdout');
 
-// SMF 1.x version
 ini_get("precision") >= 12 || die("default precision is less than 12");
 $sim = -1;
 $id_event = $_REQUEST['id_event'];
 if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 	echo "<P>Using $id_race1 to set starting positions for $id_event</P>\n";
-	db_query("
+	lm2_query("
 		UPDATE {$lm2_db_prefix}event_entries r1, {$lm2_db_prefix}event_entries r2
 		SET r2.start_pos = IF(r1.race_pos < 9, 9 - r1.race_pos, r1.race_pos)
 		WHERE r1.event = $id_race1 AND r2.event = $id_event AND r1.sim_driver = r2.sim_driver
 		", __FILE__, __LINE__);
-	db_query("
+	lm2_query("
 		UPDATE {$lm2_db_prefix}event_entries r1, {$lm2_db_prefix}event_entries r2
 		SET r2.driver_type = r1.driver_type
 		WHERE r1.event = $id_race1 AND r2.event = $id_event AND r1.sim_driver = r2.sim_driver
@@ -26,10 +24,10 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 ?>
 <FORM enctype="multipart/form-data" method="POST">
 <?php
-	$query = db_query("SELECT sim FROM {$lm2_db_prefix}events WHERE id_event = $id_event", __FILE__, __LINE__);
-	($row = mysql_fetch_assoc($query)) || die("can't find event for $id_event!");
-	mysql_fetch_assoc($query) && die("ambiguous event $id_event!");
-	mysql_free_result($query);
+	$query = lm2_query("SELECT sim FROM {$lm2_db_prefix}events WHERE id_event = $id_event", __FILE__, __LINE__);
+	($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find event for $id_event!");
+	$smcFunc['db_fetch_assoc']($query) && die("ambiguous event $id_event!");
+	$smcFunc['db_free_result']($query);
 	$sim = $row['sim'];
     echo "<INPUT TYPE='HIDDEN' NAME='id_event' VALUE='$id_event' />\n";
     echo "<INPUT TYPE='HIDDEN' NAME='id_sim' VALUE='$sim' />\n";
@@ -57,7 +55,7 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 	$fatal_errors = array();
 	$modReport = '';
 
-	$query = db_query("
+	$query = lm2_query("
 		SELECT id_sim_circuit
 		, circuit
 		, {$lm2_db_prefix}events.sim AS id_sim
@@ -67,9 +65,9 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 		JOIN {$lm2_db_prefix}sim_circuits ON id_sim_circuit = sim_circuit
 		WHERE id_event = $id_event
 		", __FILE__, __LINE__);
-	($current_circuit = mysql_fetch_assoc($query)) || die("can't find event or circuits for $id_event!");
-	mysql_fetch_assoc($query) && die("ambiguous event $id_event!");
-	mysql_free_result($query);
+	($current_circuit = $smcFunc['db_fetch_assoc']($query)) || die("can't find event or circuits for $id_event!");
+	$smcFunc['db_fetch_assoc']($query) && die("ambiguous event $id_event!");
+	$smcFunc['db_free_result']($query);
 	($current_circuit['id_sim_circuit'] == -1) && die("cannot import for an event that has no location");
 	($current_circuit['sim'] == -1) || die("cannot import for an event that is already locked to a physical circuit");
 	($current_circuit['id_sim'] == $sim) || die("sims for event and import don't match"); // Should never get here!
@@ -85,15 +83,15 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 
 	is_null($location) && die("no location");
 
-	$query = db_query("
+	$query = lm2_query("
 		SELECT id_sim_circuit, circuit, length_metres, sim_name
 		FROM {$lm2_db_prefix}sim_circuits
 		WHERE sim = $sim
 		" . ($sim == 9 ? "" : "AND IFNULL(length_metres, -1) = IFNULL(" . nullIfNull($track_length) . ", -1)") . "
 		AND sim_name = " . sqlString($location) . "
 		", __FILE__, __LINE__);
-	if ($row = mysql_fetch_assoc($query)) {
-		mysql_fetch_assoc($query) && die("ambiguous circuit matches!");
+	if ($row = $smcFunc['db_fetch_assoc']($query)) {
+		$smcFunc['db_fetch_assoc']($query) && die("ambiguous circuit matches!");
 		($row['circuit'] == $current_circuit['circuit']) || die("circuit mapping found but for wrong track");
 		$current_circuit = $row;
 	} else {
@@ -101,79 +99,81 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 			echo "<P>Wants to make a new sim_circuit, location '$location', length '$track_length'
 				from id_sim_circuit {$current_circuit['id_sim_circuit']}</P>\n";
 		} else {
-			db_query("
+			lm2_query("
 				INSERT INTO {$lm2_db_prefix}sim_circuits
 				(circuit, sim, sim_name, length_metres)
 				VALUES ({$current_circuit['circuit']}, $sim, " . sqlString($location) . "
 				, " . nullIfNull($track_length) . ")
 				", __FILE__, __LINE__);
-			$current_circuit['id_sim_circuit'] = db_insert_id();
+			$current_circuit['id_sim_circuit'] = $smcFunc['db_insert_id']('{lm2_prefix}', 'id_sim_circuit');
 			echo "<P>Note: location '$location' added with length '$track_length' for sim $sim as {$current_circuit['id_sim_circuit']}</P>\n";
 		}
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	//echo "<PRE>entries: " . print_r($entries, true) . "</PRE>\n";
 
 	if (count($entries) == 0) {
 		die("no entries - are you sure you did anything?");
-	}
-	if ($_REQUEST['simulate'] == '1') {
-		array_push($fatal_errors, "Import simulated - not writing entries. Would write <pre>" . print_r($entries, true) . "</pre>");
-	}
-	if (count($fatal_errors) > 0) {
+	} else if (count($fatal_errors) > 0) {
 		echo "<H2>" . count($fatal_errors) . " fatal errors; not writing event to database.<BR>Please fix the problems and try again.</H2>";
 		foreach (array_unique($fatal_errors) AS $fatal_error) {
 			echo "$fatal_error<BR/>\n";
 		}
+	} else if ($_REQUEST['simulate'] == '1') {
+		echo "<P>Import simulated - not writing entries</P>\n";
+		foreach ($entries AS $entry) {
+			echo "<BR/>Would write <PRE>" . htmlentities(print_r($entry, true), ENT_QUOTES) . "</PRE>\n";
+		}
+		echo "<BR/>Mod report: $modReport\n";
 	} else {
 		write_entries($current_circuit['id_sim_circuit']);
 		echo "<P>Don't forget to generate the standings!</P>\n";
 
-		$query = db_query("
+		$query = lm2_query("
 			SELECT r1.id_event
 			FROM {$lm2_db_prefix}events r1
 			JOIN {$lm2_db_prefix}events r2 USING (sim, sim_circuit)
 			WHERE r2.id_event = $id_event AND r1.id_event <> $id_event AND r1.entries_c > 0
 			AND r1.event_date <= r2.event_date AND r1.event_date > r2.event_date - INTERVAL 2 HOUR
 			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			echo "<P><A HREF='?action=import&id_event=$id_event&id_race1={$row['id_event']}'>Take starting positions from event {$row['id_event']}</A></P>\n";
 		}
 		if ($sim == 7) echo "<P><A HREF='?action=refdata&refData=eve&rdFilt=e$id_event'>Check for AI drivers</A></P>\n";
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 	}
 }
 
 // Used by some of the importers.
 function show_mod_selector() {
-	global $lm2_db_prefix, $sim;
+	global $lm2_db_prefix, $sim, $smcFunc;
 ?>
     <TR><TD>Mod/class</TD><TD><SELECT name="mod" onSelect="alert('foo\n' + form.submit_button);">
     	<OPTION VALUE="" SELECTED>Please select a mod...</OPTION>
 <?php
-	$query = db_query("
+	$query = lm2_query("
 		SELECT type, mod_desc
 		FROM {$lm2_db_prefix}sim_mods
 		WHERE id_sim = $sim
 		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		print "<OPTION VALUE='${row['type']}'>${row['mod_desc']}</OPTION>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 ?>
     </SELECT> <SPAN STYLE="color: red">You <B>must</B> select a mod before proceeding!</SPAN></TD></TR>
 <?php
 }
 
 function show_event_selector() {
-	global $circuit_html_clause, $lm2_db_prefix;
+	global $circuit_html_clause, $lm2_db_prefix, $smcFunc;
 ?>
 <form enctype="multipart/form-data" method="POST">
 	<SELECT NAME="id_event">
       <OPTION VALUE="">Please select an event...</OPTION>
 <?php
-	$query = db_query("
+	$query = lm2_query("
 		SELECT id_event
 		, $circuit_html_clause AS circuit
 		, full_desc AS event_group
@@ -189,12 +189,12 @@ function show_event_selector() {
 		AND event_date < NOW() + INTERVAL 1 DAY
 		ORDER BY event_date IS NULL, event_date
 		" , __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	    echo "<OPTION VALUE=\"{$row['id_event']}\">"
 	        . "{$row['event_date']} {$row['circuit']} &mdash; {$row['event_group']}"
 	        . " #{$row['id_event']} &mdash; {$row['sim_name']}</OPTION>\n";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 ?>
 	</SELECT>
 	<INPUT type="button" value="Next &gt;" onClick="this.disabled=true;this.form.submit();" />
@@ -203,12 +203,12 @@ function show_event_selector() {
 }
 
 function write_entries($id_sim_circuit) {
-	global $id_event, $entries, $modReport, $race_start_time, $iracing_subsession;
-	global $lm2_db_prefix, $db_prefix, $circuit_html_clause, $incidentReportForum;
+	global $db_prefix, $lm2_db_prefix, $smcFunc, $circuit_html_clause, $incidentReportForum;
+	global $id_event, $entries, $race_start_time, $iracing_subsession, $modReport;
 
 	$modTopic = null;
 	if ($modReport) {
-		$query = db_query("SELECT IFNULL(id_topic, 0) AS incident_topic
+		$query = lm2_query("SELECT IFNULL(id_topic, 0) AS incident_topic
 			, event_date AS event_date
 			, short_desc AS series_desc
 			, $circuit_html_clause AS circuit_html
@@ -219,9 +219,9 @@ function write_entries($id_sim_circuit) {
 			JOIN {$lm2_db_prefix}circuit_locations ON id_circuit_location = circuit_location
 			LEFT JOIN {$db_prefix}topics ON incident_topic = id_topic
 			WHERE id_event = $id_event", __FILE__, __LINE__);
-		($row = mysql_fetch_assoc($query)) || die("can't find event $event");
-		mysql_fetch_assoc($query) && die("more than one event $id_event");
-		mysql_free_result($query);
+		($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find event $event");
+		$smcFunc['db_fetch_assoc']($query) && die("more than one event $id_event");
+		$smcFunc['db_free_result']($query);
 		$modTopic = $row['incident_topic']; // Almost certainly 0.
 		$from = array(
 			'id' => 0,
@@ -229,7 +229,7 @@ function write_entries($id_sim_circuit) {
 			'email' => ''
 		);
 		$msgOptions = array(
-			'subject'=>htmlspecialchars("Moderation import checks: {$row['event_date']} {$row['series_desc']} ({$row['circuit_html']})"),
+			'subject'=>$smcFunc['htmlspecialchars']("Moderation import checks: {$row['event_date']} {$row['series_desc']} ({$row['circuit_html']})"),
 			'body'=>$modReport,
 			'attachments'=>array(),
 			'smileys_enabled' => 0,
@@ -239,13 +239,13 @@ function write_entries($id_sim_circuit) {
 		if ($modTopic == 0) $modTopic = $topicOptions['id'];
 	}
 
-
-	db_query("
+	lm2_query("
 		UPDATE {$lm2_db_prefix}events SET sim_circuit = $id_sim_circuit
 		" . (is_null($race_start_time) ? "" : ", event_date = " . php2timestamp($race_start_time)) . "
 		" . (is_null($iracing_subsession) ? "" : ", iracing_subsession = " . sqlString($iracing_subsession)) . "
 		" . ($modTopic ? ", incident_topic = $modTopic" : "") . "
-		WHERE id_event = $id_event", __FILE__, __LINE__); 
+		WHERE id_event = $id_event
+		", __FILE__, __LINE__); 
 
 	$has_GridPos = false;
 
@@ -312,12 +312,12 @@ function write_entries($id_sim_circuit) {
 			$values .= ", " . nullIfNull($entry['RacePos']);
 		}
 
-		$query = db_query("INSERT INTO {$lm2_db_prefix}event_entries ($fields) VALUES ($values)", __FILE__, __LINE__);
+		$query = lm2_query("INSERT INTO {$lm2_db_prefix}event_entries ($fields) VALUES ($values)", __FILE__, __LINE__);
 	}
 
 	// Now do a bit of fixing up.
-	db_query("SET @pos = 0", __FILE__, __LINE__);
-	db_query(
+	lm2_query("SET @pos = 0", __FILE__, __LINE__);
+	lm2_query(
 		"UPDATE {$lm2_db_prefix}event_entries SET"
 		. " qual_pos = IF(IFNULL(qual_best_lap_time, 0) = 0, NULL, (@pos := @pos + 1))"
 		. ($has_GridPos ? "" : ", start_pos = qual_pos")
@@ -352,7 +352,7 @@ function upgradeCode2Sql($code) {
 
 function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 	global $entries;
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 	global $fatal_errors;
 	global $id_event;
 
@@ -422,16 +422,16 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 		lookup_driver($entry, $driver, $lobby);
 
 		if (false && is_null($entry['DriverKG'])) {
-			$query = db_query("
+			$query = lm2_query("
 				SELECT eb_ballast FROM {$lm2_db_prefix}event_ballasts
-				WHERE eb_name = " . sqlString($driver) . " COLLATE bad_bad_bad
+				WHERE eb_name = " . sqlString($driver) . " COLLATE latin1_bin_bad_bad_bad
 				AND eb_event = $id_event
 				", __FILE__, __LINE__);
-			if ($row = mysql_fetch_assoc($query)) {
+			if ($row = $smcFunc['db_fetch_assoc']($query)) {
 				$entry['DriverKG'] = $row['eb_ballast'];
 			}
-			mysql_fetch_assoc($query) && die("more than one matching ballasts for $driver");
-			mysql_free_result($query);
+			$smcFunc['db_fetch_assoc']($query) && die("more than one matching ballasts for $driver");
+			$smcFunc['db_free_result']($query);
 		}
 	}
 
@@ -455,7 +455,7 @@ function check_and_copy(&$old, &$new, $hint = 'no hint available') {
 }
 
 function lookup_driver(&$entry, $driver, $lobby) {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 	global $fatal_errors;
 	global $lm2_guest_member_id;
 	global $sim;
@@ -463,16 +463,16 @@ function lookup_driver(&$entry, $driver, $lobby) {
 	$driver = sqlString($driver, true);
 	$lobby = sqlString($lobby, true);
 
-	$query = db_query("
+	$query = lm2_query("
 		SELECT id_sim_drivers, member
 		FROM {$lm2_db_prefix}sim_drivers
 		WHERE driving_name = $driver AND lobby_name = $lobby AND sim = $sim
 		", __FILE__, __LINE__);
-	if (!($row = mysql_fetch_assoc($query))) {
-		mysql_free_result($query);
+	if (!($row = $smcFunc['db_fetch_assoc']($query))) {
+		$smcFunc['db_free_result']($query);
 
 		// Not seen this before, so add it.
-		$query = db_query("
+		$query = lm2_query("
 			INSERT INTO {$lm2_db_prefix}sim_drivers
 			(member, driving_name, lobby_name, sim)
 			VALUES (0, $driver, $lobby, $sim)
@@ -485,20 +485,20 @@ function lookup_driver(&$entry, $driver, $lobby) {
 			echo "<P><B>Warning</B>: $driver/$lobby is a guest driver</P>";
 	    }
 		$entry['simDriver'] = $row['id_sim_drivers'];
-	    if (mysql_fetch_assoc($query)) {
+	    if ($smcFunc['db_fetch_assoc']($query)) {
 	 		array_push($fatal_errors, "$driver/$lobby mapped to more than one member");
 	    }
-	    mysql_free_result($query);
+	    $smcFunc['db_free_result']($query);
 
 		$use_driver_details = false;
-		$query = db_query("SELECT 1 FROM {$lm2_db_prefix}sims WHERE id_sim = $sim AND use_driver_details = 'Y'", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+		$query = lm2_query("SELECT 1 FROM {$lm2_db_prefix}sims WHERE id_sim = $sim AND use_driver_details = 'Y'", __FILE__, __LINE__);
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$use_driver_details = true;
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		if ($entry['memberId'] != 0 && $entry['memberId'] != $lm2_guest_member_id && $use_driver_details && $driver) {
-			db_query("
+			lm2_query("
 				INSERT INTO {$lm2_db_prefix}driver_details
 				(driver, sim, driving_name)
 				VALUES ({$entry['memberId']}, $sim, $driver)
@@ -509,7 +509,7 @@ function lookup_driver(&$entry, $driver, $lobby) {
 }
 
 function lookup_car(&$entry) {
-	global $fatal_errors, $lm2_db_prefix, $sim;
+	global $fatal_errors, $lm2_db_prefix, $smcFunc, $sim;
 
 	$simCarId = -1;
 
@@ -520,7 +520,7 @@ function lookup_car(&$entry) {
 	$type = $entry['Car']['VehicleType'];
 	$upgradeCode = $entry['Car']['UpgradeCode'];
 
-	$query = db_query(sprintf("
+	$query = lm2_query(sprintf("
 		SELECT car, id_sim_car
 		FROM {$lm2_db_prefix}sim_cars
 		WHERE IFNULL(vehicle, '-') = IFNULL(%s, '-')
@@ -538,7 +538,7 @@ function lookup_car(&$entry) {
 		sqlString($type),
 		upgradeCode2Sql($upgradeCode))
 		, __FILE__, __LINE__);
-	if (!($row = mysql_fetch_assoc($query))) {
+	if (!($row = $smcFunc['db_fetch_assoc']($query))) {
 		$sql = sprintf("
 			INSERT INTO {$lm2_db_prefix}sim_cars
 			(car, vehicle, team, number, sim, file, type, upgrade_code)
@@ -550,18 +550,18 @@ function lookup_car(&$entry) {
 			sqlString($file),
 			sqlString($type),
 			upgradeCode2Sql($upgradeCode));
-		db_query($sql, __FILE__, __LINE__);
+		lm2_query($sql, __FILE__, __LINE__);
 		array_push($fatal_errors, "added unknown $vehicle/$team/$number/$file/$type/$upgradeCode, mapped to ID -1");
 	} else {
 	    if ($row['car'] == -1) {
 			array_push($fatal_errors, "$vehicle/$team/$number/$file/$type/$upgradeCode is mapped to car ID -1");
 	    }
 	    $simCarId = $row['id_sim_car'];
-		if (mysql_fetch_assoc($query)) {
+		if ($smcFunc['db_fetch_assoc']($query)) {
 			array_push($fatal_errors, "$vehicle/$team/$number/$file/$type/$upgradeCode is mapped to more than one car ID");
 	    }
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 
 	return $simCarId;
 }
