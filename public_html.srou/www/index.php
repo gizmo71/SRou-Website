@@ -98,24 +98,16 @@ echo lm2_table_open("Announcements");
 ssi_boardNews(2, 2, null, 150);
 echo lm2_table_close();
 
-echo lm2_table_open("UKGTR Announcements");
-ssi_boardNews(80, 2, null, 150);
-echo lm2_table_close();
-
 echo lm2_table_open("UKGTL Announcements");
 ssi_boardNews(79, 2, null, 150);
 echo lm2_table_close();
 
-echo lm2_table_open("UKPnG Announcements");
-ssi_boardNews(78, 2, null, 150);
+echo lm2_table_open("UK Assetto Corsa Announcements");
+ssi_boardNews(98, 2, null, 150);
 echo lm2_table_close();
 
-echo lm2_table_open("UKiR Announcements");
-ssi_boardNews(77, 2, null, 150);
-echo lm2_table_close();
-
-echo lm2_table_open("Race '07 Announcements");
-ssi_boardNews(92, 2, null, 150);
+echo lm2_table_open("UK Race Room Experience Announcements");
+ssi_boardNews(101, 2, null, 150);
 echo lm2_table_close();
 
 echo lm2_table_open("Recent Event Moderation Reports");
