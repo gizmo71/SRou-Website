@@ -64,7 +64,7 @@ $mmessage = 'Migration in progress.';		# Description of why the forum is in main
 ########## Forum Info ##########
 $mbname = 'SimRacing.org.uk';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
-$boardurl = 'http://www.simracing.org.uk/smf';		# URL to your forum's folder. (without the trailing /!)
+$boardurl = 'https://www.simracing.org.uk/smf';		# URL to your forum's folder. (without the trailing /!)
 $webmaster_email = 'smf@SimRacing.org.uk';		# Email address to send emails from. (like noreply@yourdomain.com.)
 $cookiename = 'SMFCookie201612281356';		# Name of the cookie to set for authentication.
 
