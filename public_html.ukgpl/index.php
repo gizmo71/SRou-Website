@@ -18,7 +18,7 @@ $context['page_title'] = $page_title;
 
 global $options;
 $options['collapse_header'] = 1;
-require_once("/home/gizmo71/public_html.srou/www/smf/SSI.php");
+require_once("../public_html.srou/www/smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
 
 $events = lm2RecentUpcoming(null);
