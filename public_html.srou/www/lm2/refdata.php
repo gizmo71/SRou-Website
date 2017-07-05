@@ -1161,11 +1161,10 @@ class EventEntries extends RefData {
 				ORDER BY description
 			", true, "4em"),
 //TODO: make editable dropdown, and show mapping to actual car
-			new RefDataFieldReadOnlySql("sim_car", false, "
-				CONCAT((SELECT CONCAT(IFNULL(vehicle, '-'), ' ', IFNULL(file, '-'), ' ', IFNULL(number, '-'), ' ', IFNULL(team, '-'), ' ', IFNULL(type, '-'))
+			new RefDataFieldFK("sim_car", "SELECT id_sim_car AS id
+				, CONCAT(IFNULL(type, '-'), ': ', IFNULL(file, '-'), ' ', IFNULL(vehicle, '-'), ' ', IFNULL(team, '-'), ' ', IFNULL(number, '#')) AS description
                                 FROM {$this->lm2_db_prefix}sim_cars
-                                WHERE sim_car = id_sim_car)
-				, ' (', (SELECT class_description FROM {$this->lm2_db_prefix}classes WHERE car_class_c = id_class), ')')", 13),
+                                ORDER BY type, file, vehicle, team, number", false, '10em'),
 			new RefDataFieldEdit("qual_best_lap_time", 7, 9),
 			new RefDataFieldEdit("qual_pos", 2),
 			//new RefDataFieldReadOnly("qual_pos_class"),
