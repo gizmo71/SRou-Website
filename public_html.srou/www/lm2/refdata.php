@@ -1159,11 +1159,13 @@ class EventEntries extends RefData {
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
 				WHERE class_code IS NOT NULL
 				ORDER BY description
-			", true, "4em"), 
+			", true, "4em"),
+//TODO: make editable dropdown, and show mapping to actual car
 			new RefDataFieldReadOnlySql("sim_car", false, "
-				CONCAT((SELECT vehicle FROM {$this->lm2_db_prefix}sim_cars WHERE sim_car = id_sim_car)
-				, ' (', (SELECT class_description FROM {$this->lm2_db_prefix}classes WHERE car_class_c = id_class)
-				, ')')", 13),
+				CONCAT((SELECT CONCAT(IFNULL(vehicle, '-'), ' ', IFNULL(file, '-'), ' ', IFNULL(number, '-'), ' ', IFNULL(team, '-'), ' ', IFNULL(type, '-'))
+                                FROM {$this->lm2_db_prefix}sim_cars
+                                WHERE sim_car = id_sim_car)
+				, ' (', (SELECT class_description FROM {$this->lm2_db_prefix}classes WHERE car_class_c = id_class), ')')", 13),
 			new RefDataFieldEdit("qual_best_lap_time", 7, 9),
 			new RefDataFieldEdit("qual_pos", 2),
 			//new RefDataFieldReadOnly("qual_pos_class"),
