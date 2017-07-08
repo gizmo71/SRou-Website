@@ -351,10 +351,8 @@ class RefDataFieldFK extends RefDataField {
 
 	function makeSelect($rownum) {
 		$name = $this->getName();
-		return "SELECT NAME='$name$rownum'" . ($this->width ? sprintf(" STYLE='max-width: %s; min-width: %s;'", $this->width, $this->width) : "");
-	}
-
-	function build_dropdown_cell($name, $list, $id_selected, $default) {
+		$size = $this->width ? sprintf(" STYLE='max-width: %s; min-width: %s;'", $this->width, $this->width) : "";
+		return "SELECT NAME='$name$rownum'$size";
 	}
 
 	function valueOrKey($key) {
