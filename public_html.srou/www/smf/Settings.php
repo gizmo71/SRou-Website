@@ -61,18 +61,19 @@ $db_show_debug = false;
 $maintenance = 0;		# Set to 1 to enable Maintenance Mode, 2 to make the forum untouchable. (you'll have to make it 0 again manually!)
 $mtitle = 'Maintenance Mode';		# Title for the Maintenance Mode message.
 $mmessage = 'Migration in progress.';		# Description of why the forum is in maintenance mode.  
+
 ########## Forum Info ##########
 $mbname = 'SimRacing.org.uk';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
-$boardurl = 'http://www.simracing.org.uk/smf';		# URL to your forum's folder. (without the trailing /!)
+$boardurl = $_SERVER['SROU_BOARDURL'];		# URL to your forum's folder. (without the trailing /!)
 $webmaster_email = 'smf@SimRacing.org.uk';		# Email address to send emails from. (like noreply@yourdomain.com.)
 $cookiename = 'SMFCookie201612281356';		# Name of the cookie to set for authentication.
 
 ########## Database Info ##########
-$db_server = 'localhost';
-$db_name = 'gizmo71_smf';
+$db_server = $_SERVER['SROU_DB_HOST'];
+$db_name = $_SERVER['SROU_DB_NAME'];
 $db_user = 'gizmo71_smf';
-$db_passwd = 't$AQP1z[zUW8';
+$db_passwd = $_SERVER['SROU_DB_PASSWD'];
 $db_prefix = 'smf_';
 $db_persist = 0;
 $db_error_send = 0;
