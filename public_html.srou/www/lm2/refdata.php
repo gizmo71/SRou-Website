@@ -1165,6 +1165,7 @@ class EventEntries extends RefData {
 				, CONCAT(IFNULL(type, '-'), ': ', IFNULL(file, '-'), ' ', IFNULL(vehicle, '-'), ' ', IFNULL(team, '-'), ' ', IFNULL(number, '#')) AS description
                                 FROM {$this->lm2_db_prefix}sim_cars
                                 ORDER BY type, file, vehicle, team, number", false, '10em'),
+//TODO: read only SELECT class_description FROM {$this->lm2_db_prefix}classes WHERE car_class_c = id_class
 			new RefDataFieldEdit("qual_best_lap_time", 7, 9),
 			new RefDataFieldEdit("qual_pos", 2),
 			//new RefDataFieldReadOnly("qual_pos_class"),
