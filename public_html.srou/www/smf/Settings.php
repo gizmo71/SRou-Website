@@ -2,10 +2,10 @@
 # First, some LM2/SRou settings... 
 putenv("TZ=Europe/London");
 # Move at least some of these into the Subs-LM2 module.
-$lm2_db_prefix = 'gizmo71_lm2.lm2_';
-$lm2_hst_prefix = 'gizmo71_lm2.hst_';
-$lm2_view_prefix = 'gizmo71_views.';
-$lm2_ukgpl_prefix = 'gizmo71_ukgpl.';
+$lm2_db_prefix = "{$_SERVER['SROU_DB_PREFIX']}lm2.lm2_";
+$lm2_hst_prefix = "{$_SERVER['SROU_DB_PREFIX']}lm2.hst_";
+$lm2_view_prefix = "{$_SERVER['SROU_DB_PREFIX']}views.";
+$lm2_ukgpl_prefix = "{$_SERVER['SROU_DB_PREFIX']}ukgpl.";
 $lm2_guest_member_id = 2;
 $lm2_mods_group = 10;
 $lm2_mods_group_court = 45;
@@ -71,7 +71,7 @@ $cookiename = 'SMFCookie201612281356';		# Name of the cookie to set for authenti
 
 ########## Database Info ##########
 $db_server = $_SERVER['SROU_DB_HOST'];
-$db_name = $_SERVER['SROU_DB_NAME'];
+$db_name = "{$_SERVER['SROU_DB_PREFIX']}smf";
 $db_user = 'gizmo71_smf';
 $db_passwd = $_SERVER['SROU_DB_PASSWD'];
 $db_prefix = 'smf_';
