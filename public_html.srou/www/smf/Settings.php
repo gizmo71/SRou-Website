@@ -60,7 +60,7 @@ $db_show_debug = false;
 # Note: If $maintenance is set to 2, the forum will be unusable!  Change it to 0 to fix it.
 $maintenance = 0;		# Set to 1 to enable Maintenance Mode, 2 to make the forum untouchable. (you'll have to make it 0 again manually!)
 $mtitle = 'Maintenance Mode';		# Title for the Maintenance Mode message.
-$mmessage = 'Migration in progress.';		# Description of why the forum is in maintenance mode.  
+$mmessage = 'Migration in progress.';		# Description of why the forum is in maintenance mode.
 ########## Forum Info ##########
 $mbname = 'SimRacing.org.uk';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
@@ -100,4 +100,6 @@ $image_proxy_enabled = 0;
 $cachedir = '/home/gizmo71/public_html.srou/www/smf/cache';
 $packagesdir = '/home/gizmo71/public_html.srou/www/smf/Packages';
 $tasksdir = '/home/gizmo71/public_html.srou/www/smf/Sources/tasks';
+$db_type = 'mysqli';
+$db_character_set = 'utf8';
 ?>
