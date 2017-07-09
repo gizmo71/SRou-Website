@@ -1,7 +1,5 @@
 #!/bin/bash -ex
 
-cd /var/backup/boxfish
-
 TZ=GMT0BST
 export TZ
 

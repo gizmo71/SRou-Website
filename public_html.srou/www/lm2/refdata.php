@@ -1144,7 +1144,7 @@ class EventEntries extends RefData {
 			", 8),
 			new RefDataFieldReadOnlySql('sim_driver', true, "
 				SELECT CONCAT(driving_name, IF(lobby_name <> driving_name, CONCAT('/', lobby_name), ''), '->', CONCAT(driver_name, IF(driver_member > 10000000, ' (UKGPL historic)', '')))
-				FROM {$this->lm2_db_prefix}drivers
+				FROM {$lm2_db_prefix}drivers
 				WHERE sim_driver_member = driver_member
 			", 7),
 			$GLOBALS['memberRefDataFieldFK'],
@@ -1156,14 +1156,16 @@ class EventEntries extends RefData {
 				ORDER BY description", true, "10em"),
 			new RefDataFieldFK("reg_class", "
 				SELECT class_code AS id, CONCAT(class_code, ' - ', description) AS description
-				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
+				FROM {$lm2_db_prefix}reg_classes
 				WHERE class_code IS NOT NULL
 				ORDER BY description
-			", true, "4em"), 
-			new RefDataFieldReadOnlySql("sim_car", false, "
-				CONCAT((SELECT vehicle FROM {$this->lm2_db_prefix}sim_cars WHERE sim_car = id_sim_car)
-				, ' (', (SELECT class_description FROM {$this->lm2_db_prefix}classes WHERE car_class_c = id_class)
-				, ')')", 13),
+			", true, "4em"),
+//TODO: make editable dropdown, and show mapping to actual car
+			new RefDataFieldFK("sim_car", "SELECT id_sim_car AS id
+				, CONCAT(IFNULL(type, '-'), ': ', IFNULL(file, '-'), ' ', IFNULL(vehicle, '-'), ' ', IFNULL(team, '-'), ' ', IFNULL(number, '#')) AS description
+                                FROM {$lm2_db_prefix}sim_cars
+                                ORDER BY type, file, vehicle, team, number", false, '10em'),
+//TODO: read only SELECT class_description FROM {$lm2_db_prefix}classes WHERE car_class_c = id_class
 			new RefDataFieldEdit("qual_best_lap_time", 7, 9),
 			new RefDataFieldEdit("qual_pos", 2),
 			//new RefDataFieldReadOnly("qual_pos_class"),
