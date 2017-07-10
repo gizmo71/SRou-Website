@@ -1,9 +1,0 @@
-RewriteEngine on
-
-RewriteCond %{HTTP_HOST} ^ukgpl.com$
-RewriteRule ^(.*)$ "https://www.ukgpl.com/$1" [R=301,L]
-
-# Spammers and TalkTalk robot
-RewriteCond %{REQUEST_URI} =/sorted [OR]
-RewriteCond %{REQUEST_URI} =/detail.cfm
-RewriteRule ^(.*)$ http://www.simracing.org.uk/frequent.php [R=301,L]
