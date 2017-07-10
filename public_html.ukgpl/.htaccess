@@ -1,9 +1,7 @@
 RewriteEngine on
 
-RewriteCond %{HTTP_HOST} ^ukgpl.davegymer.org$ [OR]
-RewriteCond %{HTTP_HOST} ^ukgpl.com$ [OR]
-RewriteCond %{HTTP_HOST} ^www.ukgpl.davegymer.org$
-RewriteRule ^(.*)$ "http://www.ukgpl.com/$1" [R=301,L]
+RewriteCond %{HTTP_HOST} ^ukgpl.com$
+RewriteRule ^(.*)$ "https://www.ukgpl.com/$1" [R=301,L]
 
 # Spammers and TalkTalk robot
 RewriteCond %{REQUEST_URI} =/sorted [OR]
