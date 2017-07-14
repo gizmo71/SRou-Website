@@ -6,8 +6,12 @@ if [ ! -d .git ]; then
     exit 1
 fi
 
-SROU_ROOT=$(pwd)
+eval $(grep -E 'SetEnv\s+SROU_' $(grep -l "SetEnv SROU_ROOT $(pwd)" /etc/httpd/conf.d/7[12]*.conf) |
+    sed -re 's/\s+SetEnv\s+//' |
+    while read name value; do echo $name=$value; done
+)
+set | grep SROU
 
-SMF_LOGIN='--user=gizmo71_smf --password=t$AQP1z[zUW8'
+SMF_LOGIN="--user=gizmo71_smf --password=${SROU_DB_PASSWD}"
 MIGRATE_LOGIN="--user=smf2srou --password=m1great"
 SHARED_OPTIONS="--host=mysql --batch $LOGIN_OPTIONS"
