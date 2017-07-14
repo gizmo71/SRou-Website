@@ -71,6 +71,8 @@ for file in index SSI; do
 #	sed <$HOME/boxfish/public_html.srou/www/smf/${file}.php >${file}.php -e s"/E_ALL/E_ALL \& ~E_DEPRECATED \& ~E_NOTICE/"
 done
 
+cd $SROU_ROOT
+
 git status
 
 cat <<EOF
