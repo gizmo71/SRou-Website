@@ -46,12 +46,13 @@ done; done
 #TODO: remove this when we do it for real
 	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories', CHAR(10), value) WHERE variable = 'news';"
 #TODO: how to do the QA versions?
-#TODO: what about pathnames?
 	for url2s in www.simracing.org.uk www.ukgpl.com; do
 		for table in settings themes; do
 			echo "UPDATE smf_$table SET value = REPLACE(value, 'http://$url2s', 'https://$url2s') WHERE value LIKE '%http://$url2s%';"
 		done
 	done
+#TODO: at some point we'll need a better way to identify the source folder...
+	echo "UPDATE smf_themes SET value = REPLACE(value, '/home/gizmo71/', '${SROU_ROOT}/') WHERE variable = 'theme_dir';"
 ) | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 
 rm -rf www public_html.ukgpl
