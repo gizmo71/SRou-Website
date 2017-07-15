@@ -55,7 +55,6 @@ cd public_html.srou
 (cd $HOME/boxfish/public_html.srou && tar -c -f - --exclude="smf/Packages/backups/*.tar.gz" --exclude='mkportal/cache/*.rss' www) | tar xvf -
 (cd $HOME/boxfish/public_html.srou && tar -c -f - --exclude="*/*.zip" replays) | tar xvf -
 (cd $HOME/boxfish/public_html.srou && tar -c -f - downloads) | tar xvf -
-(cd $HOME/boxfish && tar -c -f - public_html.ukgpl) | (cd $HOME && tar xvf -)
 
 cd www/smf
 
@@ -67,6 +66,7 @@ for file in index SSI; do
 done
 
 cd $SROU_ROOT
+(cd $HOME/boxfish && tar -c -f - public_html.ukgpl) | tar xvf -
 
 git status
 
