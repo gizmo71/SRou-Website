@@ -6,9 +6,9 @@ if false; then
 	cd dories/smf2-code
 	find . -name _LINK_\* -printf '%P\n' | while read name; do
 		realname=${name/_LINK_/}
-		rm -rf $HOME/$realname
-		cp -av $name $HOME/$realname
-		# ln -Tvs $HOME/boxfish/smf2-code/$name $HOME/$realname
+		rm -rf $SROU_ROOT/$realname
+		cp -av $name $SROU_ROOT/$realname
+		# ln -Tvs $HOME/boxfish/smf2-code/$name $SROU_ROOT/$realname
 	done
 fi
 
@@ -30,6 +30,6 @@ INSERT INTO smf_settings (variable, value) VALUES ('force_ssl', '2');
 EOF
 
 sed -i -e s"/db_type = 'mysql'/db_type = 'mysqli'/" \
-    $HOME/public_html.srou/www/smf/Settings.php
+    $SROU_ROOT/public_html.srou/www/smf/Settings.php
 
 git status
