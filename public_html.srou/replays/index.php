@@ -99,7 +99,7 @@ foreach ($list AS $file) {
 		"    <TD ALIGN=RIGHT>", $file['explode'] ?
 			"<A HREF=\"{$file['explode']}\">Examine contents</A>" : "", "</TD>\n",
 		"  </TR>\n";
-	$explodeUrl = "http://replays.simracing.org.uk/cgi-bin/explode.cgi?zip=$dir/{$file['url']}";
+	$explodeUrl = "/cgi-bin/explode.cgi?zip=$dir/{$file['url']}";
 	if ($isExploded && ($ph = fopen($explodeUrl, "r"))) {
 		$sep = "";
 		while ($read = fgets($ph)) {
