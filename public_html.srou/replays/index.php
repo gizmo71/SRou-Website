@@ -44,7 +44,7 @@ foreach (array(
 	//array(dir=>'race', url=>'63', title=>"Race'07"),
 ) as $dirA) {
 	$dir = $dirA['dir'];
-	echo "<H2><A id='$dir' HREF=\"http://www.simracing.org.uk/index.php?ind=lm2&group={$dirA['url']}\">{$dirA['title']}</A></H2>"
+	echo "<H2><A id='$dir' HREF=\"http://{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&group={$dirA['url']}\">{$dirA['title']}</A></H2>"
 ?>
 
 <TABLE BORDER=1>
@@ -99,12 +99,12 @@ foreach ($list AS $file) {
 		"    <TD ALIGN=RIGHT>", $file['explode'] ?
 			"<A HREF=\"{$file['explode']}\">Examine contents</A>" : "", "</TD>\n",
 		"  </TR>\n";
-	$explodeUrl = "/cgi-bin/explode.cgi?zip=$dir/{$file['url']}";
+	$explodeUrl = "https://{$_SERVER['SROU_HOST_REPLAY']}/cgi-bin/explode.cgi?zip=$dir/{$file['url']}";
 	if ($isExploded && ($ph = fopen($explodeUrl, "r"))) {
 		$sep = "";
 		while ($read = fgets($ph)) {
 			$text .= "$sep<TT>" . str_replace(' ', '&nbsp;', htmlentities($read, ENT_QUOTES)) . "</TT>";
-			if (preg_match('/^\s*(\d )\s \S \s \d \s \d %\s \d\d-\d\d-\d\d \d\d:\d\d\s [a-f0-9]{8}\s (\S.*.(?:txt|xml|vcr))\s*$/i', $read, $matches)) {
+			if (preg_match('/^\s*(\d+)\s+\S+\s+\d+\s+\d%\s+\d\d-\d\d-\d{4}\s+\d\d:\d\d\s+[a-f0-9]{8}\s+(\S.*.(?:txt|xml|vcr))\s*$/i', $read, $matches)) {
 				$name = rawurlencode(htmlentities($matches[2], ENT_QUOTES));
 				if (($size = $matches[1]) < 250000 && preg_match('/\.(?:txt|xml)$/i', $name, $dummy)) {
 					$text .= " (<A HREF=\"$explodeUrl&name=$name\">*</A>)";
