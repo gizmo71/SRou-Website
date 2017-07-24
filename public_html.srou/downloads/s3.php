@@ -52,7 +52,7 @@ The new policy uses active link generation to allow 24H access, and only to sign
 */
 
 if (!$ID_MEMBER || $ID_MEMBER <= 0) {
-	$me = "http://downloads.simracing.org.uk/s3.php{$_SERVER['PATH_INFO']}?{$_SERVER['QUERY_STRING']}";
+	$me = "https://{$_SERVER['SROU_HOST_DOWNLOAD']}/s3.php{$_SERVER['PATH_INFO']}?{$_SERVER['QUERY_STRING']}";
 	echo "<P><B>You must be logged in to download this file.</B></P>";
 	ssi_login($me);
 	exit;
@@ -76,7 +76,7 @@ case 'upload1':
 	$expires = strftime("%FT%T.000Z", $expires);
 	$ID_MEMBER == 1 || die("You are not the Gizmo!");
 	header("Content-Type: text/html; charset=UTF-8");
-	$redirect = "http://downloads.simracing.org.uk/s3.php?run=uploaded";
+	$redirect = "https://{$_SERVER['SROU_HOST_DOWNLOAD']}/s3.php?run=uploaded";
 	$policy = <<<EOF
 {
 	"expiration": "$expires",
@@ -134,7 +134,7 @@ function setName(keyField, filename) {
 	break;
 case 'uploaded':
 	header("Content-Type: text/plain");
-	printf('http://downloads.simracing.org.uk/s3.php/%s%s', encodeKey($_REQUEST['key']), $bucket != $defaultBucket ? '?bucket=' . $bucket : '');
+	printf("https://{$_SERVER['SROU_HOST_DOWNLOAD']}/s3.php/%s%s", encodeKey($_REQUEST['key']), $bucket != $defaultBucket ? '?bucket=' . $bucket : '');
 	break;
 case 'dry':
 	$dryRun = true;
