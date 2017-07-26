@@ -13,7 +13,7 @@ if false; then
 fi
 
 # Gets nobbled by the upgrade script.
-cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} gizmo71_smf
+cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 update smf_themes set value = replace(value, '/core', '/default');
 replace into smf_themes (id_member, id_theme, variable, value) values
 	(0, 3, 'header_logo_url', '/images/ukgtr-gvw.jpg'),
