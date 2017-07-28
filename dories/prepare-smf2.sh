@@ -38,6 +38,7 @@ cd smf
 touch Packages/installed.list
 cp -v ~/smf-mods/srou-smf-*.zip Packages/
 
+mkdir cache
 touch db_last_error.php
 
 cd other
