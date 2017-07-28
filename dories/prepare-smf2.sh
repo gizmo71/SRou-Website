@@ -3,7 +3,7 @@
 . ./common.sh
 
 # Remove the first one when doing this for real!
-cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} gizmo71_smf
+cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 update smf_settings set value = REPLACE(value, 'SMF1 on the ', 'SMF2 on the ') where variable = 'news';
 --update smf_boards set name = CONCAT('2_', name);
 --update smf_members set realName = CONCAT('2_', realName), emailAddress = 'gymer1971-smf2srou@yahoo.com', hideEmail = 0;
@@ -33,10 +33,10 @@ mv -v smf.keep smf
 git checkout -- smf
 
 cd smf
-(cd $HOME/dories/SMF2.1 && tar  --exclude=.git\* -c -f - .) | tar xvf -
+(cd $HOME/SMF2.1 && tar  --exclude=.git\* -c -f - .) | tar xvf -
 
 touch Packages/installed.list
-cp -v ~/dories/srou-smf-*.zip Packages/
+cp -v ~/smf-mods/srou-smf-*.zip Packages/
 
 touch db_last_error.php
 
