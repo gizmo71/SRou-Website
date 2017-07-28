@@ -1,6 +1,6 @@
 <?php
 $ssi_theme = 6;
-$ssi_layers = array('html', 'body');
+$ssi_layers = array('html');
 
 $default_inc_file = "pages/about.php";
 $inc_file = array_key_exists('PATH_INFO', $_SERVER) ? "pages{$_SERVER['PATH_INFO']}.php" : '';
