@@ -98,9 +98,9 @@ $upgradeData = '';
 $image_proxy_secret = 'b05c67e6ba4c319a997d';
 $image_proxy_maxsize = 5190;
 $image_proxy_enabled = 0;
-$cachedir = '/home/gizmo71/public_html.srou/www/smf/cache';
-$packagesdir = '/home/gizmo71/public_html.srou/www/smf/Packages';
-$tasksdir = '/home/gizmo71/public_html.srou/www/smf/Sources/tasks';
+$cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
+$packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
+$tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
 $db_type = 'mysqli';
 $db_character_set = 'utf8';
 ?>
