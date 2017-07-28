@@ -36,7 +36,7 @@ cd smf
 (cd $HOME/SMF2.1 && tar  --exclude=.git\* -c -f - .) | tar xvf -
 
 touch Packages/installed.list
-cp -v ~/dories/srou-smf-*.zip Packages/
+cp -v ~/smf-mods/srou-smf-*.zip Packages/
 
 touch db_last_error.php
 
