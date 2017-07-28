@@ -19,7 +19,7 @@ ob_end_clean();
 <HTML>
 <HEAD>
 	<TITLE><?php echo $page_title; ?></TITLE>
-	<LINK rel="stylesheet" type="text/css" href="/smf-theme/style.css" />
+	<?php echo "<LINK rel='stylesheet' type='text/css' href='{$settings['theme_url']}/style.css' />"; ?>
 </HEAD>
 <BODY>
 
