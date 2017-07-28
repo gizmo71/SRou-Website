@@ -80,8 +80,8 @@ $db_error_send = 0;
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
-$boarddir = '/home/gizmo71/public_html.srou/www/smf';		# The absolute path to the forum's folder. (not just '.'!)
-$sourcedir = '/home/gizmo71/public_html.srou/www/smf/Sources';		# Path to the Sources directory.
+$boarddir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf";
+$sourcedir = "{$boarddir}/Sources";
 
 ########## Error-Catching ##########
 # Note: You shouldn't touch these settings.
