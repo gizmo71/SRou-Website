@@ -28,7 +28,7 @@ for type in 0 1 2; do for db in smf lm2 ukgpl views; do
 		ssh boxfish "zcat $sql" </dev/null | sed --regexp-extended -e "s/gizmo71_(smf|lm2)/${SROU_DB_PREFIX}\1/g" \
 			-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
 			-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
-			-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_DOWNLOAD}%g" \
+			-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
 			-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g" |
 			mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${=DB_HOST} ${SROU_DB_PREFIX}${db}
 		echo "FLUSH LOGS;" | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
