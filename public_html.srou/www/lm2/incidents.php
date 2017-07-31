@@ -451,7 +451,7 @@ function inform_bad_boys($event) {
 	if ($drivers) {
 		$recipients = array('to'=>array(), 'bcc'=>$drivers);
 			$subject = "Incident report published - please read";
-			$url = "http://www.simracing.org.uk/index.php?ind=lm2&event={$event}";
+			$url = "{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&event={$event}";
 			$message = "The moderator's report for an event has been published which you should read because it involves you.
 \nIt may be that you have been found partly or wholly to blame for an incident, or it may simply be that the moderator wishes to give you some advice about your driving or racecraft.
 \nIn any case, please read the report by going [url={$url}]here[/url].
