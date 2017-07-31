@@ -51,7 +51,7 @@ while ($row = mysql_fetch_assoc($query)) {
 	make_text_tag($doc, 'visibility', "1", $Placemark);
 	make_text_tag($doc, 'name', $row['brief_name'], $Placemark);
 	$desc = "{$row['full_name']}<BR/>"
-		. "<A HREF='http://www.simracing.org.uk/index.php?ind=lm2&location={$row['id_circuit_location']}'>SimRacing.org.uk Profile</A>";
+		. "<A HREF='{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&location={$row['id_circuit_location']}'>SimRacing.org.uk Profile</A>";
 	if ($row['location_url']) {
 		$desc .= "\n<BR/><A HREF='{$row['location_url']}'>Official web site</A>";
 	}

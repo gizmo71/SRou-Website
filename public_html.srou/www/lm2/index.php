@@ -84,7 +84,7 @@ if ($user_info['is_guest']) {
 }
 ?></I></TD>
 <TD><A HREF="index.php"><I>LM2</I></A></TD>
-<TD><A HREF="http://www.simracing.org.uk/"><I>SimRacing.org.uk</I></A></TD>
+<TD><A HREF="/"><I>SimRacing.org.uk</I></A></TD>
 </TR></TABLE>
 
 </BODY>

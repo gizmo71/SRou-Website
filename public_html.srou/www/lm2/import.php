@@ -1,4 +1,4 @@
-<P ALIGN="RIGHT"><B><A HREF="http://www.simracing.org.uk/smf/index.php?topic=362.0">Importer Instructions</A></B></P>
+<P ALIGN="RIGHT"><B><?php echo "<A HREF='$boardurl/index.php?topic=362.0'>Importer Instructions</A>"; ?></B></P>
 <?php
 
 require_once("$sourcedir/Subs-Post.php");

@@ -66,7 +66,7 @@ if ($body = get_request_param('body')) {
 	$userUserName = $user_info['username'];
 
 	$subject = encodeSubject("Incident report: $event_group_brief, $when ($where)");
-	$smf_url = "[url=http://www.simracing.org.uk/lm2/index.php?action=increp&report=$report&time=" . urlencode($time) . "]click here[/url]";
+	$smf_url = "[url={$_SERVER['SROU_HOST_WWW']}/lm2/index.php?action=increp&report=$report&time=" . urlencode($time) . "]click here[/url]";
 
 	if ($drivers) {
 		$sql = "INSERT IGNORE INTO {$lm2_db_prefix}report_drivers (report, reported_driver) VALUES";
