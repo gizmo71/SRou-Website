@@ -1,4 +1,4 @@
 <?php
-header('Location: http://www.simracing.org.uk/smf/index.php?board=41.0');
+header("Location: //{$_SERVER['SROU_HOST_WWW']}");
 exit;
 ?>

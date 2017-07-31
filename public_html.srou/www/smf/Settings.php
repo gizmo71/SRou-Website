@@ -65,9 +65,9 @@ $mmessage = 'Migration in progress.';		# Description of why the forum is in main
 ########## Forum Info ##########
 $mbname = 'SimRacing.org.uk';		# The name of your forum.
 $language = 'english';		# The default language file set for the forum.
-$boardurl = $_SERVER['SROU_BOARDURL'];		# URL to your forum's folder. (without the trailing /!)
+$boardurl = "https://{$_SERVER['SROU_HOST_WWW']}/smf";		# URL to your forum's folder. (without the trailing /!)
 $webmaster_email = 'smf@SimRacing.org.uk';		# Email address to send emails from. (like noreply@yourdomain.com.)
-$cookiename = 'SMFCookie201612281356';		# Name of the cookie to set for authentication.
+$cookiename = 'SMFCookie201707310700';	# Name of the cookie to set for authentication.
 
 ########## Database Info ##########
 $db_server = $_SERVER['SROU_DB_HOST'];
@@ -80,8 +80,8 @@ $db_error_send = 1;
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
-$boarddir = '/home/gizmo71/public_html.srou/www/smf';		# The absolute path to the forum's folder. (not just '.'!)
-$sourcedir = '/home/gizmo71/public_html.srou/www/smf/Sources';		# Path to the Sources directory.
+$boarddir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf";
+$sourcedir = "{$boarddir}/Sources";
 
 ########## Error-Catching ##########
 # Note: You shouldn't touch these settings.
@@ -98,9 +98,9 @@ $upgradeData = '';
 $image_proxy_secret = 'b05c67e6ba4c319a997d';
 $image_proxy_maxsize = 5190;
 $image_proxy_enabled = 0;
-$cachedir = '/home/gizmo71/public_html.srou/www/smf/cache';
-$packagesdir = '/home/gizmo71/public_html.srou/www/smf/Packages';
-$tasksdir = '/home/gizmo71/public_html.srou/www/smf/Sources/tasks';
+$cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
+$packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
+$tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
 $db_type = 'mysqli';
 $db_character_set = 'utf8';
 ?>
