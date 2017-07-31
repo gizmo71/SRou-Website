@@ -7,8 +7,8 @@ ini_set('display_errors', 'stdout');
 // SMF 1.x version
 ini_get("precision") >= 12 || die("default precision is less than 12");
 $sim = -1;
-$id_event = $_REQUEST['id_event'];
-if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
+$id_event = lm2ArrayValue($_REQUEST, 'id_event');
+if (!is_null($id_race1 = lm2ArrayValue($_REQUEST, 'id_race1'))) {
 	echo "<P>Using $id_race1 to set starting positions for $id_event</P>\n";
 	db_query("
 		UPDATE {$lm2_db_prefix}event_entries r1, {$lm2_db_prefix}event_entries r2
@@ -22,7 +22,7 @@ if (!is_null($id_race1 = $_REQUEST['id_race1'])) {
 		", __FILE__, __LINE__);
 } else if (is_null($id_event) || $id_event == "") {
 	show_event_selector();
-} else if (is_null($sim = $_REQUEST['id_sim'])) {
+} else if (is_null($sim = lm2ArrayValue($_REQUEST, 'id_sim'))) {
 ?>
 <FORM enctype="multipart/form-data" method="POST">
 <?php
