@@ -5,7 +5,7 @@
 //header('Content-Type: text/plain; charset=iso-8859-1');
 
 require('include.php');
-require('bennu/bennu.inc.php');
+require('bennu/lib/bennu.inc.php');
 
 $tsfmt = 'Ymd\THis\Z';
 

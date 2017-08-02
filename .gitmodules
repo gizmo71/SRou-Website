@@ -1,0 +1,3 @@
+[submodule "public_html.srou/www/lm2/bennu"]
+	path = public_html.srou/www/lm2/bennu
+	url = https://gizmo@aquarium.davegymer.org/git/3rdparty/bennu/
