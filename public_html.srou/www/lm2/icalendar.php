@@ -5,7 +5,7 @@
 //header('Content-Type: text/plain; charset=iso-8859-1');
 
 require('include.php');
-require('bennu/bennu.inc.php');
+require('bennu/lib/bennu.inc.php');
 
 $tsfmt = 'Ymd\THis\Z';
 
@@ -53,11 +53,12 @@ $query = lm2_query("
 while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	$ev = new iCalendar_event;
 
-	$url = $row['smf_topic'] ? "$boardurl?topic={$row['smf_topic']}" : null; //TODO: use appropriate base URL thingy
+	$url = $row['smf_topic'] ? "$boardurl/index.php?topic={$row['smf_topic']}" : null;
 
 	add_prop($ev, "uid", "simracing.org.uk/event.{$row['id_event']}");
 	if ($url) {
-		add_prop($ev, "url", $url); // Google Calendar doesn't show it. :-( 
+		$http_url = str_replace('https://', 'http://', $url); // Bennu doesn't include https as a valid protocol. :-(
+		add_prop($ev, "url", $http_url); // Google Calendar doesn't show it. :-(
 	}
 	add_prop($ev, 'dtstamp', gmdate($tsfmt));
 	add_prop($ev, "class", "PUBLIC");

@@ -499,7 +499,7 @@ if (false) { //TODO: restore weather
 			if ($settings['theme_id'] == 6) {
 				echo "\n<BR/>UKGPL chatroom on IGOR or WinVROC (see announcement post in this topic), password '<TT><BIG>savage</BIG></TT>'";
 			} else {
-				echo "</P>\n<P><A HREF='http://www.simracing.org.uk/smf/index.php?topic=5646'>TeamSpeak server details</A>.</P>\n";
+				echo "</P>\n<P><A HREF='$boardurl/index.php?topic=5646'>TeamSpeak server details</A>.</P>\n";
 			}
 			echo "</P>\n";
 		}

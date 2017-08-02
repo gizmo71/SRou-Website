@@ -26,7 +26,7 @@ $count = 0;
 while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	printf("<TR>
 	<TD>%s</TD>
-	<TD><A HREF='http://www.simracing.org.uk/smf/index.php?action=post;msg=%d;topic=%d;sesc=%s#postmodify'>%s</A></TD>
+	<TD><A HREF='$boardurl/index.php?action=post;msg=%d;topic=%d;sesc=%s#postmodify'>%s</A></TD>
 	</TR>\n",
 		htmlentities($row['boardName'], ENT_QUOTES),
 		$row['id_msg'],

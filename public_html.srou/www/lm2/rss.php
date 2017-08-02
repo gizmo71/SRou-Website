@@ -25,7 +25,7 @@ $rss->setAttributeNode(new DOMAttr('version', $rss_ver));
 $rss->appendChild($channel = $doc->createElement('channel'));
 
 $top_title = "$team_name at SimRacing.org.uk";
-$top_link = "http://www.simracing.org.uk/index.php?ind=lm2&team=$team";
+$top_link = "//{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&team=$team";
 make_text_tag($doc, 'title', $top_title, $channel);
 make_text_tag($doc, 'link', $top_link, $channel);
 make_cdata_tag($doc, 'description', "Latest $team_name results from SimRacing.org.uk events", $channel);
@@ -37,7 +37,7 @@ if ((float) $rss_ver >= 2.0) {
 
 // Required for 0.92!
 $channel->appendChild($image = $doc->createElement('image'));
-make_text_tag($doc, 'url', "http://www.simracing.org.uk/images/flags-22x14/gb.gif", $image);
+make_text_tag($doc, 'url', "//{$_SERVER['SROU_HOST_WWW']}/images/flags-22x14/gb.gif", $image);
 make_text_tag($doc, 'title', $top_title, $image);
 make_text_tag($doc, 'link', $top_link, $image);
 make_text_tag($doc, 'width', '22', $image);
@@ -93,7 +93,7 @@ $smcFunc['db_free_result']($query);
 
 if ($desc) {
 	make_item("$team_name recent results",
-		"http://www.simracing.org.uk/index.php?ind=lm2&team=$team",
+		"//{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&team=$team",
 		$desc,
 		$channel);
 }
@@ -165,7 +165,7 @@ function add_team_champ_item($channel, $rowC) {
 	$smcFunc['db_free_result']($query);
 
 	make_item("{$rowC['event_group_desc']} {$rowC['champ_class_desc']}",
-		"http://www.simracing.org.uk/index.php?ind=lm2&group={$rowC['id_event_group']}#ch{$rowC['id_championship']}",
+		"//{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&group={$rowC['id_event_group']}#ch{$rowC['id_championship']}",
 		$desc, $channel);
 }
 
@@ -211,7 +211,7 @@ function make_item($title, $link, $description, $parent) {
 	} else {
 		$description = "<B>$title</B><BR>$description";
 	}
-	//make_text_tag($doc, 'guid', "http://www.simracing.org.uk/BlaBlaBla", $item);
+	//make_text_tag($doc, 'guid', "//{$_SERVER['SROU_HOST_WWW']}/BlaBlaBla", $item);
 	//make_text_tag($doc, 'pubDate', 'Tue, 10 Jun 2003 09:41:01 GMT', $item);
 	make_cdata_tag($doc, 'description', $description, $item);
 }
