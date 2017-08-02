@@ -674,7 +674,7 @@ function template_circuits() {
 ?>
 <table width="100%">
 <tr><td align="center"><A HREF="/lm2/kml.php">KML</A> (for <A HREF="http://earth.google.com/">Google Earth</A>)</td></tr>
-<tr><td align="center"><A HREF="http://maps.google.com/maps?q=http://www.simracing.org.uk/lm2/kml.php">Google Maps</A></td></tr>
+<tr><td align="center"><?php echo "<A HREF='http://maps.google.com/maps?q=https://{$_SERVER['SROU_HOST_WWW']}/lm2/kml.php'>Google Maps</A>"; ?></td></tr>
 </table>
 <?php
 	echo lm2_table_close();
