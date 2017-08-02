@@ -49,15 +49,15 @@ function makeSrouLayoutHeader() {
 
 	// http://www.projecthoneypot.org/
 	$honeypots = array(
-		// '<a href="http://www.simracing.org.uk/frequent.php"><img src="nonchalant-unilinear.gif" height="1" width="1" border="0"></a>',
-		'<a href="http://www.simracing.org.uk/frequent.php"><!-- nonchalant-unilinear --></a>',
-		'<a href="http://www.simracing.org.uk/frequent.php" style="display: none;">nonchalant-unilinear</a>',
-		'<div style="display: none;"><a href="http://www.simracing.org.uk/frequent.php">nonchalant-unilinear</a></div>',
-		'<a href="http://www.simracing.org.uk/frequent.php"></a>',
-		'<!-- <a href="http://www.simracing.org.uk/frequent.php">nonchalant-unilinear</a> -->',
-		'<div style="position: absolute; top: -250px; left: -250px;"><a href="http://www.simracing.org.uk/frequent.php">nonchalant-unilinear</a></div>',
-		'<a href="http://www.simracing.org.uk/frequent.php"><span style="display: none;">nonchalant-unilinear</span></a>',
-		'<a href="http://www.simracing.org.uk/frequent.php"><div style="height: 0px; width: 0px;"></div></a>'
+		// '<a href="/frequent.php"><img src="nonchalant-unilinear.gif" height="1" width="1" border="0"></a>',
+		'<a href="/frequent.php"><!-- nonchalant-unilinear --></a>',
+		'<a href="/frequent.php" style="display: none;">nonchalant-unilinear</a>',
+		'<div style="display: none;"><a href="/frequent.php">nonchalant-unilinear</a></div>',
+		'<a href="/frequent.php"></a>',
+		'<!-- <a href="/frequent.php">nonchalant-unilinear</a> -->',
+		'<div style="position: absolute; top: -250px; left: -250px;"><a href="/frequent.php">nonchalant-unilinear</a></div>',
+		'<a href="/frequent.php"><span style="display: none;">nonchalant-unilinear</span></a>',
+		'<a href="/frequent.php"><div style="height: 0px; width: 0px;"></div></a>'
 	);
 	$index = array_rand($honeypots);
 	echo "\n{$honeypots[$index]}\n";
