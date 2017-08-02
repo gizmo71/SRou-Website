@@ -53,7 +53,7 @@ $query = lm2_query("
 while ($row = mysql_fetch_assoc($query)) {
 	$ev = new iCalendar_event;
 
-	$url = $row['smf_topic'] ? "$boardurl/index.php?topic={$row['smf_topic']}" : null; //TODO: use appropriate base URL thingy
+	$url = $row['smf_topic'] ? "$boardurl/index.php?topic={$row['smf_topic']}" : null;
 
 	add_prop($ev, "uid", "simracing.org.uk/event.{$row['id_event']}");
 	if ($url) {
