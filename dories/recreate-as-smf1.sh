@@ -39,12 +39,13 @@ done; done
 	mysqlshow ${=SHARED_OPTIONS/--batch/} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf "mkp*" | grep mkp_ | cut -d' ' -f2 | grep -v mkp_pages | while read mkp; do
 		echo "DROP TABLE $mkp;"
 	done
-#TODO: remove this when we do it for real
-	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
 	ROOT_PATH_RE='^/.*(/public_html\.(?:srou|ukgpl).*)$'
 	for table in settings themes; do
 		echo -E "UPDATE smf_$table SET value = REGEXP_REPLACE(value, '$ROOT_PATH_RE', '${SROU_ROOT}\\\\1') WHERE value REGEXP '$ROOT_PATH_RE';"
 	done
+#TODO: remove these when we do it for real
+	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
+	echo "UPDATE smf_members SET realName = CONCAT('D_', realName), emailAddress = 'gymer1971-smf2srou@yahoo.com', hideEmail = 0;"
 ) | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 
 rm -rf www public_html.ukgpl
