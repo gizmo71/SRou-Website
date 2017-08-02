@@ -57,7 +57,8 @@ while ($row = mysql_fetch_assoc($query)) {
 
 	add_prop($ev, "uid", "simracing.org.uk/event.{$row['id_event']}");
 	if ($url) {
-		add_prop($ev, "url", $url); // Google Calendar doesn't show it. :-(
+		$http_url = str_replace('https://', 'http://', $url); // Bennu doesn't include https as a valid protocol. :-(
+		add_prop($ev, "url", $http_url); // Google Calendar doesn't show it. :-(
 	}
 	add_prop($ev, 'dtstamp', gmdate($tsfmt));
 	add_prop($ev, "class", "PUBLIC");
