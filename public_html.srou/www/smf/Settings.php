@@ -72,7 +72,7 @@ $cookiename = 'SMFCookie201707310700';	# Name of the cookie to set for authentic
 ########## Database Info ##########
 $db_server = $_SERVER['SROU_DB_HOST'];
 $db_name = "{$_SERVER['SROU_DB_PREFIX']}smf";
-$db_user = 'gizmo71_smf';
+$db_user = $db_name;
 $db_passwd = $_SERVER['SROU_DB_PASSWD'];
 $db_prefix = 'smf_';
 $db_persist = 0;
