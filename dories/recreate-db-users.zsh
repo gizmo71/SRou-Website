@@ -7,8 +7,7 @@
 	# and on the end of create user: PASSWORD EXPIRE NEVER
 	# then afterwards: SET GLOBAL validate_password_policy = 'MEDIUM';
 	cat <<-EOF
-		DROP USER IF EXISTS 'gizmo71_smf'@'%', 'gizmo71_backup'@'%';
-		CREATE USER 'gizmo71_smf'@'%'    IDENTIFIED BY '${SROU_DB_PASSWD}'
-	                  , 'gizmo71_backup'@'%' IDENTIFIED BY 'ju5t1nca5e';
+		DROP USER IF EXISTS '${SROU_DB_PREFIX}smf'@'%';
+		CREATE USER '${SROU_DB_PREFIX}smf'@'%' IDENTIFIED BY '${SROU_DB_PASSWD}';
 	EOF
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
