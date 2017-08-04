@@ -12,6 +12,6 @@ eval $(grep -E 'SetEnv\s+SROU_' $(grep -l "SetEnv SROU_ROOT $(pwd)" /etc/httpd/c
 )
 set | grep SROU
 
-SMF_LOGIN="--user=gizmo71_smf --password=${SROU_DB_PASSWD}"
+SMF_LOGIN="--user=${SROU_DB_PREFIX}smf --password=${SROU_DB_PASSWD}"
 MIGRATE_LOGIN="--user=smf2srou --password=m1great"
 SHARED_OPTIONS="--host=mysql --batch $LOGIN_OPTIONS"
