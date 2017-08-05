@@ -4,7 +4,7 @@
 
 <H3>Welcome to UKGPL</H3> 
 
-<P>The first thing you will need to do is Register on our forums.  Once you have registered, go to our <A HREF="http://www.simracing.org.uk/smf/index.php?topic=6787.0">New Drivers</A> thread in the Announcements section which contains a guide to getting started and is the place to get help and advice when starting with UKGPL.</P>
+<P>The first thing you will need to do is Register on our forums.  Once you have registered, go to our <A HREF="//www.simracing.org.uk/smf/index.php?topic=6787.0">New Drivers</A> thread in the Announcements section which contains a guide to getting started and is the place to get help and advice when starting with UKGPL.</P>
 
 <H3>IRC/WinVROC/IGOR</H3>
 

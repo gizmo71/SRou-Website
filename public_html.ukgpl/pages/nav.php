@@ -7,6 +7,6 @@
 
 <P><A HREF='http://ukgpl3.dyndns.org/inc_replaysS27_js.aspx'>Replays</A></P>
 
-<P><A HREF='http://www.ukgpl.com/ukgpl/statz/index.html'>Statistics</A></P>
+<!-- P><A HREF='/ukgpl/statz/index.html'>Statistics</A></P -->
 
-<P><A HREF='http://www.simracing.org.uk/smf/index.php#6'>Forums</A>
+<P><?php echo "<A HREF='$boardurl/index.php#6'>Forums</A>"; ?></P>

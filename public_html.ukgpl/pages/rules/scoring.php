@@ -21,7 +21,7 @@
 <UL>
 
 <LI>A team may enter as many drivers in each event as it wishes. Teams must manage their own drivers using the
-<A HREF="http://www.simracing.org.uk/lm2/index.php?action=teams">Team Management page</A>.</LI>
+<A HREF="//www.simracing.org.uk/lm2/index.php?action=teams">Team Management page</A>.</LI>
 <BR/>
 <LI>Team points are awarded to each driver who has entered on
 behalf of a team. The same scoring system as the Driver Championship

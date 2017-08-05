@@ -4,6 +4,7 @@ $ssi_layers = array('html');
 
 $default_inc_file = "pages/about.php";
 $inc_file = array_key_exists('PATH_INFO', $_SERVER) ? "pages{$_SERVER['PATH_INFO']}.php" : '';
+#FIXME: don't allow .. or absolute paths - HTTPD protects though so it's not urgent.
 if (!file_exists($inc_file)) {
 	$inc_file = $default_inc_file;
 }
@@ -11,7 +12,9 @@ $block_title = $page_title = 'UKGPL';
 
 ob_start();
 include($inc_file);
-$contents = ob_get_contents();
+$prodhosts = array('www.simracing.org.uk', 'www.ukgpl.com');
+$envhosts = array($_SERVER['SROU_HOST_WWW'], $_SERVER['SROU_HOST_UKGPL']);
+$contents = str_ireplace($prodhosts, $envhosts, ob_get_contents());
 ob_end_clean();
 global $context;
 $context['page_title'] = $page_title;

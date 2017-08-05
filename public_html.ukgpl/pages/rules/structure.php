@@ -63,7 +63,7 @@ moderators. (If the moderator of the penalised driver's division is
 also the Chief Moderator, the highest available division
 moderator will be given the ultimate decision). A simple Personal Message (PM) 
 on SimRacing.org.uk (SRou) to the Chief Moderator is sufficient to launch an appeal. The current Chief 
-Moderator is listed on the <A HREF="http://www.ukgpl.com/index.php" target="_blank">UKGPL Homepage</A>.
+Moderator is listed on the <A HREF="/">UKGPL Homepage</A>.
 
 <LI><P>Post-race penalties can include:
 <UL>
