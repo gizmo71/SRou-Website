@@ -12,7 +12,9 @@ $block_title = $page_title = 'UKGPL';
 
 ob_start();
 include($inc_file);
-$contents = ob_get_contents();
+$prodhosts = array('www.simracing.org.uk', 'www.ukgpl.com');
+$envhosts = array($_SERVER['SROU_HOST_WWW'], $_SERVER['SROU_HOST_UKGPL']);
+$contents = str_ireplace($prodhosts, $envhosts, ob_get_contents());
 ob_end_clean();
 ?>
 
