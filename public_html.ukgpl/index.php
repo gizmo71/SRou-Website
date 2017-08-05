@@ -5,6 +5,7 @@ require_once("$sourcedir/Subs-LM2.php");
 
 $default_inc_file = "pages/about.php";
 $inc_file = "pages{$_SERVER['PATH_INFO']}.php";
+#FIXME: don't allow .. or absolute paths - HTTPD protects though so it's not urgent.
 if (!file_exists($inc_file)) {
 	$inc_file = $default_inc_file;
 }
