@@ -24,12 +24,12 @@ We are now an international league having drivers from many countries but races 
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
 <p>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14244" target="_blank">1967 Graduates Cup (Works)</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14266.0" target="_blank">1967 Graduates Cup (Privateers)</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14245.0" target="_blank">1966 Historic Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14246.0" target="_blank">1965 Professionals Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14274" target="_blank">1965 Amateurs Trophy</A><br>
-<A HREF="http://www.simracing.org.uk/smf/index.php?topic=14247.0" target="_blank">Specials Series Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14244.0">1967 Graduates Cup (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14266.0">1967 Graduates Cup (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14245.0">1966 Historic Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14246.0">1965 Professionals Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14274.0">1965 Amateurs Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14247.0">Specials Series Trophy</A><br>
 </P>
 
 <P align="justify">
@@ -37,39 +37,39 @@ If all of this has not whetted your appetite why not take a look at our 10th Ann
 If you are ex-UKGPL and are contemplating a return, see if you can spot yourself!</P>
 
 <P>
-<object width="480" height="385"><param name="movie" value="http://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
+<object width="480" height="385"><param name="movie" value="https://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="https://www.youtube.com/v/PENRvoR-NU8&hl=en&fs=1&rel=0" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="480" height="385"></embed></object>
 </P>
 
 <HR WIDTH="75%" />
 
-<P>Our Chief Moderator is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=1643">Phil Thornton</A>.</P>
+<P>Our Chief Moderator is <A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=1643">Phil Thornton</A>.</P>
 
 <P>Please address applications to join to any of the moderating team, whose profiles are below</P>
 
-<P>Our web master is <A HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=1">Dave 'Gizmo' Gymer</A>.</P>
+<P>Our web master is <A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=1">Dave 'Gizmo' Gymer</A>.</P>
 
 <HR WIDTH="75%" />
 
 <P align="justify">If you are a seasoned Grand Prix Legends campaigner and would simply like to know more about our
-league please browse our <A HREF='http://www.simracing.org.uk/smf/index.php#6'>forum</A>.
-If you are a complete beginner you may find the <A HREF='http://www.ukgpl.com/index.php/starter'>Getting Started</A> page
-and <A HREF='http://www.ukgpl.com/index.php/training'>Training Article</A> helpful.  If you're ready to start racing
-on-line there are some invaluable hints and tips in our <A HREF='http://www.simracing.org.uk/smf/index.php?topic=6787.0'>New Drivers thread</A>.</P>
+league please browse our <A HREF='//www.simracing.org.uk/smf/index.php#6'>forum</A>.
+If you are a complete beginner you may find the <A HREF='/index.php/starter'>Getting Started</A> page
+and <A HREF='/index.php/training'>Training Article</A> helpful.  If you're ready to start racing
+on-line there are some invaluable hints and tips in our <A HREF='//www.simracing.org.uk/smf/index.php?topic=6787.0'>New Drivers thread</A>.</P>
 
-<P>Existing members may wish to jump directly to the list of <A HREF='http://www.simracing.org.uk/smf/index.php?action=unread;all'>all unread posts</A>.</P>
+<P>Existing members may wish to jump directly to the list of <A HREF='//www.simracing.org.uk/smf/index.php?action=unread;all'>all unread posts</A>.</P>
 
 <HR WIDTH="75%" />
 
 <P><BIG>We do not have any funded race servers.  All our servers are provided by our members free of charge for the benefit of the drivers. These members are:
 
 <BR/>	
-<A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=3776" target="_blank"> BadBlood</A>
+<A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=3776"> BadBlood</A>
 <BR/>
-<A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=5475" target="_blank"> Cookie</A>
+<A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=5475"> Cookie</A>
 <BR/>
-<A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=2660" target="_blank"> Turkey Machine</A>
+<A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=2660"> Turkey Machine</A>
 <BR/>
-<A TARGET="_top" HREF="http://www.simracing.org.uk/smf/index.php?action=profile;u=1643" target="_blank"> Phil Thornton</A>
+<A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=1643"> Phil Thornton</A>
 </BIG></P>
 
 

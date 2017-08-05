@@ -2,7 +2,7 @@
 
 <P ALIGN="CENTER"><IMG WIDTH=259 HEIGHT=120 SRC="/images/watkins.jpg"></P>
 
-<P ALIGN="CENTER">These lists were used for all UKGPL discussion before the league moved to the <A HREF="http://www.simracing.org.uk/smf/index.php#6">SimRacing.org.uk forums</A>.</P>
+<P ALIGN="CENTER">These lists were used for all UKGPL discussion before the league moved to the <A HREF="//www.simracing.org.uk/smf/index.php#6">SimRacing.org.uk forums</A>.</P>
 
 <HR WIDTH="75%">
 
