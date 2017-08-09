@@ -97,7 +97,7 @@ if (!file_exists($sourcedir) && file_exists($boarddir . '/Sources'))
 $upgradeData = '';
 $image_proxy_secret = 'b05c67e6ba4c319a997d';
 $image_proxy_maxsize = 5190;
-$image_proxy_enabled = 0;
+$image_proxy_enabled = 1;
 $cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
 $packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
 $tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
