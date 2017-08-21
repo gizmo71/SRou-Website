@@ -1,6 +1,6 @@
 <?php
 $ssi_theme = 6;
-$ssi_layers = array('html');
+$ssi_layers = array('html', 'body');
 
 $default_inc_file = "pages/about.php";
 $inc_file = array_key_exists('PATH_INFO', $_SERVER) ? "pages{$_SERVER['PATH_INFO']}.php" : '';
@@ -23,6 +23,7 @@ global $options;
 $options['collapse_header'] = 1;
 require_once("../public_html.srou/www/smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
+echo "<link rel='stylesheet' href='$boardurl/Themes/srou/css/home.css' />\n";
 
 $events = lm2RecentUpcoming(null);
 
@@ -89,4 +90,5 @@ function format_event_rows($events, $title, $align) {
 	return $content;
 }
 
+ssi_shutdown();
 ?>
