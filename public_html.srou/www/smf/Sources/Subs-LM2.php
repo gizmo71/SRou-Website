@@ -166,6 +166,9 @@ function lm2AddProfileAreas(&$profileAreas) {
 function loadThemeData() {
 	global $context;
 
+	loadTemplate(false, 'srou');
+	loadTemplate(false, 'lm2');
+
 	$context['theme_settings'][] = array(
 		'id' => 'srou_home',
 		'label' => 'Home',
