@@ -3,7 +3,6 @@
 . ./common.sh
 
 if [ $(git rev-parse --abbrev-ref HEAD) != master ]; then
-	git
 	echo "You MUST be on the master branch (preferably with no local changes) before recreating SMF1."
 	exit 1
 fi
@@ -18,12 +17,10 @@ fi
 	done
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
-DB_HOSTS=(plaice skate)
 for type in 0 1 2; do for db in smf lm2 ukgpl views; do
-	sleep 2 # Give replication a chance to work
 	sort =(ssh boxfish "ls -1 /var/backup/boxfish/boxfish_${db}_${type}_*.sql.gz") | while read sql; do
 		echo "** Processing $(basename $sql)..."
-		DB_HOST="--host $DB_HOSTS[$(($RANDOM % $#DB_HOSTS + 1))]" # Alternate(ish) to avoid filling binary log on one server.
+		DB_HOST="--host mysql"
 		ssh boxfish "zcat $sql" </dev/null | sed --regexp-extended -e "s/gizmo71_(smf|lm2)/${SROU_DB_PREFIX}\1/g" \
 			-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
 			-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
