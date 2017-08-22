@@ -3,7 +3,6 @@
 . ./common.sh
 
 if [ $(git rev-parse --abbrev-ref HEAD) != master ]; then
-	git
 	echo "You MUST be on the master branch (preferably with no local changes) before recreating SMF1."
 	exit 1
 fi
