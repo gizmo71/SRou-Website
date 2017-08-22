@@ -2,16 +2,6 @@
 
 . ./common.sh
 
-if false; then
-	cd dories/smf2-code
-	find . -name _LINK_\* -printf '%P\n' | while read name; do
-		realname=${name/_LINK_/}
-		rm -rf $SROU_ROOT/$realname
-		cp -av $name $SROU_ROOT/$realname
-		# ln -Tvs $HOME/boxfish/smf2-code/$name $SROU_ROOT/$realname
-	done
-fi
-
 # Gets nobbled by the upgrade script.
 cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 UPDATE smf_themes SET value = replace(value, '/core', '/default');
