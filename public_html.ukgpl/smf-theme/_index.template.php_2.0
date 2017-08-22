@@ -1,13 +1,8 @@
 <?php
-include("$boarddir/Themes/default/index.template.php");
-
-function load_ukgpl_theme() {
-	global $settings, $boardurl, $boarddir;
-	if (array_key_exists('srou_layout_header', $settings)) {
+	if (array_key_exists('srou_layout_header', $settings))
 		$settings['srou_layout_header'] = array_merge($settings['srou_layout_header'], array(
 			'homeUrl'=>'http://www.ukgpl.com/',
 		));
-	}
 
 	ob_start();
 	$ads = "$boarddir/../../../public_html.ukgpl/header-ads.php";
@@ -18,8 +13,4 @@ function load_ukgpl_theme() {
 	$settings['srou_replay_url'] = "http://ukgpl3.dyndns.org/inc_replaysS27_js.aspx";
 	$settings['srou_rules_url'] = "http://www.ukgpl.com/index.php/rules/intro";
 	$settings['srou_links_url'] = "http://games.groups.yahoo.com/group/ukgpl/links/";
-}
-
-add_integration_function('integrate_load_theme', 'load_ukgpl_theme', FALSE);
-
 ?>

@@ -1,1 +1,12 @@
 body { background: #fee; }
+
+.forumtitle img { width: 274px; height: 80px; position: relative; }
+
+.forumtitle a::after {
+	content: "by SimRacing.org.uk";
+	font-size: 8pt;
+	position: relative;
+	bottom: 2px;
+	right: 150px;
+	color: #c0c0ff;
+}

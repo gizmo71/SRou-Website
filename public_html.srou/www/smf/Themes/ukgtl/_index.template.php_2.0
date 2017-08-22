@@ -1,23 +1,13 @@
 <?php
-include("$boarddir/Themes/default/index.template.php");
-
-function load_ukgtl_theme() {
-        global $settings, $boardurl;
-        if (array_key_exists('srou_layout_header', $settings)) {
+        if (array_key_exists('srou_layout_header', $settings))
                 $settings['srou_layout_header'] = array_merge($settings['srou_layout_header'], array(
 			'imgAlt'=>'UKGTL logo by Shark',
 			'homeUrl'=>"$boardurl/index.php?action=LM2R&group=13&theme=5", //FIXME: use lm2 link fn?
 		));
-	}
 
-	if (function_exists('srouCreateDonationHtml')) $settings['site_slogan'] = srouCreateDonationHtml();
 	$settings['srou_downloads_topic'] = 3358;
 
 	$settings['srou_replay_url'] = 'http://replays.simracing.org.uk/#ukgtl';
 	$settings['srou_rules_topic'] = 3349;
 	$settings['srou_links_topic'] = 3354;
-}
-
-add_integration_function('integrate_load_theme', 'load_ukgtl_theme', FALSE);
-
 ?>
