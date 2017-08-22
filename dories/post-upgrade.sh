@@ -14,9 +14,9 @@ REPLACE INTO smf_themes (id_member, id_theme, variable, value) VALUES
 	(0, 34, 'header_logo_url', '/smf/Themes/ukpng/ukpng.jpg');
 UPDATE smf_boards JOIN _map_board_themes ON id_board = board SET id_theme = theme;
 UPDATE smf_settings SET value = '1,3,4,5,6,33,34' WHERE variable IN ('enableThemes', 'knownThemes');
-UPDATE smf_settings SET value = '4' WHERE variable = 'theme_guests';
-UPDATE smf_settings SET value = '0' WHERE variable = 'minimize_files';
-INSERT INTO smf_settings (variable, value) VALUES
+REPLACE INTO smf_settings (variable, value) VALUES
+	('theme_guests', '4'),
+	('minimize_files', '0'),
 	('force_ssl', '2'),
 	('subject_toggle', '1');
 EOF
