@@ -609,7 +609,7 @@ class SimCircuits extends RefData {
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
-		$query = db_query("
+		$query = lm2_query("
 			SELECT id_circuit_location AS id, CONCAT(brief_name, ' (', iso3166_code, ')') AS description
 			FROM {$this->lm2_db_prefix}circuit_locations
 			ORDER BY description
@@ -682,7 +682,7 @@ class Circuits extends CircuitRefData {
 			'l'=>array('name'=>'Location', 'nested'=>array()),
 		);
 
-		$query = db_query("
+		$query = lm2_query("
 			SELECT id_circuit_location AS id, CONCAT(brief_name, ' (', iso3166_code, ')') AS description
 			FROM {$this->lm2_db_prefix}circuit_locations
 			ORDER BY description
@@ -736,7 +736,7 @@ class Locations extends CircuitRefData {
 			'f'=>array(name=>'Fantasy', predicate=>'is_fantasy'),
 		);
 
-		$query = db_query("
+		$query = lm2_query("
 			SELECT DISTINCT id_iso3166 AS id, iso3166_name AS description
 			FROM {$this->lm2_db_prefix}iso3166
 			ORDER BY description
@@ -1495,7 +1495,7 @@ class EventGroups extends RefData {
 		$desc = '';
 		$sep = '';
 		while ($group) {
-			$query = db_query("SELECT parent, long_desc FROM {$lm2_db_prefix}event_groups WHERE id_event_group = $group", __FILE__, __LINE__);
+			$query = lm2_query("SELECT parent, long_desc FROM {$lm2_db_prefix}event_groups WHERE id_event_group = $group", __FILE__, __LINE__);
 			($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) || die("can't find group $group");
 			$desc = "{$row['long_desc']}$sep$desc";
 			$sep = ' ';
@@ -1691,7 +1691,7 @@ class SimDrivers extends RefData {
 	}
 
 	function rebuild() {
-		$query = db_query("
+		$query = lm2_query("
 			SELECT id_sim_drivers, IFNULL(driving_name, lobby_name) AS name
 			FROM {$this->lm2_db_prefix}sim_drivers
 			WHERE member = 10000000
@@ -1699,12 +1699,12 @@ class SimDrivers extends RefData {
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
 			$id = $this->getNextFreeHistoricId();
 			echo "<P>{$row['id_sim_drivers']} = " . htmlentities($row['name'], ENT_QUOTES) . " -> $id</P>\n";
-			db_query("
+			lm2_query("
 				INSERT INTO {$this->lm2_db_prefix}drivers
 				(driver_member, driver_name)
 				VALUES ($id, " . sqlString($row['name']) . ")
 				" , __FILE__, __LINE__);
-			db_query("
+			lm2_query("
 				UPDATE {$this->lm2_db_prefix}sim_drivers
 				SET member = $id
 				WHERE id_sim_drivers = {$row['id_sim_drivers']}
@@ -1714,7 +1714,7 @@ class SimDrivers extends RefData {
 	}
 
 	function getNextFreeHistoricId() {
-		$query = db_query("
+		$query = lm2_query("
 			SELECT MAX(driver_member) + 1 AS id
 			FROM {$this->lm2_db_prefix}drivers
 			WHERE driver_member < 16000000
