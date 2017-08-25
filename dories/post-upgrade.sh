@@ -3,7 +3,7 @@
 . ./common.sh
 
 # Gets nobbled by the upgrade script.
-cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} -v -v -v ${SROU_DB_PREFIX}smf
+cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} -vvv ${SROU_DB_PREFIX}smf
 UPDATE smf_themes SET value = replace(value, '/core', '/default');
 REPLACE INTO smf_themes (id_member, id_theme, variable, value) VALUES
 	(0, 3, 'header_logo_url', '/images/ukgtr-gvw.jpg'),
