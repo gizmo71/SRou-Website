@@ -56,10 +56,12 @@ if (!is_null($event_status)) {
 		$rownum = 0;
 		while ($penalty = $_REQUEST["penalty{$rownum}"]) {
 			$event_entry = $_REQUEST["penalty{$rownum}event_entry"];
-			$description = sqlString($_REQUEST["penalty{$rownum}description"]);
-			$type = sqlString($_REQUEST["penalty{$rownum}type"]);
-			$victim_report = sqlString($_REQUEST["penalty{$rownum}victim_report"]);
-			$excluded = sqlString($_REQUEST["penalty{$rownum}excluded"]);
+			$description = $_REQUEST["penalty{$rownum}description"];
+			if (!is_null($description)) $description = stripslashes($description);
+			$description = sqlString($description);
+			$type = sqlString(stripslashes($_REQUEST["penalty{$rownum}type"]));
+			$victim_report = sqlString(stripslashes($_REQUEST["penalty{$rownum}victim_report"]));
+			$excluded = sqlString(stripslashes($_REQUEST["penalty{$rownum}excluded"]));
 			if (($positions_lost = $_REQUEST["penalty{$rownum}positions_lost"]) == '') $positions_lost = null;
 			$positions_lost = nullIfNull($positions_lost);
 			$points_lost = nullIfNull(nullIfEmpty($_REQUEST["penalty{$rownum}points_lost"]));
