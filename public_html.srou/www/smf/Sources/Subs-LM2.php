@@ -996,7 +996,7 @@ function lm2GetElementText($node) {
 
 function lm2GetRequestParam($name) {
 	$value = lm2ArrayValue($_REQUEST, $name);
-	if (get_magic_quotes_gpc() && !is_null($value)) {
+	if (!is_null($value)) {
 		$value = stripslashes($value);
 	}
 	return $value;
