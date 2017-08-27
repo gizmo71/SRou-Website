@@ -1,19 +1,17 @@
-#!/bin/zsh -e
+#!/bin/zsh
 
 . ./common.sh
 
+MYSQL="mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}lm2"
+
 # We can't simply convert each table as a whole because of foreign key constraints.
 
-cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} -vvv ${SROU_DB_PREFIX}lm2
-ALTER DATABASE ${SROU_DB_PREFIX}lm2 CHARACTER SET utf8 COLLATE utf8_general_ci;
-ALTER TABLE lm2_circuit_locations
-	CHANGE brief_name brief_name VARCHAR(16) CHARACTER SET utf8 NOT NULL,
-	CHANGE full_name full_name VARCHAR(64) CHARACTER SET utf8 NOT NULL;
-ALTER TABLE lm2_circuits
-	CHANGE layout_notes layout_notes VARCHAR(64) CHARACTER SET utf8 DEFAULT NULL COMMENT 'To help distinguish specific layouts';
+(
+COLLATION=utf8_general_ci
+cat <<EOF
+ALTER DATABASE ${SROU_DB_PREFIX}lm2 CHARACTER SET utf8 COLLATE ${COLLATION};
 EOF
-
-echo "TODO:
+cat <<EOF | while read table columns; do
 lm2_circuit_locations location_url
 lm2_circuits layout_name
 lm2_cars car_name
@@ -32,13 +30,30 @@ lm2_registered_drivers name
 lm2_reports report_summary
 lm2_retirement_reasons reason_desc
 lm2_scoring_schemes scoring_scheme_name
-lm2_sim_cars vehicle team number? file upgrade_code? notes
+lm2_sim_cars vehicle team file notes
 lm2_sim_circuits sim_name
-lm2_sim_drivers driving_name lobby_name
 lm2_sim_mods mod_desc
 lm2_sims sim_name sim_name_short
-lm2_team_drivers audit_who audit_what
-lm2_teams team_name url created_by
+lm2_team_drivers audit_what
+lm2_teams team_name url
 lm2_tyres tyre_description url
 lm2_wu_conditions condition_text
-"
+lm2_circuit_locations brief_name full_name
+lm2_circuits layout_notes
+COLLATION utf8_bin
+lm2_sim_drivers lobby_name driving_name
+EOF
+	if [ "$table" = "COLLATION" ]; then
+		COLLATION=${columns}
+		continue;
+	fi
+	create=$(${=MYSQL} -e "SHOW CREATE TABLE ${table};")
+	for column in ${=columns}; do
+		echo -n "ALTER TABLE ${table} MODIFY"
+		echo ${create} | grep \`${column}\` | head -1 | sed -r -e "s/\s+(CHARACTER SET|COLLATE) \S+//g
+s/\s+(UNIQUE|PRIMARY) KEY//
+s/ (text|varchar\([0-9]+\))/ \1 CHARACTER SET utf8 COLLATE ${COLLATION}/
+s/,$/;/"
+	done
+done
+) | ${=MYSQL} -vvv
