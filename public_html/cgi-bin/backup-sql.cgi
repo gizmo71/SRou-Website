@@ -31,13 +31,13 @@ do
 	mysqldump --no-data --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} | sed -e 's/ DEFINER=`root`@`localhost`//' | gzip -9v >boxfish_${db}_0_schema.sql.gz
 # Don't think we need this any more (not that we'got any routines anyway!): | sed -e "s/DELIMITER ;;/DELIMITER \$\$/g"
 	mysqldump --routines --no-create_info --no-data $SHARED_OPTIONS gizmo71_${db} | gzip -9v >boxfish_${db}_1_routines.sql.gz
-	mysqldump --no-create_info --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >boxfish_${db}_2_data.sql.gz
+	mysqldump --no-create_info --complete_insert --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >boxfish_${db}_2_data.sql.gz
 	if [ -n "$big_tables" ]; then
 		for table in $big_tables; do
 			chunk_key=${table/*=/}
 			table=${table/=*/}
 			if [ -z "$chunk_key" ]; then
-				mysqldump --no-create_info --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} ${table} | gzip -9v >boxfish_${db}_2_${table}_data.sql.gz
+				mysqldump --no-create_info --complete_insert --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} ${table} | gzip -9v >boxfish_${db}_2_${table}_data.sql.gz
 			else
 				chunk_size=20000
 				absolute_max_id=2000000
@@ -45,7 +45,7 @@ do
 				while [ $max_id -le $absolute_max_id ]; do
 					min_id=$[max_id-$chunk_size+1]
 					dumpname="$(printf 'boxfish_%s_2_%s_%07d-%07d_data.sql.gz' "${db}" "${table}" ${min_id} ${max_id})"
-					mysqldump --no-create_info --opt --disable-keys $SHARED_OPTIONS --where="${chunk_key} BETWEEN $min_id AND $max_id" gizmo71_${db} ${table} | gzip -9v >$dumpname
+					mysqldump --no-create_info --complete_insert --opt --disable-keys $SHARED_OPTIONS --where="${chunk_key} BETWEEN $min_id AND $max_id" gizmo71_${db} ${table} | gzip -9v >$dumpname
 					max_id=$[$max_id+$chunk_size]
 					if [ $(du -b $dumpname | cut -f1) -lt 1000 ]; then
 						break
