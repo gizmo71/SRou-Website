@@ -2,8 +2,6 @@
 <?php
 // LM2 iCalendar "feed"
 
-//header('Content-Type: text/plain; charset=iso-8859-1');
-
 require('include.php');
 require('bennu/lib/bennu.inc.php');
 
@@ -98,9 +96,9 @@ $ical = $a->serialize();
 $ical === false && die("not valid");
 
 if (!is_null($_REQUEST['plain'])) {
-	header("Content-Type: text/plain; charset=iso-8859-1");
+	header("Content-Type: text/plain; charset={$context['character_set']}");
 } else {
-	header("Content-Type: text/calendar; charset=iso-8859-1" . ($isGoogle ? "" : "; method=$method"));
+	header("Content-Type: text/calendar; charset={$context['character_set']}" . ($isGoogle ? "" : "; method=$method"));
 	header("Content-Disposition: inline; filename=SRou.ics");
 }
 

@@ -195,13 +195,13 @@ function get_element_text($node) { return lm2GetElementText($node); }
 
 function make_text_tag($doc, $name, $text, $parent) {
 	$tag = $doc->createElement($name);
-	$tag->appendChild($doc->createTextNode(utf8_encode($text)));
+	$tag->appendChild($doc->createTextNode($text));
 	$parent->appendChild($tag);
 }
 
 function make_cdata_tag($doc, $name, $text, $parent) {
 	$tag = $doc->createElement($name);
-	$tag->appendChild($doc->createCDATASection(utf8_encode($text)));
+	$tag->appendChild($doc->createCDATASection($text));
 	$parent->appendChild($tag);
 }
 ?>

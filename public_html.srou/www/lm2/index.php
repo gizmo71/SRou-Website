@@ -1,7 +1,9 @@
-<?php require("../smf/SSI.php"); ?>
+<?php
+require("../smf/SSI.php");
+header("Content-Type: text/html; charset={$context['character_set']}");
+?>
 <HTML>
 <HEAD>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <STYLE>
 .navbar { background: #dddddd; border: solid 1px }
 </STYLE>

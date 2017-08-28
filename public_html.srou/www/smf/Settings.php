@@ -77,6 +77,9 @@ $db_passwd = $_SERVER['SROU_DB_PASSWD'];
 $db_prefix = 'smf_';
 $db_persist = 0;
 $db_error_send = 0;
+/*
+$db_character_set = 'latin1';
+*/
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
