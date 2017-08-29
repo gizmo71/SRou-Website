@@ -11,7 +11,7 @@ fi
 	for db in smf lm2 ukgpl views; do
 		cat <<-EOF
 			DROP DATABASE IF EXISTS ${SROU_DB_PREFIX}$db;
-			CREATE DATABASE ${SROU_DB_PREFIX}$db DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci;
+			CREATE DATABASE ${SROU_DB_PREFIX}$db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 			GRANT ALL ON ${SROU_DB_PREFIX}$db.* TO '${SROU_DB_PREFIX}smf'@'%';
 		EOF
 	done
