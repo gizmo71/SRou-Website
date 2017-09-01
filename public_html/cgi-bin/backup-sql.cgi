@@ -31,7 +31,7 @@ do
 	mysqldump --no-data --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} | sed -e 's/ DEFINER=`root`@`localhost`//' | gzip -9v >boxfish_${db}_0_schema.sql.gz
 # Don't think we need this any more (not that we'got any routines anyway!): | sed -e "s/DELIMITER ;;/DELIMITER \$\$/g"
 	mysqldump --routines --no-create_info --no-data $SHARED_OPTIONS gizmo71_${db} | gzip -9v >boxfish_${db}_1_routines.sql.gz
-	mysqldump --no-create_info --complete_insert --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >boxfish_${db}_2_data.sql.gz
+	mysqldump --no-create_info --complete_insert --tz-utc --opt --disable-keys --single_transaction $SHARED_OPTIONS $EXTRA gizmo71_${db} | gzip -9v >boxfish_${db}_2_data.sql.gz
 	if [ -n "$big_tables" ]; then
 		for table in $big_tables; do
 			chunk_key=${table/*=/}
