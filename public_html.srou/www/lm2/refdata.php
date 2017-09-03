@@ -474,7 +474,6 @@ class Classification extends RefData {
 	}
 
 	function show_notes() {
-		global $lm2_view_prefix;
 		$query = lm2_query("
 			SELECT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
 			, GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name)) AS car

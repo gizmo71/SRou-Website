@@ -4,8 +4,6 @@
 putenv("TZ=Europe/London");
 # Move at least some of these into the Subs-LM2 module.
 $lm2_db_prefix = "{$_SERVER['SROU_DB_PREFIX']}lm2.lm2_";
-$lm2_hst_prefix = "{$_SERVER['SROU_DB_PREFIX']}lm2.hst_";
-$lm2_view_prefix = "{$_SERVER['SROU_DB_PREFIX']}views.";
 $lm2_ukgpl_prefix = "{$_SERVER['SROU_DB_PREFIX']}ukgpl.";
 $lm2_guest_member_id = 2;
 $lm2_mods_group = 10;
