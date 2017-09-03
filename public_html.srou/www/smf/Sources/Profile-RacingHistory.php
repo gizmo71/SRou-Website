@@ -7,7 +7,7 @@ function lm2ProfileRacingHistory($memID) {
 
 	$query = $smcFunc['db_query'](null, "
 		SELECT driver_member, driver_name, id_member
-		FROM {lm2_prefix}drivers
+		FROM {$GLOBALS['lm2_db_prefix']}drivers
 		LEFT JOIN {db_prefix}members ON id_member = driver_member
 		WHERE driver_member = {int:driver}
 		", array('driver'=>$driver));
@@ -38,8 +38,8 @@ function lm2ShowDriverProfile($driver) {
 	<TR><TH>Sims</TH><TH>Driving Names</TH><TH>Lobby Names</TH></TR>
 <?php
 	$query = $smcFunc['db_query'](null, "SELECT sim_name, driving_name, lobby_name
-		FROM {lm2_prefix}sim_drivers
-		JOIN {lm2_prefix}sims ON sim = id_sim
+		FROM {$GLOBALS['lm2_db_prefix']}sim_drivers
+		JOIN {$GLOBALS['lm2_db_prefix']}sims ON sim = id_sim
 		WHERE member = {int:driver}
 		", array('driver'=>$driver));
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
@@ -65,9 +65,9 @@ function lm2ShowDriverProfile($driver) {
 	$footer = "";
 	$query = $smcFunc['db_query'](null, "
 		SELECT group_name, champ_group_type, id_event_group, full_desc, series_theme, champ_class_desc
-		FROM {lm2_prefix}champ_groups
-		JOIN {lm2_prefix}championships ON id_championship = champ_group_champ
-		JOIN {lm2_prefix}event_groups ON id_event_group = event_group
+		FROM {$GLOBALS['lm2_db_prefix']}champ_groups
+		JOIN {$GLOBALS['lm2_db_prefix']}championships ON id_championship = champ_group_champ
+		JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
 		JOIN {db_prefix}members
 		JOIN {db_prefix}membergroups AS g ON g.id_group = champ_group_membergroup
 		WHERE id_member = {int:driver}
@@ -111,8 +111,8 @@ function lm2ShowDriverProfile($driver) {
 	$footer = "";
 	$query = $smcFunc['db_query'](null, "
 		SELECT team_name, date_from, date_to, id_team, short_desc
-		FROM ({lm2_prefix}teams, {lm2_prefix}team_drivers)
-		LEFT JOIN {lm2_prefix}event_groups ON event_group = id_event_group
+		FROM ({$GLOBALS['lm2_db_prefix']}teams, {$GLOBALS['lm2_db_prefix']}team_drivers)
+		LEFT JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON event_group = id_event_group
 		WHERE team = id_team
 		  AND date_from IS NOT NULL
 		  AND member = {int:driver}
@@ -136,7 +136,7 @@ function lm2ShowDriverProfile($driver) {
 
 	echo lm2_table_open("Career Statistics") . "<TABLE>\n";
 	$query = $smcFunc['db_query'](null, "SELECT COUNT(*) AS events_entered"
-		. " FROM {lm2_prefix}event_entries"
+		. " FROM {$GLOBALS['lm2_db_prefix']}event_entries"
 		. " WHERE member = $driver",
 		__FILE__, __LINE__);
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
@@ -164,7 +164,7 @@ function lm2ShowDriverProfile($driver) {
 		, SUM(IF(race_pos_class IN (1,2,3),1,0)) AS podiums_class
 		, SUM(IF(race_best_lap_pos=1,1,0)) AS fastest
 		, SUM(IF(race_best_lap_pos_class=1,1,0)) AS fastest_class
-		FROM {lm2_prefix}event_entries WHERE member = $driver
+		FROM {$GLOBALS['lm2_db_prefix']}event_entries WHERE member = $driver
 		", __FILE__, __LINE__); //FIXME: consider only including non-fun race event_types
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo "<TR><TD>Best qualifying position</TD>$colsep<TD ALIGN=RIGHT>{$row['best_qual_pos']}</TD>"
@@ -206,14 +206,14 @@ function lm2ShowDriverProfile($driver) {
 		, penalty_group_desc
 		, report_published AS start_date
 		, DATE_ADD(report_published, INTERVAL penalty_group_months MONTH) AS end_date
-		FROM {lm2_prefix}event_entries
-		JOIN {lm2_prefix}events ON id_event = event
-		JOIN {lm2_prefix}penalties ON event_entry = id_event_entry
-		JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-		JOIN {lm2_prefix}circuits ON id_circuit = circuit
-		JOIN {lm2_prefix}circuit_locations ON id_circuit_location = circuit_location
-		JOIN {lm2_prefix}event_groups ON id_event_group = event_group
-		JOIN {lm2_prefix}penalty_groups USING (penalty_group)
+		FROM {$GLOBALS['lm2_db_prefix']}event_entries
+		JOIN {$GLOBALS['lm2_db_prefix']}events ON id_event = event
+		JOIN {$GLOBALS['lm2_db_prefix']}penalties ON event_entry = id_event_entry
+		JOIN {$GLOBALS['lm2_db_prefix']}sim_circuits ON id_sim_circuit = sim_circuit
+		JOIN {$GLOBALS['lm2_db_prefix']}circuits ON id_circuit = circuit
+		JOIN {$GLOBALS['lm2_db_prefix']}circuit_locations ON id_circuit_location = circuit_location
+		JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
+		JOIN {$GLOBALS['lm2_db_prefix']}penalty_groups USING (penalty_group)
 		WHERE $driver = member
 		AND event_status IN ('O', 'H')
 		GROUP BY penalty_group, id_event, IFNULL(victim_report, 'Y')

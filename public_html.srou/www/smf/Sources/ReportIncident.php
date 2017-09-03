@@ -19,7 +19,7 @@ function ReportIncident() {
 		empty($_REQUEST['event']) || die("cannot specify both event and report");
 		$query = $smcFunc['db_query'](null, "
 			SELECT report_event AS event, report_summary AS summary, id_report AS report
-			FROM {lm2_prefix}reports
+			FROM {$GLOBALS['lm2_db_prefix']}reports
 			WHERE id_report = {int:report}
 			", array('report'=>(int)$_REQUEST['report']));
 		($context['ReportIncident'] = $smcFunc['db_fetch_assoc']($query)) || die("can't find report $report!");
@@ -41,12 +41,12 @@ function ReportIncident() {
 		, full_desc
 		, sim_replay_clips
 		, IFNULL(id_topic, 0) AS incident_topic
-		FROM {lm2_prefix}events
-		JOIN {lm2_prefix}sims ON id_sim = sim
-		JOIN {lm2_prefix}event_groups ON id_event_group = event_group
-		JOIN {lm2_prefix}sim_circuits ON id_sim_circuit = sim_circuit
-		JOIN {lm2_prefix}circuits ON id_circuit = circuit
-		JOIN {lm2_prefix}circuit_locations ON id_circuit_location = circuit_location
+		FROM {$GLOBALS['lm2_db_prefix']}events
+		JOIN {$GLOBALS['lm2_db_prefix']}sims ON id_sim = sim
+		JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
+		JOIN {$GLOBALS['lm2_db_prefix']}sim_circuits ON id_sim_circuit = sim_circuit
+		JOIN {$GLOBALS['lm2_db_prefix']}circuits ON id_circuit = circuit
+		JOIN {$GLOBALS['lm2_db_prefix']}circuit_locations ON id_circuit_location = circuit_location
 		LEFT JOIN {db_prefix}topics ON incident_topic = id_topic
 		WHERE id_event = {int:event}
 		", array('unofficial_status'=>'U', 'event'=>$context['ReportIncident']['event']));
@@ -86,11 +86,11 @@ function isValidAndSubmitted() {
 		, driver_name
 		, driving_name
 		, reported_driver IS NULL AS unreported
-		FROM {lm2_prefix}event_entries
-		JOIN {lm2_prefix}drivers ON member = driver_member
-		JOIN {lm2_prefix}sim_drivers ON id_sim_drivers = sim_driver
-		LEFT JOIN {lm2_prefix}reports ON id_report = {int:report}
-		LEFT JOIN {lm2_prefix}report_drivers ON id_report = report AND reported_driver = driver_member
+		FROM {$GLOBALS['lm2_db_prefix']}event_entries
+		JOIN {$GLOBALS['lm2_db_prefix']}drivers ON member = driver_member
+		JOIN {$GLOBALS['lm2_db_prefix']}sim_drivers ON id_sim_drivers = sim_driver
+		LEFT JOIN {$GLOBALS['lm2_db_prefix']}reports ON id_report = {int:report}
+		LEFT JOIN {$GLOBALS['lm2_db_prefix']}report_drivers ON id_report = report AND reported_driver = driver_member
 		WHERE event = {int:event}
 		AND driver_member <> $lm2_guest_member_id
 		ORDER BY driving_name
@@ -168,19 +168,19 @@ function submitReport() {
 		. ", {$context['ReportIncident']['when']} ({$context['ReportIncident']['circuit']})"), array("\r" => '', "\n" => '', "\t" => ''));
 
 	if ($context['ReportIncident']['report'] == 0) {
-		$smcFunc['db_insert']('ignore', '{lm2_prefix}reports',
+		$smcFunc['db_insert']('ignore', "{$GLOBALS['lm2_db_prefix']}reports",
 			array('report_summary'=>'string',
 				'report_event'=>'int'),
 			array($context['ReportIncident']['summary'],
 				'event'=>$context['ReportIncident']['event']));
-		$context['ReportIncident']['report'] = $smcFunc['db_insert_id']("{lm2_prefix}reports", "id_report");
+		$context['ReportIncident']['report'] = $smcFunc['db_insert_id']("{$GLOBALS['lm2_db_prefix']}reports", "id_report");
 	}
 
 	$driver_list .= "\n\nThe incident involved the following drivers:[list]";
 	$drivers = array();
 	foreach ($context['ReportIncident']['drivers'] AS $driver) {
 		if ($driver['reporting']) {
-			$smcFunc['db_insert']('ignore', '{lm2_prefix}report_drivers',
+			$smcFunc['db_insert']('ignore', "{$GLOBALS['lm2_db_prefix']}report_drivers",
 				array('report'=>'int', 'reported_driver'=>'int'),
 				array($context['ReportIncident']['report'], $driver['driver_member']));
 		} else if ($driver['unreported']) {
@@ -268,7 +268,7 @@ function submitReport() {
 	createPost($msgOptions, $topicOptions, $from);
 	if ($context['ReportIncident']['incident_topic'] == 0) {
 		$context['ReportIncident']['incident_topic'] = $topicOptions['id'];
-		$smcFunc['db_query'](null, "UPDATE {lm2_prefix}events SET incident_topic = {int:topic} WHERE id_event = {int:event}",
+		$smcFunc['db_query'](null, "UPDATE {$GLOBALS['lm2_db_prefix']}events SET incident_topic = {int:topic} WHERE id_event = {int:event}",
 			array('topic'=>$context['ReportIncident']['incident_topic'], 'event'=>$context['ReportIncident']['event']));
 	}
 

@@ -20,7 +20,7 @@ function lm2ProfileDriverInfo($memID) {
 
 	$query = $smcFunc['db_query'](null, "
 		SELECT iso3166_code, gplrank
-		FROM {lm2_prefix}drivers
+		FROM {$GLOBALS['lm2_db_prefix']}drivers
 		WHERE driver_member = {int:id}
 		", array('id'=>$memID));
 	if ($row = $smcFunc['db_fetch_assoc']($query)) {
@@ -39,8 +39,8 @@ function lm2ProfileDriverInfo($memID) {
 
 	$query = $smcFunc['db_query'](null, "
 		SELECT id_sim, sim_name, driving_name
-		FROM {lm2_prefix}sims
-		LEFT JOIN {lm2_prefix}driver_details ON sim = id_sim AND driver = {int:id}
+		FROM {$GLOBALS['lm2_db_prefix']}sims
+		LEFT JOIN {$GLOBALS['lm2_db_prefix']}driver_details ON sim = id_sim AND driver = {int:id}
 		WHERE use_driver_details = {string:yes}
 		", array('id'=>$context['user']['id'], 'yes'=>'Y'));
 	$context['lm2']['names'] = array();
@@ -54,7 +54,7 @@ function lm2ProfileDriverInfo($memID) {
 	$context['lm2']['iso3166_codes'] = array();
 	$query = $smcFunc['db_query'](null, "
 		SELECT id_iso3166 AS id, iso3166_name AS description
-		FROM {lm2_prefix}iso3166
+		FROM {$GLOBALS['lm2_db_prefix']}iso3166
 		ORDER BY description", array());
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$context['lm2']['iso3166_codes'][$row['id']] = $row['description'];
@@ -70,8 +70,8 @@ function lm2ProfileDriverInfo($memID) {
 	$context['lm2']['historic_drivers'] = array();
 	$query = $smcFunc['db_query'](null, "
 		SELECT driver_member AS id, driver_name AS name, approved
-		FROM {lm2_prefix}drivers
-		LEFT JOIN {ukgpl_prefix}_map_drivers ON driver_member = hist_driver
+		FROM {$GLOBALS['lm2_db_prefix']}drivers
+		LEFT JOIN {$GLOBALS['ukgpl_db_prefix']}_map_drivers ON driver_member = hist_driver
 		WHERE driver_member > {int:real_id_limit}
 		  AND (live_driver = {int:driver} OR approved IS NULL)
 		ORDER BY name
@@ -99,7 +99,7 @@ function updateDriverInfo($driver) {
 	global $smcFunc, $context, $memberContext;
 
 	if (is_numeric($ukgpl_driver = lm2GetRequestParam('ukgpl_driver'))) {
-		$smcFunc['db_insert']('ignore', '{ukgpl_prefix}_map_drivers',
+		$smcFunc['db_insert']('ignore', "{$GLOBALS['ukgpl_db_prefix']}_map_drivers",
 			array('hist_driver'=>'int', 'live_driver'=>'int', 'approved'=>'int'),
 			array($ukgpl_driver, $driver, 0),
 			array('hist_driver', 'live_driver'));
@@ -114,7 +114,7 @@ function updateDriverInfo($driver) {
 	}
 
 	$smcFunc['db_query'](null, '
-		INSERT INTO {lm2_prefix}drivers (driver_member, driver_name, iso3166_code, gplrank)
+		INSERT INTO {$GLOBALS['lm2_db_prefix']}drivers (driver_member, driver_name, iso3166_code, gplrank)
 		VALUES ({int:driver}, {string:name}, {string:iso3166_code}, {raw:gplrank})
 		ON DUPLICATE KEY
 		UPDATE iso3166_code = {string:iso3166_code}, gplrank = {raw:gplrank}
@@ -132,7 +132,7 @@ function updateDriverInfo($driver) {
 				$context['messages'][] = "Ignoring short driving name";
 				continue;
 			}
-			$smcFunc['db_insert']('replace', '{lm2_prefix}driver_details',
+			$smcFunc['db_insert']('replace', "{$GLOBALS['lm2_db_prefix']}driver_details",
 				array('driver'=>'int', 'sim'=>'int', 'driving_name'=>'string'),
 				array($driver, $sim, $name),
 				array('driver', 'sim'));

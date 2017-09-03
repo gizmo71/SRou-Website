@@ -17,7 +17,7 @@ if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 
 		$query = $smcFunc['db_query'](null, "
 			SELECT driver_name AS realName, member_name AS memberName
-			FROM {lm2_prefix}drivers
+			FROM {$GLOBALS['lm2_db_prefix']}drivers
 			LEFT JOIN {db_prefix}members ON id_member = driver_member
 			WHERE driver_member = {int:driver}
 		", array('driver'=>$driver));

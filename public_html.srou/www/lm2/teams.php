@@ -31,18 +31,18 @@ if (($new_name = sqlString(get_request_param('new_name'))) != "NULL") {
 	echo "<P>New name $new_name</P>\n";
 
 	// Sanity check
-	$query = $smcFunc['db_query'](NULL, "SELECT * FROM {lm2_prefix}teams WHERE team_name = {string:new_name} AND NOT team_is_fake", array('new_name'=>$new_name));
+	$query = $smcFunc['db_query'](NULL, "SELECT * FROM {$GLOBALS['lm2_db_prefix']}teams WHERE team_name = {string:new_name} AND NOT team_is_fake", array('new_name'=>$new_name));
 	$row = $smcFunc['db_fetch_assoc']($query);
 	$smcFunc['db_free_result']($query);
 
 	if ($row) {
 		echo "<P STYLE='color: red'><B>Already got a team of that name - please contact one of its members to get invited.</B></P>\n";
 	} else {
-		$smcFunc['db_query'](NULL, "INSERT INTO {lm2_prefix}teams (team_name, created_by) VALUES ({string:new_name}, {int:own_id})",
+		$smcFunc['db_query'](NULL, "INSERT INTO {$GLOBALS['lm2_db_prefix']}teams (team_name, created_by) VALUES ({string:new_name}, {int:own_id})",
 			array('new_name'=>$new_name, 'own_id'=>$own_id));
-		$id_team = $smcFunc['db_insert_id']('{lm2_prefix}teams', 'id_team');
+		$id_team = $smcFunc['db_insert_id']("{$GLOBALS['lm2_db_prefix']}teams", 'id_team');
 		$smcFunc['db_query'](NULL, "
-			INSERT INTO {lm2_prefix}team_drivers
+			INSERT INTO {$GLOBALS['lm2_db_prefix']}team_drivers
 			(member, team, invitation_date)
 			VALUES ({int:own_id}, {int:id_team}, @now_then)
 			",

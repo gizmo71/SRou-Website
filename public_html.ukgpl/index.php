@@ -63,10 +63,10 @@ function list_seasons() {
 	global $smcFunc;
 
 	$s = null;
-//XXX: sort by most recent event first
+//XXX: sort by most recent event first - sequence might already be producing this
 	$query = $smcFunc['db_query'](null, "
 		SELECT id_event_group, long_desc, series_theme
-		FROM {lm2_prefix}event_groups
+		FROM {$GLOBALS['lm2_db_prefix']}event_groups
 		WHERE parent = {int:ukgpl_root_event_group}
 		ORDER BY sequence_c
 		", array('ukgpl_root_event_group'=>64));

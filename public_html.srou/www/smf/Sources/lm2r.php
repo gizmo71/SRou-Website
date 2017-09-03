@@ -72,8 +72,8 @@ function lm2r() {
 				SELECT full_desc, id_event_group, SUM(id_event IS NOT NULL) AS events
 				, reg_topic, series_details, subject AS block_title, body AS block_text
 				, smileys_enabled AS smileysEnabled, mkp_pid AS pid
-				FROM {lm2_prefix}event_groups
-				LEFT JOIN {lm2_prefix}events ON event_group = id_event_group
+				FROM {$GLOBALS['lm2_db_prefix']}event_groups
+				LEFT JOIN {$GLOBALS['lm2_db_prefix']}events ON event_group = id_event_group
 				LEFT JOIN {db_prefix}messages ON series_details = id_msg
 				WHERE id_event_group = {int:group}
 				GROUP BY id_event_group

@@ -105,7 +105,7 @@ if (!is_null($id_race1 = lm2ArrayValue($_REQUEST, 'id_race1'))) {
 				VALUES ({$current_circuit['circuit']}, $sim, " . sqlString($location) . "
 				, " . nullIfNull($track_length) . ")
 				", __FILE__, __LINE__);
-			$current_circuit['id_sim_circuit'] = $smcFunc['db_insert_id']('{lm2_prefix}', 'id_sim_circuit');
+			$current_circuit['id_sim_circuit'] = $smcFunc['db_insert_id']("{$lm2_db_prefix}sim_circuits", 'id_sim_circuit');
 			echo "<P>Note: location '$location' added with length '$track_length' for sim $sim as {$current_circuit['id_sim_circuit']}</P>\n";
 		}
 	}

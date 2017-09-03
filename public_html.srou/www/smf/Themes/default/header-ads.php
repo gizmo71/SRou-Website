@@ -2,7 +2,7 @@
 global $boardurl, $smcFunc;
 
 try {
-	$query = $smcFunc['db_query']('', "SELECT SUM(amount) AS total FROM {lm2_prefix}money");
+	$query = $smcFunc['db_query']('', "SELECT SUM(amount) AS total FROM {$GLOBALS['lm2_db_prefix']}money");
 	$balance = ($row = $smcFunc['db_fetch_assoc']($query)) ? $row['total'] : 0;
 	$smcFunc['db_free_result']($query);
 } catch (Exception $e) {
