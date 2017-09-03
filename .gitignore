@@ -3,6 +3,8 @@
 error_log
 .ssh
 
+minified.css
+
 /.zcompdump
 /.X*
 /arvixe
@@ -63,6 +65,7 @@ error_log
 /public_html.srou/www/smf/attachments
 /public_html.srou/www/smf/Packages
 /public_html.srou/www/smf/.travis.yml
+/public_html.srou/www/smf/.scrutinizer.yml
 /public_html.srou/www/smf/DCO.txt
 /public_html.srou/www/smf/LICENSE
 /public_html.srou/www/smf/README.md
