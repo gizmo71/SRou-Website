@@ -18,6 +18,7 @@ error_log
 /.mysql_history
 /.viminfo
 /.zshrc
+/.zhistory
 
 /public_html.davegymer.org/
 /public_html.test/

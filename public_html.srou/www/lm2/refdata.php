@@ -577,7 +577,7 @@ class SimCircuits extends RefData {
 
 	function getFields() {
 		return Array(
-			new RefDataFieldID("id_sim_circuit", true),
+			new RefDataFieldID("id_sim_circuit", '$row["entries"] == 0'),
 			new RefDataFieldFK("circuit", "SELECT id_circuit AS id, CONCAT(brief_name, IFNULL(CONCAT(' (', layout_name, ')'), '')) AS description"
 				. " FROM {$this->lm2_db_prefix}circuits, {$this->lm2_db_prefix}circuit_locations"
 				. " WHERE id_circuit_location = circuit_location"
@@ -625,6 +625,12 @@ class SimCircuits extends RefData {
 
 	function getDefaultSortOrder() {
 		return "U1";
+	}
+
+	function makeSql($what, $from, $where) {
+		return "SELECT COUNT(id_event) AS entries, $what FROM ($from)
+			LEFT JOIN {$this->lm2_db_prefix}events ON id_sim_circuit = sim_circuit
+			WHERE $where GROUP BY id_sim_circuit";
 	}
 }
 
@@ -696,7 +702,10 @@ class Circuits extends CircuitRefData {
 	}
 
 	function makeSql($what, $from, $where) {
-		return "SELECT COUNT(id_event) AS entries, $what FROM ($from) LEFT JOIN {$this->lm2_db_prefix}sim_circuits ON id_circuit = circuit LEFT JOIN {$this->lm2_db_prefix}events ON id_sim_circuit = sim_circuit WHERE $where GROUP BY id_circuit";
+		return "SELECT COUNT(id_event) AS entries, $what FROM ($from)
+			LEFT JOIN {$this->lm2_db_prefix}sim_circuits ON id_circuit = circuit
+			LEFT JOIN {$this->lm2_db_prefix}events ON id_sim_circuit = sim_circuit
+			WHERE $where GROUP BY id_circuit";
 	}
 }
 
@@ -706,7 +715,7 @@ class Locations extends CircuitRefData {
 
 	function getFields() {
 		return Array(
-			new RefDataFieldID("id_circuit_location", true),
+			new RefDataFieldID("id_circuit_location", '$row["entries"] == 0'),
 			new RefDataFieldEdit("brief_name", 16),
 			new RefDataFieldEdit("full_name", 64),
 			new RefDataFieldFK("is_fantasy", array(0=>'No', 1=>'Yes'), false),
@@ -753,6 +762,14 @@ class Locations extends CircuitRefData {
 	function show_notes() {
 		echo "<P><A HREF='http://en.wikipedia.org/wiki/List_of_auto_racing_tracks#Argentina'>Motor Racing Circuits</A> "
 			. "| <A HREF='http://en.wikipedia.org/wiki/List_of_Formula_One_circuits#A'>F1 Circuits</A></P>\n";
+	}
+
+	function makeSql($what, $from, $where) {
+		return "SELECT COUNT(id_event) AS entries, $what FROM ($from)
+			LEFT JOIN {$this->lm2_db_prefix}circuits ON id_circuit_location = circuit_location
+			LEFT JOIN {$this->lm2_db_prefix}sim_circuits ON id_circuit = circuit
+			LEFT JOIN {$this->lm2_db_prefix}events ON id_sim_circuit = sim_circuit
+			WHERE $where GROUP BY id_circuit_location";
 	}
 }
 

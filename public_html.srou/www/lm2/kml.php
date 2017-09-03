@@ -9,7 +9,7 @@ require('include.php');
 
 ob_start();
 
-$doc = new DOMDocument('1.0', 'iso-8859-1');
+$doc = new DOMDocument('1.0', $context['character_set']);
 $doc->appendChild($Document = $doc->createElement('Document'));
 make_text_tag($doc, 'name', "SimRacing.org.uk circuit" . ($location ? "" : "s"), $Document);
 
@@ -67,7 +67,7 @@ $smcFunc['db_free_result']($query);
 
 $comments = ob_get_clean();
 
-header('Content-Type: application/vnd.google-earth.kml+xml; charset=iso-8859-1');
+header("Content-Type: application/vnd.google-earth.kml+xml; charset={$context['character_set']}");
 header("Content-Disposition: inline; filename=SRou-location-$location.kml");
 echo $doc->saveXML();
 echo $comments;

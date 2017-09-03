@@ -1,4 +1,5 @@
 <?php
+
 # First, some LM2/SRou settings... 
 putenv("TZ=Europe/London");
 # Move at least some of these into the Subs-LM2 module.
@@ -77,16 +78,16 @@ $db_passwd = $_SERVER['SROU_DB_PASSWD'];
 $db_prefix = 'smf_';
 $db_persist = 0;
 $db_error_send = 1;
+$db_character_set = 'utf8';
+$db_type = 'mysqli';
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
 $boarddir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf";
 $sourcedir = "{$boarddir}/Sources";
-
-########## Error-Catching ##########
-# Note: You shouldn't touch these settings.
-$db_last_error = 1296596322;
-
+$cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
+$packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
+$tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
 
 # Make sure the paths are correct... at least try to fix them.
 if (!file_exists($boarddir) && file_exists(dirname(__FILE__) . '/agreement.txt'))
@@ -98,9 +99,9 @@ $upgradeData = '';
 $image_proxy_secret = 'b05c67e6ba4c319a997d';
 $image_proxy_maxsize = 5190;
 $image_proxy_enabled = 1;
-$cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
-$packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
-$tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
-$db_type = 'mysqli';
-$db_character_set = 'utf8';
+
+########## Error-Catching ##########
+# Note: You shouldn't touch these settings.
+$db_last_error = 1296596322;
+
 ?>

@@ -18,7 +18,7 @@ $query = lm2_query("SELECT team_name FROM ${lm2_db_prefix}teams WHERE id_team = 
 $team_name = $row['team_name'];
 $smcFunc['db_free_result']($query);
 
-$doc = new DOMDocument('1.0', 'iso-8859-1');
+$doc = new DOMDocument('1.0', $context['character_set']);
 $doc->appendChild($rss = $doc->createElement('rss'));
 $rss->setAttributeNode(new DOMAttr('version', $rss_ver));
 
@@ -244,7 +244,7 @@ function positionify($n) {
 
 $comments = ob_get_clean();
 
-header('Content-Type: text/xml; charset=iso-8859-1');
+header("Content-Type: application/rss+xml; charset={$context['character_set']}");
 echo $doc->saveXML();
 echo $comments;
 ?>
