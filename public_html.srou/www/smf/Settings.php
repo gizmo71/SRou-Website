@@ -79,7 +79,7 @@ $db_prefix = 'smf_';
 $db_persist = 0;
 $db_error_send = 1;
 $db_character_set = 'utf8';
-$db_type = 'mysqli';
+$db_type = 'mysql';
 
 ########## Directories/Files ##########
 # Note: These directories do not have to be changed unless you move things.
