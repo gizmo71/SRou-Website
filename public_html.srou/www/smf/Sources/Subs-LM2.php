@@ -523,7 +523,7 @@ if (false) { //TODO: restore weather
 		} else if ($row['entries_c'] > 0) {
 			echo "<P ALIGN='CENTER'><I>Results are provisional pending moderator's review.</I>";
 			if (lm2FindEventModerator($row['id_event'])) {
-				echo "<BR /><B><A HREF='", $boardurl, "?action=ReportIncident&board=", $board_info['id'], "&event=", $row['id_event'], "'>Submit an incident report</A></B>";
+				echo "<BR /><B><A HREF='", $boardurl, "/index.php?action=ReportIncident&board=", $board_info['id'], "&event=", $row['id_event'], "'>Submit an incident report</A></B>";
 			}
 			echo "</P>\n";
 		}
