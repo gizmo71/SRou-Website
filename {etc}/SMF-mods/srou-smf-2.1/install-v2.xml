@@ -43,10 +43,6 @@
 ]]></add>
 		</operation>
 		<operation>
-			<search position="replace"><![CDATA[	<a id="top" href="', $scripturl, '">',]]></search>
-			<add><![CDATA[	<a id="top" href="', $settings['srou_layout_header']['homeUrl'], '">',]]></add>
-		</operation>
-		<operation>
 			<search position="before"><![CDATA[echo '
 	<div id="footer_section">
 		<div class="frame">';]]></search>
