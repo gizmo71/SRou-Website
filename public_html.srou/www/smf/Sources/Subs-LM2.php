@@ -30,7 +30,7 @@ function lm2AddButtons(&$buttons) {
 
 	$buttons['srou'] = array(
 		'title' => $settings['name'], // Theme name
-		'href' => $settings['srou_home'], //TODO: link to league home page or home home page
+		'href' => $settings['srou_home'],
 		'show' => true,
 		'active_button' => false,
 		'sub_buttons' => array()
