@@ -21,7 +21,4 @@ REPLACE INTO smf_settings (variable, value) VALUES
 	('subject_toggle', '1');
 EOF
 
-sed -i -e s"/db_type = 'mysql'/db_type = 'mysqli'/" \
-    $SROU_ROOT/public_html.srou/www/smf/Settings.php
-
 git status
