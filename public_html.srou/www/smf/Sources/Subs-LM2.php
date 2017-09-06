@@ -134,30 +134,26 @@ function lm2AddActions(&$actions) {
 }
 
 function lm2AddProfileAreas(&$profileAreas) {
-	global $context;
-
 	$profileAreas['lm2profile'] = array(
 		'title' => 'League Info',
 		'areas' => array(
 			'racing_history' => array(
 				'label' => 'Racing History',
-				'enabled' => true,
 				'file' => 'Profile-RacingHistory.php',
 				'function' => 'lm2ProfileRacingHistory',
 				'permission' => array(
-					'own' => array('profile_view_any', 'profile_view_own'),
-					'any' => 'profile_view_any',
-				)
+					'own' => 'is_not_guest',
+					'any' => 'is_not_guest',
+				),
 			),
 			'driver_info' => array(
 				'label' => 'Driver Details',
-				'enabled' => $context['user']['is_owner'],
 				'file' => 'Profile-DriverInfo.php',
 				'function' => 'lm2ProfileDriverInfo',
 				'permission' => array(
-					'own' => array('profile_extra_any', 'profile_extra_own'),
-					'any' => 'profile_extra_any',
-				)
+					'own' => 'is_not_guest',
+					'any' => array(),
+				),
 			),
 		),
 	);

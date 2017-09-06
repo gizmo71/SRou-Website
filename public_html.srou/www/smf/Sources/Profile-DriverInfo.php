@@ -71,7 +71,7 @@ function lm2ProfileDriverInfo($memID) {
 	$query = $smcFunc['db_query'](null, "
 		SELECT driver_member AS id, driver_name AS name, approved
 		FROM {$GLOBALS['lm2_db_prefix']}drivers
-		LEFT JOIN {$GLOBALS['ukgpl_db_prefix']}_map_drivers ON driver_member = hist_driver
+		LEFT JOIN {$GLOBALS['lm2_ukgpl_prefix']}_map_drivers ON driver_member = hist_driver
 		WHERE driver_member > {int:real_id_limit}
 		  AND (live_driver = {int:driver} OR approved IS NULL)
 		ORDER BY name
@@ -99,7 +99,7 @@ function updateDriverInfo($driver) {
 	global $smcFunc, $context, $memberContext;
 
 	if (is_numeric($ukgpl_driver = lm2GetRequestParam('ukgpl_driver'))) {
-		$smcFunc['db_insert']('ignore', "{$GLOBALS['ukgpl_db_prefix']}_map_drivers",
+		$smcFunc['db_insert']('ignore', "{$GLOBALS['lm2_ukgpl_prefix']}_map_drivers",
 			array('hist_driver'=>'int', 'live_driver'=>'int', 'approved'=>'int'),
 			array($ukgpl_driver, $driver, 0),
 			array('hist_driver', 'live_driver'));
@@ -113,12 +113,12 @@ function updateDriverInfo($driver) {
 		$gplrank = null;
 	}
 
-	$smcFunc['db_query'](null, '
+	$smcFunc['db_query'](null, "
 		INSERT INTO {$GLOBALS['lm2_db_prefix']}drivers (driver_member, driver_name, iso3166_code, gplrank)
 		VALUES ({int:driver}, {string:name}, {string:iso3166_code}, {raw:gplrank})
 		ON DUPLICATE KEY
 		UPDATE iso3166_code = {string:iso3166_code}, gplrank = {raw:gplrank}
-		', array(
+		", array(
 			'driver' => $driver,
 			'name' => $memberContext[$driver]['name'],
 			'iso3166_code' => $iso3166_code,

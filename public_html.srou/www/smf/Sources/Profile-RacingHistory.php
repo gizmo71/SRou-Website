@@ -1,7 +1,7 @@
 <?php
 
 function lm2ProfileRacingHistory($memID) {
-	global $context, $memberContext, $smcFunc;
+	global $context, $smcFunc;
 
 	$driver = isset($_REQUEST['driver']) && is_numeric($_REQUEST['driver']) ? $_REQUEST['driver'] : $memID;
 
@@ -28,7 +28,7 @@ function lm2ShowDriverProfile($driver) {
 	global $lm2_circuit_link_clause, $lm2_circuit_html_clause, $lm2_penalty_points_clause;
 	global $colsep;
 	global $user_info, $context, $boardurl, $smcFunc;
-	global $context, $lm2_db_prefix, $db_prefix;
+	global $context;
 
 	$ID_MEMBER = $user_info['id'];
 	
@@ -135,9 +135,9 @@ function lm2ShowDriverProfile($driver) {
 	echo $footer;
 
 	echo lm2_table_open("Career Statistics") . "<TABLE>\n";
-	$query = $smcFunc['db_query'](null, "SELECT COUNT(*) AS events_entered"
-		. " FROM {$GLOBALS['lm2_db_prefix']}event_entries"
-		. " WHERE member = $driver",
+	$query = $smcFunc['db_query'](null, "SELECT COUNT(*) AS events_entered
+		FROM {$GLOBALS['lm2_db_prefix']}event_entries
+		WHERE member = $driver",
 		__FILE__, __LINE__);
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo "<TR><TD>Events entered</TD>$colsep<TD COLSPAN=3 ALIGN=RIGHT>{$row['events_entered']}</TD>\n";
