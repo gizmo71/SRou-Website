@@ -18,6 +18,7 @@ fi
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
 for type in 0 1 2; do for db in smf lm2 ukgpl views; do
+	sleep 2 # Give replication a chance to work
 	sort =(ssh boxfish "ls -1 /var/backup/boxfish/boxfish_${db}_${type}_*.sql.gz") | while read sql; do
 		echo "** Processing $(basename $sql)..."
 		DB_HOST="--host mysql"
@@ -42,7 +43,8 @@ done; done
 	done
 #TODO: remove these when we do it for real
 	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
-	echo "UPDATE smf_members SET realName = REVERSE(realName), emailAddress = 'smf2test@simracing.org.uk', hideEmail = 0;"
+	echo "UPDATE smf_members SET realName = REVERSE(realName), hideEmail = 0, emailAddress =
+		CASE id_member WHEN 2 THEN 'micra.geo@yahoo.com' WHEN 3 THEN 'dgymer23@ford.com' ELSE 'smf2test@simracing.org.uk' END;"
 ) | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 
 rm -rf www public_html.ukgpl
