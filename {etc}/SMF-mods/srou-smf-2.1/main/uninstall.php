@@ -8,7 +8,7 @@ elseif (!defined('SMF'))
 // updateSettings(...)?
 
 //remove_integration_function('integrate_theme_include', '$boarddir/../layout-header.php');
-remove_integration_function('integrate_profile_areas', 'lm2AddProfileAreas');
+remove_integration_function('integrate_pre_profile_areas', 'lm2AddProfileAreas');
 remove_integration_function('integrate_load_permissions', 'lm2AddPermissions');
 remove_integration_function('integrate_actions', 'lm2AddActions');
 remove_integration_function('integrate_menu_buttons', 'lm2Buttons');
