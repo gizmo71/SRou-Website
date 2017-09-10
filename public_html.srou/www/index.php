@@ -27,7 +27,7 @@ if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 		}
 		$smcFunc['db_free_result']($query);
 
-		header("Location: $boardurl/index.php?action=profile&u=$u&sa=racing_history&driver=$driver");
+		header("Location: $boardurl/index.php?action=profile&u=$u&area=racing_history&driver=$driver");
 		exit;
 	} else if (($team = lm2ArrayValue($_REQUEST, 'team')) && is_numeric($team)) {
 		header("Location: $boardurl/index.php?action=LM2R&team=$team");
