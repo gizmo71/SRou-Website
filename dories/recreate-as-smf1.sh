@@ -18,6 +18,7 @@ fi
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
 for type in 0 1 2; do for db in smf lm2 ukgpl views; do
+	sleep 2 # Give replication a chance to work
 	sort =(ssh boxfish "ls -1 /var/backup/boxfish/boxfish_${db}_${type}_*.sql.gz") | while read sql; do
 		echo "** Processing $(basename $sql)..."
 		DB_HOST="--host mysql"
