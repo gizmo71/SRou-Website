@@ -152,7 +152,7 @@ function lm2AddProfileAreas(&$profileAreas) {
 				'function' => 'lm2ProfileDriverInfo',
 				'permission' => array(
 					'own' => 'is_not_guest',
-					'any' => array(),
+					'any' => array(), //TODO: allow admins to do this
 				),
 			),
 		),
