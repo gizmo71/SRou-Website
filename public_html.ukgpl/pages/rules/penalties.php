@@ -97,9 +97,8 @@ off track through corners. Examples with typical penalties are <a href="railridi
 <H3>Ignoring shift R restriction</H3>
 
 <p>Some divisions limit the number of shift-Rs a driver is allowed to take
-during a race. In such cases, should a driver exceed the number of allowed
-shift-Rs, they are retired at the point of offence (i.e. their finish time in
-the results will be amended to the time they exceeded their shift-R limit).</p>
+during a race. If a driver exceeds the number of allowed
+shift-Rs they will be disqualified.</p>
 
 <H3 ID="nostopgo">Failing to take Stop & Go after Shift-R</H3>
 
