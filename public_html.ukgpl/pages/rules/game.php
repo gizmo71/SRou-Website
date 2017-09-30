@@ -16,21 +16,24 @@
 	<BLOCKQUOTE/>The easiest way to get the required patches is to use the <A HREF="http://gplps.org/"> Grand Prix Legends Preservation Society</A> installer.
 	You can also download the basics from <A HREF="/files/patches/">here</A>.</BLOCKQUOTE>
 <BR/>
-<LI>Modification of the GPL executable and data files is only permitted
-	if the modification does not give a performance advantage to the driver
-	compared to drivers using a copy of GPL without the modification.  The following modifications 
-	are not considered to give a performance advantage and therefore can be used in 
-	UKGPL League races:</LI>
+<LI>Modification of the GPL executable and data files is only permitted if the modification does not give a performance advantage to the driver
+	(compared to drivers using a copy of GPL without the modification) or the modification overcomes a bug in the original game (or add-on carset).  
+	The following modifications are not considered to give an unfair performance advantage and therefore can be used in UKGPL League races:</LI>
 <BR/>
 	<BLOCKQUOTE/><H3>GPL Shift</H3>   In order to use a H-Shifter with GPL (for example the Logitech G25 or G27 shifter) the executables must be modified using  
 	<A HREF="http://www.gplshift.dk/GPLshift/index.htm"> GPL Shift</A>.  Whilst the use of GPL Shift is permitted, recommendations on how it should be configured are 
 	<A HREF="hshifter">here</A>.</BLOCKQUOTE>
-	<BLOCKQUOTE/><H3>Pit Stop Patch</H3>   The <A HREF="http://srmz.net/index.php?showtopic=10007"> Pit Stop Patch</A>, developed by Lee Bowden, allows refuelling during a race. 
-	Refuelling is not instantaneous and care is needed in order for a driver to come to rest exactly in their pit box. Consequently refuelling takes time and tends to offset any 
-	advantage gained in faster lap times due to a lighter fuel load. Whether or not a tangible advantage can be gained over a race distance will depend on 
+	<BLOCKQUOTE/><H3>Pit Stop Patch</H3>   The <A HREF="http://srmz.net/index.php?showtopic=10007"> Pit Stop Patch</A>, developed by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A>, 
+	allows refuelling during a race. Refuelling is not instantaneous and care is needed in order for a driver to come to rest exactly in their pit box. Consequently refuelling 
+	takes time and tends to offset any advantage gained in faster lap times due to a lighter fuel load. Whether or not a tangible advantage can be gained over a race distance will depend on 
 	many factors; car, track, race distance, lap refuelled etc.  Sometimes using the patch will be quicker and sometimes it will be slower. Given that the Pit Stop Patch 
 	adds an interesting tactical element to the races (and a safety net in case a driver fails to add enough fuel to cover the race distance) without guaranteeing an 
 	advantage, the use of the patch is allowed in UKGPL League Races.
+	</BLOCKQUOTE>
+	<BLOCKQUOTE/><H3>Tyre Pressure Bug Fix Patch</H3>   The <A HREF="http://gplmotorworks.gplworld.de/Data/GPL%20Tire%20Pressure%20Bug%20Fix%20Patch%20v2.0.zip"> Tyre Pressure Patch</A>, 
+	developed by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A>, fixes a bug where the wrong optimum pressure is used when calculating tyre temperatures.  With the patch enabled there is a 
+	more even temperature across the tyre which makes the car handle better.  The patch also has the effect of reducing, but not eliminating, the "brake problem" experienced in the 1967 Sports Cars thereby facilitating 
+	a more predictable braking performance.  The patch can easily be switched on and off using the options facility in GEM and consequently the use of the patch is allowed in UKGPL League Races.
 	</BLOCKQUOTE>
 <BR/>
 <LI>Modifications that have only cosmetic effects are permitted. </LI>
