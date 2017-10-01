@@ -1,16 +1,5 @@
 <?php
-	if (array_key_exists('srou_layout_header', $settings))
-		$settings['srou_layout_header'] = array_merge($settings['srou_layout_header'], array(
-			'homeUrl'=>'http://www.ukgpl.com/',
-		));
-
-	ob_start();
-	$ads = "$boarddir/../../../public_html.ukgpl/header-ads.php";
-	(include $ads) || (print("<td>bad $ads</td>"));
-	$ads = ob_get_clean();
-	$settings['site_slogan'] = "<table><tr>$ads</tr></table>";
-
-	$settings['srou_replay_url'] = "http://ukgpl3.dyndns.org/inc_replaysS27_js.aspx";
-	$settings['srou_rules_url'] = "http://www.ukgpl.com/index.php/rules/intro";
-	$settings['srou_links_url'] = "http://games.groups.yahoo.com/group/ukgpl/links/";
+	$settings['srou_replay_url'] = "http://ukgpl3.dyndns.org/inc_replaysS27_js.aspx"; //CNAME for this?
+	$settings['srou_rules_url'] = "//{$_SERVER['SROU_HOST_UKGPL']}/index.php/rules/intro";
+	$settings['srou_links_url'] = "https://groups.yahoo.com/neo/groups/ukgpl/links/all";
 ?>

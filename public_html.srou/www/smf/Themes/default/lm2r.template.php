@@ -513,9 +513,10 @@ function template_group() {
 		$event_headers = '';
 		foreach ($events AS $row2) {
 			$title = "{$row2['circuit_html']}&#10;{$row2['event_date']}&#10;{$row2['iso3166_name']}";
-			$heading = "<IMG SRC=\"{$row2['flag']}\" ALT=\"$title\" BORDER=0>";
+			$heading = "<IMG SRC='{$row2['flag']}' ALT='$title' BORDER=0>";
 			$heading = lm2MakeEventLink($row2['id_event'], $row2['smf_topic'])	. "$heading</A>";
-			$event_headers .= "\n  <TH TITLE=\"$title\" CLASS=\"lm2flagCell{$row2['is_official']}\">$heading</TH>\n";
+			$flagClass = "lm2flagCell lm2" . ($row2['is_official'] ? "" : "un") . "official";
+			$event_headers .= "\n  <TH TITLE='$title' CLASS='$flagClass'>$heading</TH>\n";
 		}
 
 		$fullWidth = 5 + count($events);

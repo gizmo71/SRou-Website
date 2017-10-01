@@ -753,20 +753,20 @@ function lm2_show_event($event) {
 	global $smcFunc, $lm2_guest_member_id, $lm2_class_style_clause, $boardurl;
 	global $lm2_ukgpl_migration_sim_driver;
 ?>
-<TABLE BORDER="1" CELLSPACING="0" ALIGN="CENTER">
-  <TR>
+<TABLE BORDER="1" CELLSPACING="0" ALIGN="CENTER" CLASS="lm2table">
+  <THEAD><TR>
     <TH ROWSPAN="3">Driver<BR />&nbsp;Team</TH>
-	<TH ROWSPAN="3" CLASS='smalltext' WIDTH='22' HEIGHT='14'>Nat.</TH>
+    <TH ROWSPAN="3" CLASS='smalltext' WIDTH='22' HEIGHT='14'>Nat.</TH>
     <TH ROWSPAN="3">Make</TH>
     <TH COLSPAN="1">Model</TH>
     <TH CLASS="smalltext">Class</TH>
-    <TH COLSPAN="2" CLASS="windowbg">Qualifying</TH>
+    <TH COLSPAN="2">Qualifying</TH>
     <TH COLSPAN="6">Race</TH>
   </TR>
   <TR>
-	<TH ROWSPAN="2" COLSPAN="2" CLASS='smalltext'>Tyres</TH>
-    <TH ROWSPAN="2" CLASS="windowbg smalltext">Pos</TH>
-    <TH ROWSPAN="2" CLASS="windowbg smalltext">Time/Gap</TH>
+    <TH ROWSPAN="2" COLSPAN="2" CLASS='smalltext'>Tyres</TH>
+    <TH ROWSPAN="2" CLASS="smalltext">Pos</TH>
+    <TH ROWSPAN="2" CLASS="smalltext">Time/Gap</TH>
     <TH ROWSPAN="2" CLASS='smalltext'>Pos</TH>
     <TH ROWSPAN="2" CLASS='smalltext'>Time/Gap</TH>
     <TH CLASS='smalltext'>Laps</TH>
@@ -780,7 +780,7 @@ function lm2_show_event($event) {
   </TR>
   <TR>
     <TH COLSPAN="2" CLASS='smalltext'><?php echo $event['sim'] == 9 ? "Incidents" : "Ballast"; ?></TH>
-  </TR>
+  </TR></THEAD>
 <?php
 //XXX: doesn't account for any default ballast
 	$query = $smcFunc['db_query'](null, "
@@ -837,10 +837,8 @@ function lm2_show_event($event) {
 	$entries = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		//printf("<!-- %s -->\n", print_r($row, true));
-		$rowStyle = sprintf(' CLASS="windowbg%d"', ($entries++ & 1) + 2);
+		echo "<TBODY CLASS='windowbg'><TR TITLE='{$row['id_event_entry']}'>\n";
 
-		echo "<TR$rowStyle TITLE=\"{$row['id_event_entry']}\">\n";
-	
 		if ($row['member'] == $lm2_guest_member_id) {
 			$driver_name = "<I>{$row['driving_name']}</I>";
 		} else {
@@ -868,17 +866,17 @@ function lm2_show_event($event) {
 			$qual_main = "<I>{$row['start_pos']}</I>";
 		}
 		$qual_extra = "Class:{$row['qual_pos_class']}, Starting:{$row['start_pos']}/{$row['start_pos_class']}";
-		echo "  <TD CLASS='windowbg' ROWSPAN='2' ALIGN=RIGHT TITLE='$qual_extra'>$qual_main</TD>\n";
+		echo "  <TD ROWSPAN='2' ALIGN=RIGHT TITLE='$qual_extra'>$qual_main</TD>\n";
 		$qual_time_display = '';
 		$qual_time = $row['qual_best_lap_time'];
 		if (!is_null($qual_time)) {
 			$qual_time_display = ($event['best_qual_time'] == $qual_time) ? lm2FormatTime($qual_time) : lm2FormatTimeGap($qual_time - $event['best_qual_time']);
 			$qual_time_display .= "<BR /><SMALL>" . lm2FormatTimeAndSpeed($qual_time, null, $event['length_metres']) . "</SMALL>";
-			$qual_class = $row['qual_pos'] == 1 ? "lm2bestO" : ($row['qual_pos_class'] == 1 ? "lm2bestC" : "windowbg");
+			$qual_class = $row['qual_pos'] == 1 ? "lm2bestO" : ($row['qual_pos_class'] == 1 ? " lm2bestC" : "");
 		} else {
-			$qual_class = "windowbg";
+			$qual_class = "";
 		}
-		echo "  <TD CLASS='smalltext $qual_class' ROWSPAN='2' ALIGN=RIGHT TITLE='" . lm2FormatTime($qual_time) . "'>$qual_time_display</TD>\n";
+		echo "  <TD CLASS='smalltext$qual_class' ROWSPAN='2' ALIGN=RIGHT TITLE='" . lm2FormatTime($qual_time) . "'>$qual_time_display</TD>\n";
 	
 		$race_pos = ">{$row['race_pos']}";
 		$race_pos_tooltip = lm2_add_points($row['id_event_entry']);
@@ -936,7 +934,7 @@ function lm2_show_event($event) {
 	
 		echo "</TR>\n";
 	
-		echo "<TR$rowStyle>\n";
+		echo "<TR>\n";
 		lm2MakeImagedLinkCell('tyre', $row, 1, 2, 'tyres');
 		if ($event['sim'] == 9) { // Hack for iRacing...
 			$row['ballast'] = $row['incident_points'] ? $row['incident_points'] : "&nbsp;";
@@ -944,7 +942,7 @@ function lm2_show_event($event) {
 			$row['ballast'] = "<SPAN STYLE='color: red'><SPAN TITLE='Expected driver ballast: {$row['correct_ballast']}kg'>*</SPAN>{$row['ballast']}</SPAN>";
 		}
 		echo "  <TD COLSPAN='2' CLASS='smalltext' ALIGN=RIGHT>{$row['ballast']}</TD>\n";
-		echo "</TR>\n";
+		echo "</TR></TBODY>\n";
 	}
 	$smcFunc['db_free_result']($query);
 ?>

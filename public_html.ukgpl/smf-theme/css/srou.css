@@ -1,3 +1,20 @@
-body { background: #030; }
+body { background-color: #030; margin: 0px; font-family: verdana, sans-serif; color: #EEE; }
+#wrapper { background-color: #131; }
 
 .forumtitle img { width: 400px; height: 60px; position: relative; }
+
+a:link { color: #AA0; text-decoration: none; }
+a:visited { color: #393; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Tables should show empty cells. */
+table { empty-cells: show; }
+
+hr { height: 1px; border: 0; color: #999; background-color: #999; }
+
+/* No image should have a border when linked */
+a img { border: 0; }
+blockquote, .bbc_standard_quote { color: #EEE; background-color: #141; margin: 1px; padding: 1px; font-size: x-small; }
+
+.windowbg:nth-of-type(even) { background-color: #304900; color: #eee; }
+.windowbg:nth-of-type(odd) { background-color: #003900; color: #eee; }
