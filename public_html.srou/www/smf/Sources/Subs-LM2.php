@@ -216,9 +216,9 @@ function loadThemeData() {
 }
 
 function lm2_table_open($title = null, $align = 'center') {
-	return "<table cellpadding='3' cellspacing='0' border='0' width='100%' class='tborder' style='padding-top: 0; margin-bottom: 1ex;'>"
+	return "<table cellpadding='3' cellspacing='0' border='1' width='100%' style='padding-top: 0; margin-bottom: 1ex;'>"
 		. (is_null($title) ? "" : "<tr><td class='titlebg' valign='middle' align='left' style='padding-left: 6px;'>$title</td></tr>")
-		. "<tr><td width='5%' valign='top' class='windowbg' align='$align'>";
+		. "<tr><td width='5%' valign='top' align='$align'>";
 }
 
 function lm2_table_close() {
