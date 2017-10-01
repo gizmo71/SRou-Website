@@ -1413,9 +1413,9 @@ function lm2MakeBallastFields($empty, $prefix) {
 }
 
 function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team = null, $opening = "
-	<table cellpadding='3' cellspacing='0' border='0' width='100%' class='tborder' style='padding-top: 0; margin-bottom: 3ex;'>
-	<tr><td class='titlebg' valign='middle' align='left' style='padding-left: 6px;'>SimRacing.org.uk Lap Records</td>
-	</tr><tr><td width='5%' valign='top' class='windowbg' align='center'><table>
+	<table cellpadding='3' cellspacing='0' border='0' width='100%' class='tborder windowbg' style='padding-top: 0; margin-bottom: 3ex;'>
+	<tr><td valign='middle' align='center' style='padding-left: 6px;'>SimRacing.org.uk Lap Records</td>
+	</tr><tr><td width='5%' valign='top' align='center'><table>
 	", $closing = "</table></td></tr></table>")
 {
 	global $lm2_lap_record_clause, $lm2_lap_record_types, $lm2_db_prefix, $smcFunc, $lm2_circuit_link_clause, $lm2_class_style_clause;
@@ -1462,7 +1462,7 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 	$closer = '';
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$url = $row['id_event'] == $id_event ? "<A>" : lm2MakeEventLink($row['id_event'], $row['smf_topic']);
-		echo "{$sep}<TR>"
+		echo "{$sep}<TR CLASS='windowbg'>"
 			. ($id_circuit ? "" : "<TD CLASS='smalltext'>{$row['circuit_link']}</TD>")
 			. "<TD CLASS='smalltext' ALIGN=\"CENTER\">{$row['sim_name']}"
 			. "<BR/><SPAN{$row['class_style']}>{$row['class_description']}</SPAN></TD>"
