@@ -337,7 +337,7 @@ function lm2Staff($returnContent = false, $group = null, $show_title = true) {
 	}
 
 	//FIXME: remove this once we are sure it's no longer used.
-	echo "<tr><td class='titlebg' colspan='2'>Staff</td></tr><tr><td class='windowbg'></td><td class='windowbg2'><table>$content</table></td></tr>";
+	echo "<tr><td id='staff_not_used_perhaps' class='titlebg' colspan='2'>Staff</td></tr><tr><td></td><td><table>$content</table></td></tr>";
 }
 
 // General purpose hook for adding stuff to topics.
