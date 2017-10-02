@@ -29,7 +29,7 @@
 	<type>modification</type>
 
 	<!-- The version of this modification.  Keep it numeric so PHP can tell that old < new. -->
-	<version>1.10</version>
+	<version>1.11</version>
 
 	<install>
 		<readme>README.txt</readme>

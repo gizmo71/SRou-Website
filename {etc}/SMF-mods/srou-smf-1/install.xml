@@ -19,7 +19,7 @@
 
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>gizmo71:srou_smf</id>
-	<version>1.10</version>
+	<version>1.11</version>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -36,6 +36,14 @@
 	}
 	mysql_free_result($query);
 ]]></add>
+		</operation>
+		<operation>
+			<search position="replace"><![CDATA[$context['error_title'] = $txt[1001];
+	if (allowedTo('admin_forum'))]]></search>
+			<add><![CDATA[$context['error_title'] = $txt[1001];
+global $lm2_mods_group, $lm2_mods_group_ukgpl, $user_info;
+$groups = array($lm2_mods_group, $lm2_mods_group_ukgpl);
+	if (allowedTo('admin_forum') || count(array_intersect($groups, $user_info['groups'])) > 0)]]></add>
 		</operation>
 	</file>
 
