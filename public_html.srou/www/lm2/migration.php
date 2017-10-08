@@ -346,14 +346,37 @@ class MailCheck extends RefData {
 	function getTable() { return "{$_SERVER['SROU_DB_PREFIX']}ukgpl.mailcheck"; }
 
 	function getFields() {
+		$memberInfo = "CONCAT(realName, IF(memberName <> realName, CONCAT('/', memberName), ''))";
 		return Array(
 			new RefDataFieldID("id_mailcheck", true),
-			new RefDataFieldFKDriver("id_member", false),
+			new RefDataFieldReadOnlySql("memberInfo", true, "IFNULL($memberInfo, id_member)"),
 			new RefDataFieldDate("created"),
-			new RefDataFieldEdit("result", 1),
-			new RefDataFieldEdit("notes", 100),
+			new RefDataFieldFK("result", array('Y'=>'Received', 'N'=>'Rejected'), true),
+			new RefDataFieldReadOnlySql("smfEmail", false, "emailAddress"),
 			new RefDataFieldEdit("sender", 50),
+			new RefDataFieldEdit("notes", 100),
 		);
+	}
+
+	function getFilters() {
+		$filters = array(
+			' '=>array('name'=>'Unknown',  'predicate'=>"result IS NULL"),
+			'y'=>array('name'=>'Received', 'predicate'=>"result = 'Y'"),
+			'n'=>array('name'=>'Rejected', 'predicate'=>"result = 'N'"),
+		);
+
+		return $filters;
+	}
+
+	function getDefaultSortOrder() {
+		return "-2";
+	}
+
+	function makeSql($what, $from, $where) {
+		return "SELECT $what
+			FROM ($from)
+			LEFT JOIN {$this->db_prefix}members USING (id_member)
+			WHERE $where";
 	}
 }
 
