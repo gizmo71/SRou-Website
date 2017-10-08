@@ -344,11 +344,28 @@ class Teams extends RefData {
 	}
 }
 
+class MailCheck extends RefData {
+	function getName() { return "MailCheck"; }
+	function getTable() { return "{$_SERVER['SROU_DB_PREFIX']}ukgpl.mailcheck"; }
+
+	function getFields() {
+		return Array(
+			new RefDataFieldID("id_mailcheck", true),
+			new RefDataFieldFKDriver("id_member", false),
+			new RefDataFieldDate("created"),
+			new RefDataFieldEdit("result", 1),
+			new RefDataFieldEdit("notes", 100),
+			new RefDataFieldEdit("sender", 50),
+		);
+	}
+}
+
 $refDatas = Array(
 	'crt'=>array('refData'=>new CarRatings()),
 	'tea'=>array('refData'=>new Teams()),
 	'tmp'=>array('refData'=>new TeamMap()),
 	'dmp'=>array('refData'=>new DriverMap()),
+	'mck'=>array('refData'=>new MailCheck()),
 );
 
 // And now... the code!
