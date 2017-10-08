@@ -14,7 +14,7 @@ $subject = "Mail check from {$user_info['username']} (id $id)";
 $body = "My registered email is {$user_info['email']}\r\nMy member ID number is $ID_MEMBER";
 $link = "mailto:$to?subject=" . rawurlencode($subject) . "&body=" . rawurlencode($body);
 
-echo "<script>//window.location='", json_encode($link), ";</script>",
+echo "<script>window.location='", json_encode($link), ";</script>",
      "If you email client has not automatically opened with an email, please send an email to <a href='mailto:",
      $link, "'>", $to, "</a> with a subject of '", $subject, "'. Thanks!";
 ?>
