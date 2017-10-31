@@ -376,19 +376,19 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 	}
 
 	$entry = array(
-		Driver=>$driver,
-		LobbyName=>$lobby,
+		'Driver'=>$driver,
+		'LobbyName'=>$lobby,
 		Car=>array(
-			Vehicle=>$slot['Vehicle'],
-			Team=>$slot['Team'],
-			VehicleNumber=>$slot['VehicleNumber'],
-			VehicleFile=>$slot['VehicleFile'],
-			VehicleType=>$slot['VehicleType'],
-			UpgradeCode=>$slot['UpgradeCode'],
+			'Vehicle'=>$slot['Vehicle'],
+			'Team'=>$slot['Team'],
+			'VehicleNumber'=>$slot['VehicleNumber'],
+			'VehicleFile'=>$slot['VehicleFile'],
+			'VehicleType'=>$slot['VehicleType'],
+			'UpgradeCode'=>$slot['UpgradeCode'],
 		),
 		// Stuff used internally:
-		slot=>$slotNum,
-		fromRace=>$isRace
+		'slot'=>$slotNum,
+		'fromRace'=>$isRace
 	);
 
 	foreach ($entries AS $key=>&$old_entry) {
