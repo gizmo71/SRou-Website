@@ -74,7 +74,7 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 		// Fake the old form...
 		$slot = array();
 		$slot['Lobby Username'] = $xpath->evaluate('string(m:Username)', $driver_entry);
-		$slot['Driver'] = utf8_decode($xpath->evaluate('string(m:FullName)', $driver_entry)) ?: $slot['Lobby Username'];
+		$slot['Driver'] = $xpath->evaluate('string(m:FullName)', $driver_entry) ?: $slot['Lobby Username'];
 		if (!$slot['Driver']) $slot['Driver'] = '{unknown}';
 		$slot['Vehicle'] = $xpath->evaluate('string(m:Car)', $driver_entry);
 		//$slot['VehicleNumber'] = ?
