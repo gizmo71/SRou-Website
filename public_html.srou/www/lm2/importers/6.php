@@ -87,11 +87,11 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 		$entry = &lookup_entry($slot, $isRace);
 		if ($entry == null) continue;
 
-		$bestLapTime = bcdiv($xpath->evaluate('string(m:BestLapTime[number(.) > 0])', $driver_entry) ?: null, '1000', 3);
+		$bestLapTime = millisecondsToSeconds($xpath->evaluate('string(m:BestLapTime[number(.) > 0])', $driver_entry));
 
 		if ($isRace) {
 			$laps = $xpath->query('m:RaceSessionLaps', $driver_entry)->item(0);
-			$entry['raceTime'] = bcdiv($xpath->evaluate('string(m:TotalTime[. != "-1"])', $driver_entry), '1000', 3) ?: null;
+			$entry['raceTime'] = millisecondsToSeconds($xpath->evaluate('string(m:TotalTime[. != "-1"])', $driver_entry));
 			$entry['reason'] = $xpath->evaluate('string(m:FinishStatus)', $driver_entry) == 'Finished' ? null : 0;
 			$entry['raceLaps'] = $xpath->evaluate('count(m:MultiplayerRaceSessionLap[number(m:Time) > 0])', $laps);
 			$entry['raceBestLapTime'] = $bestLapTime;
@@ -109,5 +109,9 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 //if (!$isRace) echo "<BR/> = <B>" . print_r($entry, true) . "</B>\n";
 	}
 } // End maybeParseXmlSession()
+
+function millisecondsToSeconds($millis) {
+	return $millis ? bcdiv($millis, '1000', 3) : null;
+}
 
 ?>
