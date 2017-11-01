@@ -87,7 +87,7 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 		$entry = &lookup_entry($slot, $isRace);
 		if ($entry == null) continue;
 
-		$bestLapTime = millisecondsToSeconds($xpath->evaluate('string(m:BestLapTime[number(.) > 0])', $driver_entry));
+		$bestLapTime = millisecondsToSeconds($xpath->evaluate('string(m:BestLapTime)', $driver_entry));
 
 		if ($isRace) {
 			$laps = $xpath->query('m:RaceSessionLaps', $driver_entry)->item(0);
@@ -101,8 +101,9 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 			//$entry['GridPos'] = ?
 			$entry['RacePos'] = $xpath->evaluate('string(m:Position)', $driver_entry);
 		} else {
-			//$entry['qualLaps'] = ;
 			$entry['qualBestLapTime'] = $bestLapTime;
+			// Neither of these is currently available in the exports.
+			//$entry['qualLaps'] = ;
 			//$entry['qualBestLapNo'] = ;
 		}
 
@@ -111,7 +112,9 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 } // End maybeParseXmlSession()
 
 function millisecondsToSeconds($millis) {
-	return $millis ? bcdiv($millis, '1000', 3) : null;
+	if (!$millis) return null;
+	if ($millis < 0) return '0.000';
+	return bcdiv($millis, '1000', 3);
 }
 
 ?>
