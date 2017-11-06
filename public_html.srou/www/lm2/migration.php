@@ -345,18 +345,47 @@ class Teams extends RefData {
 }
 
 class MailCheck extends RefData {
+	var $poll = 378;
+
 	function getName() { return "MailCheck"; }
 	function getTable() { return "{$_SERVER['SROU_DB_PREFIX']}ukgpl.mailcheck"; }
 
 	function getFields() {
+		$memberInfo = "CONCAT(realName, IF(memberName <> realName, CONCAT('/', memberName), ''))";
 		return Array(
 			new RefDataFieldID("id_mailcheck", true),
-			new RefDataFieldFKDriver("id_member", false),
+			new RefDataFieldReadOnlySql("memberInfo", true, "IFNULL($memberInfo, id_member)", 20),
 			new RefDataFieldDate("created"),
-			new RefDataFieldEdit("result", 1),
+			new RefDataFieldFK("result", array('Y'=>'Received', 'N'=>'Rejected'), true),
+			new RefDataFieldReadOnlySql("smfEmail", false, "emailAddress"),
+			new RefDataFieldEdit("sender", 20, 50),
 			new RefDataFieldEdit("notes", 100),
-			new RefDataFieldEdit("sender", 50),
+			new RefDataFieldReadOnlySql("poll_choice", true, "label", 50),
 		);
+	}
+
+	function getFilters() {
+		$filters = array(
+			' '=>array('name'=>'Unknown',  'predicate'=>"result IS NULL"),
+			'y'=>array('name'=>'Received', 'predicate'=>"result = 'Y'"),
+			'n'=>array('name'=>'Rejected', 'predicate'=>"result = 'N'"),
+			'A'=>array('name'=>'All', 'predicate'=>"1 = 1"),
+		);
+
+		return $filters;
+	}
+
+	function getDefaultSortOrder() {
+		return "-2";
+	}
+
+	function makeSql($what, $from, $where) {
+		return "SELECT id_choice, $what
+			FROM ($from)
+			LEFT JOIN {$this->db_prefix}members USING (id_member)
+			LEFT JOIN (SELECT * FROM {$this->db_prefix}log_polls WHERE id_poll = {$this->poll}) AS lpc USING (id_member)
+			LEFT JOIN (SELECT * FROM {$this->db_prefix}poll_choices WHERE id_poll = {$this->poll}) AS pc USING (id_choice)
+			WHERE $where";
 	}
 }
 

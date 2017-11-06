@@ -357,38 +357,40 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 	global $id_event;
 
 	$driver = $slot['Driver'];
-	$lobby = $slot['Lobby Username'];
-	$slotNum = $slot['#'];
+	$lobby = lm2ArrayValue($slot, 'Lobby Username');
+	$slotNum = lm2ArrayValue($slot, '#');
 
 	if (preg_match('/^(.*) [(]([+-].*)kg[)]$/i', $slot['Vehicle'], $matches)) {
 		$slot['Vehicle'] = $matches[1];
 		$slot['PenaltyCar'] = $matches[2];
 	}
 
-	if (preg_match('/^(.*) [(]([+-].*)kg[)]$/i', $slot['Team'], $matches)) {
-		$slot['Team'] = $matches[1];
-		$slot['Penalty'] = $matches[2];
-	}
+	if (isset($slot['Team'])) {
+		if (preg_match('/^(.*) [(]([+-].*)kg[)]$/i', $slot['Team'], $matches)) {
+			$slot['Team'] = $matches[1];
+			$slot['Penalty'] = $matches[2];
+		}
 
-	if (preg_match('/^(.*); (Dunlop|Michelin|Yokohama|Pirelli)$/i', $slot['Team'], $matches)) {
-		$slot['Team'] = $matches[1];
-		$type = $matches[2];
+		if (preg_match('/^(.*); (Dunlop|Michelin|Yokohama|Pirelli)$/i', $slot['Team'], $matches)) {
+			$slot['Team'] = $matches[1];
+			$type = $matches[2];
+		}
 	}
 
 	$entry = array(
-		Driver=>$driver,
-		LobbyName=>$lobby,
-		Car=>array(
-			Vehicle=>$slot['Vehicle'],
-			Team=>$slot['Team'],
-			VehicleNumber=>$slot['VehicleNumber'],
-			VehicleFile=>$slot['VehicleFile'],
-			VehicleType=>$slot['VehicleType'],
-			UpgradeCode=>$slot['UpgradeCode'],
+		'Driver' => $driver,
+		'LobbyName' => $lobby,
+		'Car' => array(
+			'Vehicle' => $slot['Vehicle'],
+			'Team' => lm2ArrayValue($slot, 'Team'),
+			'VehicleNumber' => lm2ArrayValue($slot, 'VehicleNumber'),
+			'VehicleFile' => lm2ArrayValue($slot, 'VehicleFile'),
+			'VehicleType' => lm2ArrayValue($slot, 'VehicleType'),
+			'UpgradeCode' => lm2ArrayValue($slot, 'UpgradeCode'),
 		),
 		// Stuff used internally:
-		slot=>$slotNum,
-		fromRace=>$isRace
+		'slot' => $slotNum,
+		'fromRace' => $isRace
 	);
 
 	foreach ($entries AS $key=>&$old_entry) {
@@ -404,8 +406,8 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 		} else if ($old_entry['Driver'] == $driver && $old_entry['LobbyName'] == $lobby) {
 			if ($isRace) {
 				array_push($fatal_errors, "two race entries for $driver/$lobby");
-			} else if ($old_entry['Car']['Vehicle'] == $slot['Vehicle'] && $old_entry['Car']['Team'] == $slot['Team']
-				&& $old_entry['Car']['VehicleNumber'] == $slot['VehicleNumber'] && $old_entry['slot'] == $slotNum)
+			} else if ($old_entry['Car']['Vehicle'] == $slot['Vehicle'] && $old_entry['Car']['Team'] == lm2ArrayValue($slot, 'Team')
+				&& $old_entry['Car']['VehicleNumber'] == lm2ArrayValue($slot, 'VehicleNumber') && $old_entry['slot'] == $slotNum)
 			{
 				return $old_entry;
 			} else if ($old_entry['fromRace']) {

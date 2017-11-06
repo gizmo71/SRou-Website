@@ -604,7 +604,7 @@ class SimCircuits extends RefData {
 		$query = lm2_query("SELECT id_sim AS id, sim_name AS description"
 			. " FROM {$this->lm2_db_prefix}sims", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
+			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"{$this->getTable()}.sim = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 

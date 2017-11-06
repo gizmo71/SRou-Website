@@ -74,7 +74,7 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 		// Fake the old form...
 		$slot = array();
 		$slot['Lobby Username'] = $xpath->evaluate('string(m:Username)', $driver_entry);
-		$slot['Driver'] = utf8_decode($xpath->evaluate('string(m:FullName)', $driver_entry)) ?: $slot['Lobby Username'];
+		$slot['Driver'] = $xpath->evaluate('string(m:FullName)', $driver_entry) ?: $slot['Lobby Username'];
 		if (!$slot['Driver']) $slot['Driver'] = '{unknown}';
 		$slot['Vehicle'] = $xpath->evaluate('string(m:Car)', $driver_entry);
 		//$slot['VehicleNumber'] = ?
@@ -87,11 +87,11 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 		$entry = &lookup_entry($slot, $isRace);
 		if ($entry == null) continue;
 
-		$bestLapTime = bcdiv($xpath->evaluate('string(m:BestLapTime[number(.) > 0])', $driver_entry) ?: null, '1000', 3);
+		$bestLapTime = millisecondsToSeconds($xpath->evaluate('string(m:BestLapTime)', $driver_entry));
 
 		if ($isRace) {
 			$laps = $xpath->query('m:RaceSessionLaps', $driver_entry)->item(0);
-			$entry['raceTime'] = bcdiv($xpath->evaluate('string(m:TotalTime[. != "-1"])', $driver_entry), '1000', 3) ?: null;
+			$entry['raceTime'] = millisecondsToSeconds($xpath->evaluate('string(m:TotalTime[. != "-1"])', $driver_entry));
 			$entry['reason'] = $xpath->evaluate('string(m:FinishStatus)', $driver_entry) == 'Finished' ? null : 0;
 			$entry['raceLaps'] = $xpath->evaluate('count(m:MultiplayerRaceSessionLap[number(m:Time) > 0])', $laps);
 			$entry['raceBestLapTime'] = $bestLapTime;
@@ -101,13 +101,20 @@ function maybeParseXmlSession($xpath, $session, $isRace) {
 			//$entry['GridPos'] = ?
 			$entry['RacePos'] = $xpath->evaluate('string(m:Position)', $driver_entry);
 		} else {
-			//$entry['qualLaps'] = ;
 			$entry['qualBestLapTime'] = $bestLapTime;
+			// Neither of these is currently available in the exports.
+			//$entry['qualLaps'] = ;
 			//$entry['qualBestLapNo'] = ;
 		}
 
 //if (!$isRace) echo "<BR/> = <B>" . print_r($entry, true) . "</B>\n";
 	}
 } // End maybeParseXmlSession()
+
+function millisecondsToSeconds($millis) {
+	if (!$millis) return null;
+	if ($millis < 0) return '0.000';
+	return bcdiv($millis, '1000', 3);
+}
 
 ?>

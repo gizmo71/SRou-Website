@@ -974,12 +974,10 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 			. ", " . sqlString($rec_type)
 			. " FROM {$this->lm2_db_prefix}event_entries"
 			. ", {$this->lm2_db_prefix}events"
-//			. ", {$this->lm2_db_prefix}cars"
-//			. ", {$this->lm2_db_prefix}sim_cars"
 			. ", {$this->lm2_db_prefix}sim_circuits"
 			. " WHERE id_event = event"
 			. " AND id_sim_circuit = sim_circuit"
-//			. " AND id_car = car AND id_sim_car = sim_car"
+			. " AND $time_field > 0"
 			. " AND member <> $guest_member_id AND driver_type IS NULL"
 			. " AND event_type <> 'F'"
 			. " GROUP BY car_class_c, sim, circuit",
