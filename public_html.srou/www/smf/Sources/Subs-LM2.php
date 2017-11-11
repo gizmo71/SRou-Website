@@ -18,15 +18,16 @@ function lm2AddButtons(&$buttons) {
 
 	global $scripturl;
 
-//TODO: not if UKGPL
+	if ($settings['name'] != 'UKGPL') {
 //TODO: style button with ID button_srou_start_here bold if not old user
-	$buttons = array('srou_start_here' => array(
-		'title' => 'Start Here',
-		'href' => $scripturl . '?board=40',
-		'show' => true,
+		$buttons = array('srou_start_here' => array(
+			'title' => 'Start Here',
+			'href' => $scripturl . '?board=40',
+			'show' => true,
 //TODO: why doesn't this work?
-		'active_button' => isset($board_info['id']) && $board_info['id'] == 40
-	)) + $buttons;
+			'active_button' => isset($board_info['id']) && $board_info['id'] == 40
+		)) + $buttons;
+	}
 
 	$buttons['srou'] = array(
 		'title' => $settings['name'], // Theme name
