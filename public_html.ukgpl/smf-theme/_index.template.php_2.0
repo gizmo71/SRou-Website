@@ -1,5 +1,4 @@
 <?php
-	$settings['srou_replay_url'] = "http://ukgpl3.dyndns.org/inc_replaysS27_js.aspx"; //CNAME for this?
 	$settings['srou_rules_url'] = "//{$_SERVER['SROU_HOST_UKGPL']}/index.php/rules/intro";
 	$settings['srou_links_url'] = "https://groups.yahoo.com/neo/groups/ukgpl/links/all";
 ?>

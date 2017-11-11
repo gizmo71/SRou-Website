@@ -7,6 +7,4 @@
 		));
 
 	$settings['srou_footer_html'] = "<A HREF='http://www.iRacing.com/'><IMG SRC='$boardurl/Themes/ukir/unofficial_iracing.jpg' WIDTH='243' HEIGHT='63'></A>";
-	$settings['srou_rules_topic'] = 3349;
-	$settings['srou_links_topic'] = 3354;
 ?>

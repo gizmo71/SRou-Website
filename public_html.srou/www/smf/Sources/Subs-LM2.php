@@ -19,7 +19,7 @@ function lm2AddButtons(&$buttons) {
 	global $scripturl;
 
 	if ($settings['name'] != 'UKGPL') {
-//TODO: style button with ID button_srou_start_here bold if not old user
+//TODO: style button with ID button_srou_start_here bold if not 'old' user
 		if (isset($board_info['id']) && $board_info['id'] == 40) $context['current_action'] = 'srou_start_here';
 		$buttons = array('srou_start_here' => array(
 			'title' => 'Start Here',
