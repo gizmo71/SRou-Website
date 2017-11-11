@@ -1,5 +1,3 @@
-body { background: #f88; }
-
 .forumtitle img { width: 580px; height: 89px; position: relative; }
 
 .forumtitle a::after {
@@ -8,4 +6,5 @@ body { background: #f88; }
 	position: relative;
 	bottom: 2px;
 	right: 310px;
+	color: black;
 }
