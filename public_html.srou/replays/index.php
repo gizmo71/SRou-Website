@@ -72,7 +72,7 @@ while ($filename = readdir($dh)) {
 	);
 	$file['displayName'] = $file['displayname'];
 	if (!is_dir($filename)) {
-		$total_size  = ($file['size'] = filesize($fullname) / 1000000.0);
+		$total_size += ($file['size'] = filesize($fullname) / 1000000.0);
 		if (substr($file['filename'], -4, 4) == '.zip' && $ID_MEMBER > 0) {
 			$file['explode'] = "index.php?explode=$dir/{$file['url']}#exploded";
 		}
