@@ -14,7 +14,7 @@ date
 #tar -C ~ -c -f - public_html.srou/smf2-code public_html.ukgpl/smf2 | gzip -9v >smf2-code.tgz
 
 #cpg
-SHARED_OPTIONS="--user=gizmo71_backup --password=ju5t1nca5e"
+SHARED_OPTIONS="--user=$1 --password=$2"
 BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
 lm2 lm2_circuits= lm2_circuit_locations= lm2_championships= lm2_championship_points= lm2_events= lm2_event_entries=

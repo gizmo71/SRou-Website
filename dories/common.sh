@@ -13,5 +13,6 @@ eval $(grep -E 'SetEnv\s+SROU_' $(grep -l "SetEnv SROU_ROOT $(pwd)" /etc/httpd/c
 set | grep SROU
 
 SMF_LOGIN="--user=${SROU_DB_PREFIX}smf --password=${SROU_DB_PASSWD}"
-MIGRATE_LOGIN="--user=smf2srou --password=m1great"
+# The following file should not be world readable, and should set MIGRATE_LOGIN in thesame format as SMF_LOGIN
+. ~/.srou-migrate
 SHARED_OPTIONS="--host=${SROU_DB_HOST} --batch $LOGIN_OPTIONS"
