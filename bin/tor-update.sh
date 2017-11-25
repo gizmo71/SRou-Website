@@ -9,4 +9,4 @@ wget -t 1 -T 5 -O - "http://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=$
         echo "REPLACE smf_proxy_exit_ips (proxy_exit_ip, proxy_name) VALUES ('$ip', 'Tor');"
 done
 echo "DELETE FROM smf_proxy_exit_ips WHERE proxy_name = 'Tor-old';"
-} | mysql --user=gizmo71_smf --password=r0manf0rum gizmo71_smf
+} | mysql --user=FIXME --password=FIXME FIXMEsmf
