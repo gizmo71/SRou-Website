@@ -5,10 +5,11 @@ if [ $# != 1 ]; then
 	exit 1;
 fi
 
-SHARED_OPTIONS="--user=gizmo71_smf --password=r0manf0rum"
+#FIXME: get these from dories/common.sh, or just junk this script.
+SHARED_OPTIONS="--user=FIXME --password=FIXME"
 
 {
 	ls -1 arvixe_$1_schema.sql && ls -1 arvixe_$1_routines.sql && ls -1 arvixe_$1*_data.sql || exit 1
 } | while read data; do
-	mysql $SHARED_OPTIONS gizmo71_$1 --execute="\\. $data" || break
+	mysql $SHARED_OPTIONS FIXME$1 --execute="\\. $data" || break
 done
