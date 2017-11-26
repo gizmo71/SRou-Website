@@ -60,8 +60,8 @@ $expires = time() + 86400;
 $defaultBucket = 'awsdownloads.simracing.org.uk';
 ($bucket = $_REQUEST['bucket']) || ($bucket = $defaultBucket);
 $bucket = rawurlencode($bucket);
-$accessKey = 'AKIAIDZC5AXVTT6EVF2A';
-$secretKey = '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';
+$accessKey = $_SERVER['SROU_S3_ACCESS'];
+$secretKey = $_SERVER['SROU_S3_SECRET'];
 
 function encodeKey($key) {
 	$key = rawurlencode($key);
