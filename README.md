@@ -27,10 +27,12 @@ paths, hostnames, usernames and so on in the code itself:
     SetEnv SROU_HOST_UKGPL www.ukgpl.com
     SetEnv SROU_DB_HOST an.internal.host.name
     SetEnv SROU_DB_PREFIX some_random_prefix_
-    SetEnv SROU_DB_PASSWD 'aPasswordNotTheRealOneHereObviously'
     SetEnv SROU_ROOT /srv/www/SimRacing.org.uk
+    SetEnv SROU_S3_ACCESS '$$theRealCode$$'
 </Directory>
 ```
+
+In addition, the most sensitive information such as passwords are stored in their own files in the [`cfg` directory](cfg).
 
 As a consequence, changing certain SMF settings from the forum's own administrative pages tends to overwrite places
 in [`Settings.php`](public_html.srou/www/smf/Settings.php) which are supposed to get values from the environment

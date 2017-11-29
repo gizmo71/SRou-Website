@@ -61,7 +61,7 @@ $defaultBucket = 'awsdownloads.simracing.org.uk';
 ($bucket = $_REQUEST['bucket']) || ($bucket = $defaultBucket);
 $bucket = rawurlencode($bucket);
 $accessKey = $_SERVER['SROU_S3_ACCESS'];
-$secretKey = $_SERVER['SROU_S3_SECRET'];
+$secretKey = trim(file_get_contents("{$_SERVER['SROU_ROOT']}/cfg/s3.secret"));
 
 function encodeKey($key) {
 	$key = rawurlencode($key);
