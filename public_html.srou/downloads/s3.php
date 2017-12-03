@@ -51,6 +51,7 @@ The new policy uses active link generation to allow 24H access, and only to sign
 
 if (!$ID_MEMBER || $ID_MEMBER <= 0) {
 	$me = "https://{$_SERVER['SROU_HOST_WWW']}/downloads/s3.php{$_SERVER['PATH_INFO']}?{$_SERVER['QUERY_STRING']}";
+	http_response_code(401);
 	echo "<P><B>You must be logged in to download this file.</B></P>";
 	ssi_login($me);
 	exit;
