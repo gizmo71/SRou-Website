@@ -51,6 +51,7 @@ The new policy uses active link generation to allow 24H access, and only to sign
 
 if (!$ID_MEMBER || $ID_MEMBER <= 0) {
 	$me = "https://{$_SERVER['SROU_HOST_WWW']}/downloads/s3.php{$_SERVER['PATH_INFO']}?{$_SERVER['QUERY_STRING']}";
+	http_response_code(401);
 	echo "<P><B>You must be logged in to download this file.</B></P>";
 	ssi_login($me);
 	exit;
@@ -61,7 +62,7 @@ $defaultBucket = 'awsdownloads.simracing.org.uk';
 ($bucket = $_REQUEST['bucket']) || ($bucket = $defaultBucket);
 $bucket = rawurlencode($bucket);
 $accessKey = $_SERVER['SROU_S3_ACCESS'];
-$secretKey = $_SERVER['SROU_S3_SECRET'];
+$secretKey = trim(file_get_contents("{$_SERVER['SROU_ROOT']}/cfg/s3.secret"));
 
 function encodeKey($key) {
 	$key = rawurlencode($key);

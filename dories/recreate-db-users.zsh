@@ -8,6 +8,6 @@
 	# then afterwards: SET GLOBAL validate_password_policy = 'MEDIUM';
 	cat <<-EOF
 		DROP USER IF EXISTS '${SROU_DB_PREFIX}smf'@'%';
-		CREATE USER '${SROU_DB_PREFIX}smf'@'%' IDENTIFIED BY '${SROU_DB_PASSWD}';
+		CREATE USER '${SROU_DB_PREFIX}smf'@'%' IDENTIFIED BY '$(cat cfg/smf-db.password)';
 	EOF
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
