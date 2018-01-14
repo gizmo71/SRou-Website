@@ -912,7 +912,9 @@ class Championships extends RefData {
 	}
 
 	function show_notes() {
-		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B></P>\n";
+		$reLink = 'https://en.wikipedia.org/wiki/Regular_expression#Perl_and_PCRE_(Perl_Compatible_Regular_Expressions)';
+		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B>"
+		   . "<BR/>The <tt>class</tt> is a <a href='$reLink'>regular expression</a>; for single class championships, use '<tt>.*</tt>'.</P>\n";
 	}
 }
 
