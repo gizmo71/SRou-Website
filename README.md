@@ -28,7 +28,6 @@ paths, hostnames, usernames and so on in the code itself:
     SetEnv SROU_DB_HOST an.internal.host.name
     SetEnv SROU_DB_PREFIX some_random_prefix_
     SetEnv SROU_ROOT /srv/www/SimRacing.org.uk
-    SetEnv SROU_S3_ACCESS '$$theRealCode$$'
 </Directory>
 ```
 
