@@ -44,6 +44,7 @@ function doImport() {
 	$winnerTime = null;
 
 	if ($htmlExport = maybeReadFile('export')) {
+		$htmlExport = mb_convert_encoding($htmlExport, 'UTF-8', 'ISO-8859-1');
 		$winnerTime = parse_gpl_html($htmlExport);
 	} else {
 		$location = '-';
