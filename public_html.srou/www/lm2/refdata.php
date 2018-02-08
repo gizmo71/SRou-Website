@@ -1905,6 +1905,16 @@ $refDatas = Array(
 	'mon'=>array('refData'=>new Money(), 'groups'=>array(1)),
 );
 
+// Knock out ones you don't have access to
+
+function filterByGroups($rd) {
+	global $user_info;
+	$groups = array_key_exists('groups', $rd) ? $rd['groups'] : array($lm2_mods_group, $lm2_mods_group_ukgpl);
+	return count(array_intersect($groups, $user_info['groups'])) > 0;
+}
+
+$refDatas = array_filter($refDatas, 'filterByGroups');
+
 // And now... the code!
 
 echo "<P><SMALL>Table:";
@@ -1913,14 +1923,11 @@ if ($refData && !($sortOrder = $_REQUEST['sortOrder'])) {
 	$sortOrder = $refData['refData']->getDefaultSortOrder();
 }
 foreach ($refDatas as $name=>$rd) {
-	$groups = array_key_exists('groups', $rd) ? $rd['groups'] : array($lm2_mods_group, $lm2_mods_group_ukgpl);
-	if (count(array_intersect($groups, $user_info['groups'])) > 0) {
-		$html = $rd['refData']->getName();
-		if ($name != $_REQUEST['refData']) {
-			$html = '<A HREF="index.php?action=refdata&refData=' . $name . '">' . $html . '</A>';
-		}
-		echo " <NOBR>$html</NOBR>";
+	$html = $rd['refData']->getName();
+	if ($name != $_REQUEST['refData']) {
+		$html = '<A HREF="index.php?action=refdata&refData=' . $name . '">' . $html . '</A>';
 	}
+	echo " <NOBR>$html</NOBR>";
 }
 if ($refData) {
 	$refData = $refData['refData'];
