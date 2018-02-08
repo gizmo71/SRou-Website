@@ -22,6 +22,8 @@ function doImport() {
 	(is_null($mod = $_REQUEST['mod']) || $mod == '') && die("no mod selected");
 
 	function maybeReadFile($file) {
+		global $race_start_time;
+
 		$file = $_FILES[$file];
 		if ($file['size'] == 0) {
 			return null;
