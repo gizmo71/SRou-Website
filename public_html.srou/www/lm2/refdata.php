@@ -1899,7 +1899,7 @@ $refDatas = Array(
 	'evg'=>array('refData'=>new EventGroups()),
 	'pgr'=>array('refData'=>new PenaltyGroups()),
 	'evt'=>array('refData'=>new Events()),
-	'eve'=>array('refData'=>new EventEntries(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_ukgpl)),
+	'eve'=>array('refData'=>new EventEntries()),
 	'sdr'=>array('refData'=>new SimDrivers(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_server, $lm2_mods_group_ukgpl)),
 	'wth'=>array('refData'=>new Weather(), 'groups'=>array($lm2_mods_group_server)),
 	'mon'=>array('refData'=>new Money(), 'groups'=>array(1)),
@@ -1908,7 +1908,7 @@ $refDatas = Array(
 // Knock out ones you don't have access to
 
 function filterByGroups($rd) {
-	global $user_info;
+	global $user_info, $lm2_mods_group, $lm2_mods_group_ukgpl;
 	$groups = array_key_exists('groups', $rd) ? $rd['groups'] : array($lm2_mods_group, $lm2_mods_group_ukgpl);
 	return count(array_intersect($groups, $user_info['groups'])) > 0;
 }
