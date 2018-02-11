@@ -50,6 +50,31 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 	//echo "<A HREF='$url'>Click here!</A>";
 	exit(0);
 }
+
+if (!is_null($class2check = $_REQUEST['class2check'])) {
+	is_numeric($eventGroup = $_REQUEST['eventGroup']) || die("sod off, hacker");
+	$class2check = str_replace(' ', '+', $class2check); // WTF?!
+	$matchText = "$class2check matches";
+
+	if ($class2check == '.*') {
+		$matchText .= " all cars in all classes";
+	}
+
+	$matchText .= ':';
+	$query = lm2_query("
+		SELECT CONCAT('<br/><tt>', id_class, '</tt> ', class_description) AS class
+		FROM {$GLOBALS['lm2_db_prefix']}classes
+		WHERE id_class REGEXP CONCAT('^', " . sqlString($class2check) . ", '$')
+		ORDER BY display_sequence
+		", __FILE__, __LINE__);
+	while ($row = mysql_fetch_assoc($query)) {
+		$matchText .= " {$row['class']}";
+	}
+	mysql_free_result($query);
+
+	echo "<pre>" . print_r($_REQUEST, true) . "</pre>$matchText";
+	exit(0);
+}
 ?>
 
 <SCRIPT LANGUAGE="JavaScript">
@@ -86,6 +111,23 @@ function selectedText(select) {
 }
 function selectedValue(select) {
 	return select.options[select.selectedIndex].value;
+}
+
+function classCheck(rowNum) {
+	eventGroupInput = rdForm["event_group" + rowNum]
+	httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function() {
+		if (httpRequest.readyState != XMLHttpRequest.DONE) return;
+		if (httpRequest.status != 200) {
+			window.alert(httpRequest.status + ": " + httpRequest.statusText);
+			return;
+		}
+		document.getElementById("classcheck").innerHTML = httpRequest.responseText;
+	}
+	httpRequest.open('GET', 'refdata.php?class2check=' + encodeURIComponent(rdForm["class" + rowNum].value)
+		+ '&eventGroup=' + encodeURIComponent(selectedValue(eventGroupInput))
+		+ '&eventGroupDesc=' + encodeURIComponent(selectedText(eventGroupInput)), true);
+	httpRequest.send();
 }
 </SCRIPT>
 
@@ -843,6 +885,12 @@ class RefDataFieldFKPollChoice extends RefDataFieldFK {
 	}
 }
 
+class RefDataFieldClassRegex extends RefDataFieldEdit {
+	function render($row, $rownum) {
+		return parent::render($row, $rownum) . "<A HREF='#classcheck' onClick='classCheck($rownum)'>?</A>";
+	}
+}
+
 class Championships extends RefData {
 	function getName() { return "Championships"; }
 	function getTable() { return "{$this->lm2_db_prefix}championships"; }
@@ -856,7 +904,7 @@ class Championships extends RefData {
 		return Array(
 			new RefDataFieldID("id_championship", true),
 			new RefDataFieldFK("scoring_scheme", scoringSchemeRefDataFieldFKSQL("1"), false, "12em"),
-			new RefDataFieldEdit("class", 10),
+			new RefDataFieldClassRegex("class", 10),
 			new RefDataFieldFK("reg_class_regexp", "
 				SELECT class_regexp AS id, CONCAT(description, ' - ^(', class_regexp, ')\$') AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
@@ -916,7 +964,9 @@ class Championships extends RefData {
 	function show_notes() {
 		$reLink = 'https://en.wikipedia.org/wiki/Regular_expression#Perl_and_PCRE_(Perl_Compatible_Regular_Expressions)';
 		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B>"
-		   . "<BR/>The <tt>class</tt> is a <a href='$reLink'>regular expression</a>; for single class championships, use '<tt>.*</tt>'.</P>\n";
+		   . "<BR/>The <tt>class</tt> is a <a href='$reLink'>regular expression</a>; for single class championships, use '<tt>.*</tt>';"
+		   . " click the question mark to the right of the field to see which classes match.<BR/>"
+		   . "<SPAN id='classcheck'></SPAN></P>\n";
 	}
 }
 
