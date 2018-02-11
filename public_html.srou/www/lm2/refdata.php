@@ -11,6 +11,7 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 		$url .= "calendar;sa=post;month=$month;year=$year;day=$day;board=";
 
 		$smf_board = null;
+		is_numeric($_REQUEST['group']) || die("hacker be gone");
 		$query = lm2_query("
 			SELECT smf_board
 			FROM {$GLOBALS['lm2_db_prefix']}event_boards
@@ -29,6 +30,7 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 			. "/lm2sim={$_REQUEST['sim']}"
 			. "/";
 	} else {
+		is_numeric($smf_topic) || die("hacker be gone");
 		$query = lm2_query("SELECT id_event, id_first_msg AS id_msg"
 			. " FROM {$db_prefix}topics t, {$db_prefix}calendar c"
 			. " WHERE t.id_topic = $smf_topic AND t.id_topic = c.id_topic"
