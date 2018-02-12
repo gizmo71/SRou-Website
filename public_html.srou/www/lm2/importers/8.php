@@ -22,6 +22,8 @@ function doImport() {
 	(is_null($mod = $_REQUEST['mod']) || $mod == '') && die("no mod selected");
 
 	function maybeReadFile($file) {
+		global $race_start_time;
+
 		$file = $_FILES[$file];
 		if ($file['size'] == 0) {
 			return null;
@@ -44,6 +46,7 @@ function doImport() {
 	$winnerTime = null;
 
 	if ($htmlExport = maybeReadFile('export')) {
+		$htmlExport = mb_convert_encoding($htmlExport, 'UTF-8', 'ISO-8859-1');
 		$winnerTime = parse_gpl_html($htmlExport);
 	} else {
 		$location = '-';

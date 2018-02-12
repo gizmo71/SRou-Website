@@ -1,4 +1,5 @@
 <?php
+$class2check = $_REQUEST['class2check']; // Get to this before SMF kills it
 require_once("../smf/SSI.php");
 require_once("include.php"); // In case we're coming in for a redirect...
 if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
@@ -11,6 +12,7 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 		$url .= "calendar;sa=post;month=$month;year=$year;day=$day;board=";
 
 		$smf_board = null;
+		is_numeric($_REQUEST['group']) || die("hacker be gone");
 		$query = lm2_query("
 			SELECT smf_board
 			FROM {$GLOBALS['lm2_db_prefix']}event_boards
@@ -29,6 +31,7 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 			. "/lm2sim={$_REQUEST['sim']}"
 			. "/";
 	} else {
+		is_numeric($smf_topic) || die("hacker be gone");
 		$query = lm2_query("SELECT id_event, id_first_msg AS id_msg"
 			. " FROM {$db_prefix}topics t, {$db_prefix}calendar c"
 			. " WHERE t.id_topic = $smf_topic AND t.id_topic = c.id_topic"
@@ -46,6 +49,41 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 	header("Location: $url");
 	$url = htmlentities($url, ENT_QUOTES);
 	//echo "<A HREF='$url'>Click here!</A>";
+	exit(0);
+}
+
+if (!is_null($class2check)) {
+	is_numeric($eventGroup = $_REQUEST['eventGroup']) || die("sod off, hacker");
+	$matchText = "$class2check matches";
+
+	if ($class2check == '.*') {
+		$matchText .= " all cars in all classes";
+	}
+
+	$matchText .= ':';
+	$query = lm2_query("
+		SELECT CONCAT('<br/><tt>', id_class, '</tt> ', class_description, ' (', (
+			SELECT GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name) SEPARATOR ', ')
+                        FROM {$lm2_db_prefix}car_class_c
+			JOIN {$lm2_db_prefix}cars ON car = id_car
+			JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
+                        WHERE car_class = id_class AND event_group = $eventGroup
+                        GROUP BY event_group
+		), ')') AS class
+		FROM {$GLOBALS['lm2_db_prefix']}classes
+		WHERE id_class REGEXP CONCAT('^', " . sqlString($class2check) . ", '$')
+		ORDER BY display_sequence
+		", __FILE__, __LINE__);
+	while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
+		$matchText .= " {$row['class']}";
+	}
+	$GLOBALS['smcFunc']['db_free_result']($query);
+
+	if ($class2check != '.*') {
+		$matchText .= "</br>(Only car classifications relevant to " . htmlentities($_REQUEST['eventGroupDesc'], ENT_QUOTES) . " are shown)";
+	}
+
+	echo $matchText;
 	exit(0);
 }
 ?>
@@ -84,6 +122,23 @@ function selectedText(select) {
 }
 function selectedValue(select) {
 	return select.options[select.selectedIndex].value;
+}
+
+function classCheck(rowNum) {
+	eventGroupInput = rdForm["event_group" + rowNum]
+	httpRequest = new XMLHttpRequest();
+	httpRequest.onreadystatechange = function() {
+		if (httpRequest.readyState != XMLHttpRequest.DONE) return;
+		if (httpRequest.status != 200) {
+			window.alert(httpRequest.status + ": " + httpRequest.statusText);
+			return;
+		}
+		document.getElementById("classcheck").innerHTML = httpRequest.responseText;
+	}
+	httpRequest.open('GET', 'refdata.php?class2check=' + encodeURIComponent(rdForm["class" + rowNum].value)
+		+ '&eventGroup=' + encodeURIComponent(selectedValue(eventGroupInput))
+		+ '&eventGroupDesc=' + encodeURIComponent(selectedText(eventGroupInput)), true);
+	httpRequest.send();
 }
 </SCRIPT>
 
@@ -840,6 +895,12 @@ class RefDataFieldFKPollChoice extends RefDataFieldFK {
 	}
 }
 
+class RefDataFieldClassRegex extends RefDataFieldEdit {
+	function render($row, $rownum) {
+		return parent::render($row, $rownum) . "<A HREF='#classcheck' onClick='classCheck($rownum)'>?</A>";
+	}
+}
+
 class Championships extends RefData {
 	function getName() { return "Championships"; }
 	function getTable() { return "{$this->lm2_db_prefix}championships"; }
@@ -853,7 +914,7 @@ class Championships extends RefData {
 		return Array(
 			new RefDataFieldID("id_championship", true),
 			new RefDataFieldFK("scoring_scheme", scoringSchemeRefDataFieldFKSQL("1"), false, "12em"),
-			new RefDataFieldEdit("class", 10),
+			new RefDataFieldClassRegex("class", 10),
 			new RefDataFieldFK("reg_class_regexp", "
 				SELECT class_regexp AS id, CONCAT('^(', class_regexp, ')\$ - ', description) AS description
 				FROM {$GLOBALS['lm2_db_prefix']}reg_classes
@@ -911,7 +972,11 @@ class Championships extends RefData {
 	}
 
 	function show_notes() {
-		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B></P>\n";
+		$reLink = 'https://en.wikipedia.org/wiki/Regular_expression#Perl_and_PCRE_(Perl_Compatible_Regular_Expressions)';
+		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B>"
+		   . "<BR/>The <tt>class</tt> is a <a href='$reLink'>regular expression</a>; for single class championships, use '<tt>.*</tt>';"
+		   . " click the question mark to the right of the field to see which classes and cars match.<BR/>"
+		   . "<SPAN id='classcheck'></SPAN></P>\n";
 	}
 }
 
@@ -1896,11 +1961,21 @@ $refDatas = Array(
 	'evg'=>array('refData'=>new EventGroups()),
 	'pgr'=>array('refData'=>new PenaltyGroups()),
 	'evt'=>array('refData'=>new Events()),
-	'eve'=>array('refData'=>new EventEntries(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_ukgpl)),
+	'eve'=>array('refData'=>new EventEntries()),
 	'sdr'=>array('refData'=>new SimDrivers(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_server, $lm2_mods_group_ukgpl)),
 	'wth'=>array('refData'=>new Weather(), 'groups'=>array($lm2_mods_group_server)),
 	'mon'=>array('refData'=>new Money(), 'groups'=>array(1)),
 );
+
+// Knock out ones you don't have access to
+
+function filterByGroups($rd) {
+	global $user_info, $lm2_mods_group, $lm2_mods_group_ukgpl;
+	$groups = array_key_exists('groups', $rd) ? $rd['groups'] : array($lm2_mods_group, $lm2_mods_group_ukgpl);
+	return count(array_intersect($groups, $user_info['groups'])) > 0;
+}
+
+$refDatas = array_filter($refDatas, 'filterByGroups');
 
 // And now... the code!
 
@@ -1910,14 +1985,11 @@ if ($refData && !($sortOrder = $_REQUEST['sortOrder'])) {
 	$sortOrder = $refData['refData']->getDefaultSortOrder();
 }
 foreach ($refDatas as $name=>$rd) {
-	$groups = array_key_exists('groups', $rd) ? $rd['groups'] : array($lm2_mods_group, $lm2_mods_group_ukgpl);
-	if (count(array_intersect($groups, $user_info['groups'])) > 0) {
-		$html = $rd['refData']->getName();
-		if ($name != $_REQUEST['refData']) {
-			$html = '<A HREF="index.php?action=refdata&refData=' . $name . '">' . $html . '</A>';
-		}
-		echo " <NOBR>$html</NOBR>";
+	$html = $rd['refData']->getName();
+	if ($name != $_REQUEST['refData']) {
+		$html = '<A HREF="index.php?action=refdata&refData=' . $name . '">' . $html . '</A>';
 	}
+	echo " <NOBR>$html</NOBR>";
 }
 if ($refData) {
 	$refData = $refData['refData'];
