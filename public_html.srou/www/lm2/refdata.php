@@ -1,4 +1,5 @@
 <?php
+$class2check = $_REQUEST['class2check']; // Get to this before SMF kills it
 require_once("../smf/SSI.php");
 require_once("include.php"); // In case we're coming in for a redirect...
 if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
@@ -51,9 +52,8 @@ if (!is_null($smf_topic = $_REQUEST['smf_topic'])) {
 	exit(0);
 }
 
-if (!is_null($class2check = $_REQUEST['class2check'])) {
+if (!is_null($class2check)) {
 	is_numeric($eventGroup = $_REQUEST['eventGroup']) || die("sod off, hacker");
-	$class2check = str_replace(' ', '+', $class2check); // WTF?!
 	$matchText = "$class2check matches";
 
 	if ($class2check == '.*') {
