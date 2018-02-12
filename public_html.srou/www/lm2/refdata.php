@@ -62,7 +62,14 @@ if (!is_null($class2check)) {
 
 	$matchText .= ':';
 	$query = lm2_query("
-		SELECT CONCAT('<br/><tt>', id_class, '</tt> ', class_description) AS class
+		SELECT CONCAT('<br/><tt>', id_class, '</tt> ', class_description, ' (', (
+			SELECT GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name) SEPARATOR ', ')
+                        FROM {$lm2_db_prefix}car_class_c
+			JOIN {$lm2_db_prefix}cars ON car = id_car
+			JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
+                        WHERE car_class = id_class AND event_group = $eventGroup
+                        GROUP BY event_group
+		), ')') AS class
 		FROM {$GLOBALS['lm2_db_prefix']}classes
 		WHERE id_class REGEXP CONCAT('^', " . sqlString($class2check) . ", '$')
 		ORDER BY display_sequence
@@ -72,7 +79,11 @@ if (!is_null($class2check)) {
 	}
 	mysql_free_result($query);
 
-	echo "<pre>" . print_r($_REQUEST, true) . "</pre>$matchText";
+	if ($class2check != '.*') {
+		$matchText .= "</br>(Only car classifications relevant to " . htmlentities($_REQUEST['eventGroupDesc'], ENT_QUOTES) . " are shown)";
+	}
+
+	echo $matchText;
 	exit(0);
 }
 ?>
@@ -965,7 +976,7 @@ class Championships extends RefData {
 		$reLink = 'https://en.wikipedia.org/wiki/Regular_expression#Perl_and_PCRE_(Perl_Compatible_Regular_Expressions)';
 		echo "<P><B style='color: red'>Please do not change championships from old event groups!</B>"
 		   . "<BR/>The <tt>class</tt> is a <a href='$reLink'>regular expression</a>; for single class championships, use '<tt>.*</tt>';"
-		   . " click the question mark to the right of the field to see which classes match.<BR/>"
+		   . " click the question mark to the right of the field to see which classes and cars match.<BR/>"
 		   . "<SPAN id='classcheck'></SPAN></P>\n";
 	}
 }
