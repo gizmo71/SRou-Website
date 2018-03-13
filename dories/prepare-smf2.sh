@@ -21,6 +21,7 @@ delete from smf_log_search_results;
 delete from smf_log_topics;
 delete from smf_sessions;
 CREATE TABLE _map_board_themes SELECT ID_BOARD AS board, ID_THEME AS theme FROM smf_boards;
+UPDATE smf_members SET birthdate = '0001-01-01' WHERE birthdate LIKE '%-00' OR birthdate LIKE '%-00-%';
 EOF
 
 cd public_html.srou/www
