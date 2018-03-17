@@ -15,7 +15,7 @@ $lm2_series_details_topic = 3905;
 $lm2_ukgpl_migration_sim_driver = 7283;
 $lm2_circuit_html_clause = "CONCAT(brief_name, IFNULL(CONCAT(' (', layout_name, ')'), ''))";
 $lm2_circuit_link_clause = "CONCAT('<A TITLE=\"', IFNULL(layout_notes, ''),'\" HREF=\"/index.php?ind=lm2&circuit=', id_circuit, '\">', $lm2_circuit_html_clause, '</A>')";
-$lm2_class_style_clause = "CONCAT(' STYLE=\"background-color: #', class_bgcolor, '\"') AS class_style";
+$lm2_class_style_clause = "CONCAT(' STYLE=\"background-color: #', class_bgcolor, '\"')";
 $lm2_lap_record_types = array('R'=>'Race', 'Q'=>'Qualifying');
 $lm2_lap_record_clause = "CASE lap_record_type WHEN 'Q' THEN qual_best_lap_time ELSE race_best_lap_time END = record_lap_time";
 $lm2_penalty_types = array(

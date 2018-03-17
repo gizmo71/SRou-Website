@@ -257,7 +257,7 @@ function lm2MakeSeriesTree($group, $showAll = false, $extraParams = '') {
 		OR t.contained = {int:group} AND t.container IN (SELECT container FROM {$GLOBALS['lm2_db_prefix']}event_group_tree t2 WHERE t2.contained = id_event_group AND t2.depth = 1)
 " . /* Children */ "
 		OR t.container = {int:group} AND t.contained = id_event_group AND t.depth = 1
-		GROUP BY id_event_group
+		GROUP BY id_event_group, depth_c, sequence_c, series_theme, long_desc
 		UNION ") . "
 " . /* Always get the root groups. */ "
 		SELECT id_event_group, long_desc, depth_c AS depth, sequence_c, series_theme
@@ -592,13 +592,13 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 	$query = $smcFunc['db_query']('', "
 		SELECT id_event, smf_topic
 		, id_event_group
-		, short_desc AS event_group
+		, GROUP_CONCAT(DISTINCT short_desc) AS event_group
 		, event_date
-		, $lm2_circuit_html_clause AS circuit_html
-		, SUM(id_event_entry) AS entries
+		, GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause) AS circuit_html
+		, COUNT(id_event_entry) AS entries
 		, IFNULL(server_starter_override, server_starter) AS server_starter
-		, full_desc AS event_group_full
-		, {$GLOBALS['lm2_db_prefix']}sims.sim_name AS sim_desc
+		, GROUP_CONCAT(DISTINCT full_desc) AS event_group_full
+		, GROUP_CONCAT(DISTINCT {$GLOBALS['lm2_db_prefix']}sims.sim_name) AS sim_desc
 		FROM {$GLOBALS['lm2_db_prefix']}events
 		JOIN {$GLOBALS['lm2_db_prefix']}sims ON sim = id_sim
 		JOIN {$GLOBALS['lm2_db_prefix']}sim_circuits ON id_sim_circuit = sim_circuit
@@ -609,7 +609,8 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		WHERE event_date BETWEEN DATE_ADD({string:now}, INTERVAL -15 DAY) AND DATE_ADD({string:now}, INTERVAL 15 DAY)
 		AND id_circuit <> -1
 		AND {$GLOBALS['lm2_db_prefix']}events.sim " . ($ukgpl ? "=" : "<>") . " 8
-		GROUP BY IFNULL(smf_topic, CONCAT(id_sim_circuit, '/', id_event_group))
+		GROUP BY id_event, smf_topic, id_event_group, event_date, server_starter_override, server_starter
+		, IFNULL(smf_topic, CONCAT(id_sim_circuit, '/', id_event_group))
 		ORDER BY event_date ASC
 		", array('now'=>lm2Php2timestamp()));
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
@@ -785,13 +786,13 @@ function lm2_show_event($event) {
 //XXX: doesn't account for any default ballast
 	$query = $smcFunc['db_query'](null, "
 		SELECT {$GLOBALS['lm2_db_prefix']}event_entries.*
-		" . lm2MakeBallastFields("'&nbsp;'", "''") . "
+		, " . lm2MakeBallastFields("'&nbsp;'", "''") . " AS ballast
 		, IF(IFNULL(eb_ballast, 0) = IFNULL(ballast_driver, 0), NULL, eb_ballast) AS correct_ballast
 		, IF(IFNULL(eb_name, driving_name) = driving_name, NULL, eb_name) AS correct_name
 		, CONCAT('<B>', {$GLOBALS['lm2_db_prefix']}cars.car_name, '</B>', IFNULL(CONCAT(' (#',number,')'),'')) AS car_name
 		, CONCAT({$GLOBALS['lm2_db_prefix']}sim_cars.vehicle, IFNULL(CONCAT('/', {$GLOBALS['lm2_db_prefix']}sim_cars.team), '')) AS sim_car_name
 		, class_description, reg_class
-		, $lm2_class_style_clause
+		, $lm2_class_style_clause AS class_style
 		, driver_name AS realName
 		, LOWER(iso3166_code) AS iso3166_code
 		, iso3166_name
@@ -1247,7 +1248,7 @@ function lm2SqlString($s, $emptyIfNull = false) {
 function lm2FindEventModerator($event) {
 	global $lm2_guest_member_id;
 	return $lm2_guest_member_id;
-//	global $lm2_db_prefix;
+	global $smcFunc;
 //
 //	$mod_id = null;
 //
@@ -1405,11 +1406,11 @@ function lm2_make_ballast_number($ballastExp) {
 
 function lm2MakeBallastFields($empty, $prefix) {
 	$totalExp = "(IFNULL(ballast_car, 0) + IFNULL(ballast_driver, 0))";
-	return ", IF(IFNULL(ballast_car, 0) <> 0"
+	return "IF(IFNULL(ballast_car, 0) <> 0"
 		. " OR IFNULL(ballast_driver, 0) <> 0, CONCAT($prefix, '<SPAN TITLE=\"Car: ', IFNULL("
 		. lm2_make_ballast_number('ballast_car') . ", 'none'), '; driver: ', IFNULL("
 		. lm2_make_ballast_number('ballast_driver') . ", 'none'), '\">', "
-		. lm2_make_ballast_number($totalExp) . ", '</SPAN>'), $empty) AS ballast";
+		. lm2_make_ballast_number($totalExp) . ", '</SPAN>'), $empty)";
 }
 
 function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team = null, $opening = "
@@ -1421,23 +1422,23 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 	global $lm2_lap_record_clause, $lm2_lap_record_types, $lm2_db_prefix, $smcFunc, $lm2_circuit_link_clause, $lm2_class_style_clause;
 	$query = $smcFunc['db_query'](null, "
 		SELECT class_description
-		, $lm2_class_style_clause
+		, GROUP_CONCAT(DISTINCT $lm2_class_style_clause SEPARATOR ' ') AS class_style
 		, lap_record_type
-		, car_name
+		, GROUP_CONCAT(DISTINCT car_name) AS car_name
 		, manuf_url
-		, manuf_name
+		, GROUP_CONCAT(DISTINCT manuf_name) AS manuf_name
 		, manuf_image
 		, manuf_width
 		, manuf_height
 		, manuf_bgcolor
-		, record_lap_time
-		, record_mph
-		, driver_name AS realName
+		, GROUP_CONCAT(DISTINCT record_lap_time) AS record_lap_time
+		, GROUP_CONCAT(DISTINCT record_mph) AS record_mph
+		, GROUP_CONCAT(DISTINCT driver_name) AS realName
 		, id_event, smf_topic
-		, id_event_group, short_desc, series_theme
+		, id_event_group, GROUP_CONCAT(DISTINCT short_desc) AS short_desc, series_theme
 		, event_date
-		, driver_member AS id_member
-		" . lm2MakeBallastFields("{string:blank}", "{string:br}") . "
+		, GROUP_CONCAT(DISTINCT driver_member) AS id_member
+		, GROUP_CONCAT(DISTINCT " . lm2MakeBallastFields("{string:blank}", "{string:br}") . ") AS ballast
 		" . ($id_circuit ? "" : ", $lm2_circuit_link_clause AS circuit_link, id_event_group") . "
 		, {$GLOBALS['lm2_db_prefix']}sims.sim_name
 		FROM {$GLOBALS['lm2_db_prefix']}event_entries
@@ -1455,7 +1456,8 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 		JOIN {$GLOBALS['lm2_db_prefix']}drivers ON member = driver_member" . ($id_driver ? " AND {int:driver} = driver_member" : "") . "
 		JOIN {$GLOBALS['lm2_db_prefix']}manufacturers ON id_manuf = manuf
 		WHERE $lm2_lap_record_clause" . ($id_team ? " AND {int:team} = {$GLOBALS['lm2_db_prefix']}event_entries.team" : "") . "
-		GROUP BY brief_name, lap_record_type, class_description, sim_name
+		GROUP BY brief_name, lap_record_type, class_description, sim_name, manuf_url, manuf_image, manuf_width, manuf_height, manuf_bgcolor
+		, id_event, smf_topic, id_event_group, series_theme, event_date
 		ORDER BY brief_name, display_sequence, lap_record_type, sim_name, record_lap_time, event_date
 		", array('driver'=>$id_driver, 'team'=>$id_team, 'circuit'=>$id_circuit, 'event'=>$id_event, 'sim'=>$id_sim, 'blank'=>'', 'br'=>'<BR/>'));
 	$sep = $opening;

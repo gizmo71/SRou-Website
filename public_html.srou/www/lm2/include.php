@@ -45,7 +45,6 @@ $circuit_html_clause = $lm2_circuit_html_clause;
 $circuit_link_clause = $lm2_circuit_link_clause;
 $lap_record_types = $lm2_lap_record_types;
 $lap_record_clause = $lm2_lap_record_clause;
-$class_style_clause = $lm2_class_style_clause;
 $champ_types = $lm2_champ_types;
 $penalty_points_clause = $lm2_penalty_points_clause;
 

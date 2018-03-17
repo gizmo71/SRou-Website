@@ -60,7 +60,7 @@ function template_group() {
 				(rd_championship, member, name, url, rd_status, has_raced)
 				SELECT DISTINCT id_championship AS rd_championship
 				, id_member AS member
-				, real_name AS name
+				, GROUP_CONCAT(DISTINCT real_name) AS name
 				, CONCAT('index.php?ind=lm2&driver=', id_member) AS url
 				, GROUP_CONCAT(DISTINCT CASE champ_group_type WHEN 'F' THEN '(FT)' WHEN '1' THEN '(R1)' WHEN '2' THEN '(R2)' WHEN '3' THEN '(R3)' ELSE champ_group_type END SEPARATOR '/') AS rd_status
 				, MAX(IF(id IS NULL, 0, 1)) AS has_raced
@@ -70,7 +70,7 @@ function template_group() {
 				LEFT JOIN {$lm2_db_prefix}championship_points ON id_championship = championship AND id = id_member
 				WHERE champ_group_champ = {int:champ} AND champ_group_poll_choice IS NOT NULL AND champ_group_type <> 'L'
 				AND CONCAT(',', id_group, ',', additional_groups, ',') REGEXP CONCAT(',', champ_group_membergroup, ',')
-				GROUP BY id_member
+				GROUP BY id_member, id_championship
 				HAVING rd_status IS NOT NULL
 				", array('champ'=>$champ));
 		}
@@ -147,7 +147,7 @@ function template_group() {
 			FROM {$lm2_db_prefix}event_points
 			JOIN {$lm2_db_prefix}event_entries ON id_event_entry = event_entry
 			WHERE championship = {int:champ}
-			GROUP BY event, id
+			GROUP BY event, id, is_dropped
 			", array('champ'=>$champ));
 		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$roundQueryResults[$row['id']][] = $row;
@@ -344,7 +344,7 @@ function template_group() {
 //TODO: consider showing eligible cars for non-rated championships...
 			// Note that the car classifications can be set up in such a way as to fool this. But please don't.
 			$query = db_query("
-				SELECT $lm2_class_style_clause, class_description, CONCAT(manuf_name, ' ', car_name) AS car_desc, rating
+				SELECT $lm2_class_style_clause AS class_style, class_description, CONCAT(manuf_name, ' ', car_name) AS car_desc, rating
 				FROM {$lm2_db_prefix}cars
 				JOIN {$lm2_db_prefix}car_classification ON id_car_classification = (
 					SELECT id_car_classification
@@ -369,7 +369,7 @@ function template_group() {
 		}
 
 		$query = db_query("
-			SELECT $lm2_class_style_clause, id_class, class_description
+			SELECT $lm2_class_style_clause AS class_style, id_class, class_description
 			, class_min_ballast, class_max_ballast
 			, IF(ballast_position = 999, '<I>others</I>', CONCAT('P', ballast_position)) AS position
 			, ballast_delta
@@ -412,7 +412,7 @@ function template_group() {
 		}
 	}
 
-	global $context, $boardurl, $smcFunc, $lm2_db_prefix, $lm2_circuit_html_clause, $lm2_class_style_clause, $colsep, $lm2_champ_types, $settings;
+	global $context, $boardurl, $smcFunc, $lm2_db_prefix, $lm2_circuit_html_clause, $colsep, $lm2_champ_types, $settings;
 	$flag_prefix = "/images/flags-22x14/";
 
 	echo "<table border='0' width='100%'><tr><td valign='top'>";
@@ -476,11 +476,11 @@ function template_group() {
 		$penalty_group_months = $row['penalty_group_months'];
 
 		$query2 = $smcFunc['db_query'](null, "SELECT id_event, smf_topic"
-			. ", $lm2_circuit_html_clause AS circuit_html"
+			. ", GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause) AS circuit_html"
 			. ", smf_topic, event_date"
 			. ", LOWER(iso3166_code) AS iso3166_code"
-			. ", iso3166_name"
-			. ", entries_c AS entries"
+			. ", GROUP_CONCAT(DISTINCT iso3166_name) AS iso3166_name"
+			. ", SUM(entries_c) AS entries"
 			. ", event_status <> 'U' AS is_official"
 			. ", COUNT(event_entry) AS points_ch"
 			. " FROM ({$lm2_db_prefix}events"
@@ -498,7 +498,7 @@ function template_group() {
 			. " AND circuit_location = id_circuit_location"
 			. " AND id_sim_circuit = {$lm2_db_prefix}events.sim_circuit"
 			. " AND id_circuit = {$lm2_db_prefix}sim_circuits.circuit"
-			. " GROUP BY event_date, id_event"
+			. " GROUP BY event_date, id_event, smf_topic, iso3166_code, event_status"
 			. " HAVING points_ch > 0 OR entries = 0"
 			. (($group == 92 || $group == 93) ? " ORDER BY circuit_html, event_date" : "") // Fiddle for UKGPL Season 1 with double-headers
 			, array('champ'=>$champ_id, 'group'=>$group));

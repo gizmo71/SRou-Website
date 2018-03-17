@@ -76,7 +76,7 @@ function lm2r() {
 				LEFT JOIN {$GLOBALS['lm2_db_prefix']}events ON event_group = id_event_group
 				LEFT JOIN {db_prefix}messages ON series_details = id_msg
 				WHERE id_event_group = {int:group}
-				GROUP BY id_event_group
+				GROUP BY id_event_group, reg_topic, series_details, subject, smileys_enabled, mkp_pid, body, full_desc
 				", array('group'=>$group));
 			$context['lm2']['group'] = $smcFunc['db_fetch_assoc']($query);
 			$smcFunc['db_free_result']($query);
