@@ -69,6 +69,8 @@ function lm2_query($sql, $file, $line) {
 	global $inhibitTimings, $db_connection;
 
 	$start = microtime_float();
+	mysqli_query($db_connection, "SET @oldMode = @@SQL_MODE") || die(mysqli_error($db_connection));
+	mysqli_query($db_connection, "SET sql_mode = 'MYSQL40'") || die(mysqli_error($db_connection));
 	($result = mysqli_query($db_connection, $sql)) !== FALSE || die("<PRE>$sql\n" . mysqli_error($db_connection) . "\n$file $line\n</PRE>");
 	if ($inhibitTimings !== true) {
 		$end = microtime_float();
@@ -76,6 +78,7 @@ function lm2_query($sql, $file, $line) {
 			echo sprintf("<!-- %s %dms %s %s -->\n", $sql, $ms, $file, $line);
 		}
 	}
+	mysqli_query($db_connection, "SET sql_mode = @oldMode") || die(mysqli_error($db_connection));
 	return $result;
 }
 //function mysql_free_result($q) { global $smcFunc; return $smcFunc['db_free_result']($q); }
