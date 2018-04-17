@@ -28,7 +28,7 @@ function showFileChoosers() {
 function doImport() {
 	global $location, $race_start_time;
 
-	$xpath = load_xml_file($_FILES['xml']);
+	($xpath = load_xml_file($_FILES['xml'])) || die("Failed to load " . print_r($_FILES['xml'], true));
 	$xpath->registerNamespace('m', 'http://schemas.datacontract.org/2004/07/CommunityMultiplayer.Services');
 	$result= $xpath->document->documentElement;
 	($result->tagName == 'MultiplayerRaceResult') || die("root node is not MultiplayerRaceResult");
