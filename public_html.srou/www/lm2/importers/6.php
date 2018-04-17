@@ -33,7 +33,7 @@ function doImport() {
 	$result= $xpath->document->documentElement;
 	($result->tagName == 'MultiplayerRaceResult') || die("root node is not MultiplayerRaceResult");
 	($xpath->evaluate('string(m:Experience)') == 'RaceRoom Experience') || die("Does not appear to be RaceRoom Experience");
-	($location = $xpath->evaluate('string(m:Track)')) || die("No location");
+	($location = $xpath->evaluate("concat(m:Track, '/', m:TrackLayout)")) || die("No location");
 	($race_start_time = strtotime($xpath->evaluate('string(m:Time)'))) || die("No time");
         if ($_REQUEST['raceType'] == 'Race') $race_start_time -= 600;
 
