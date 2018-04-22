@@ -28,12 +28,12 @@ function showFileChoosers() {
 function doImport() {
 	global $location, $race_start_time;
 
-	$xpath = load_xml_file($_FILES['xml']);
+	($xpath = load_xml_file($_FILES['xml'])) || die("Failed to load " . print_r($_FILES['xml'], true));
 	$xpath->registerNamespace('m', 'http://schemas.datacontract.org/2004/07/CommunityMultiplayer.Services');
 	$result= $xpath->document->documentElement;
 	($result->tagName == 'MultiplayerRaceResult') || die("root node is not MultiplayerRaceResult");
 	($xpath->evaluate('string(m:Experience)') == 'RaceRoom Experience') || die("Does not appear to be RaceRoom Experience");
-	($location = $xpath->evaluate('string(m:Track)')) || die("No location");
+	($location = $xpath->evaluate("concat(m:Track, '/', m:TrackLayout)")) || die("No location");
 	($race_start_time = strtotime($xpath->evaluate('string(m:Time)'))) || die("No time");
         if ($_REQUEST['raceType'] == 'Race') $race_start_time -= 600;
 
