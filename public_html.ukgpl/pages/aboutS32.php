@@ -8,7 +8,7 @@
 
 <H1><IMG WIDTH="630" HEIGHT="393" SRC="/images/S16_CC_R8.jpg"></H1>
 
-<H1>Registration for Season 33 is OPEN!<br>
+<H1>Registration for Season 32 is OPEN!<br>
 Don't miss out!</H1>
 
 <P align="justify">
@@ -16,19 +16,18 @@ The league is still going strong despite the advent of dozens of new sims.
 Although many other games cater to online racing they often try to model every era. Grand Prix Legends simply models the best cars of the late sixties and does it exceptionally well. GPL still attracts a loyal following and UKGPL offers the opportunity to race in cars from the 1967 season and in addition offers mods that simulate the 1965, 1966 and 1969 seasons. The GT, 67 F2 cars, the 66 Can-Ams, 71 Can-Ams and now the 1955 Grand Prix cars prove that the community still has some life in it yet!</p>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. UKGPL will also run championships for the 1955 GP, 1965 F1 and 1966 F1 cars. Our aim is simply to have some fun racing the 50s and 60s machines.</p>
+UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. UKGPL will also run a 1967 Sports Cars championship to commemorate the 50th Anniversary of the GT cars. We will also run championships for 1955 and 1966 Grand Prix cars. Our aim is simply to have some fun racing the 50s and 60s machines.</p>
 
 <P align="justify">
 We are now an international league having drivers from many countries but races are run at times most suited to UK based drivers.
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
 <p>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=14944.0">1967 Graduates Cup (Works)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=14945.0">1967 Graduates Cup (Privateers)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=14942.0">1966 Formula 1</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=14941.0">1965 Formula 1 - Division 1</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=14940.0">1965 Formula 1 - Division 2</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=14943.0">1955 Grand Prix Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14550.0">1967 Graduates Cup (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14551.0">1967 Graduates Cup (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14549.0">1966 Historic Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14552.0">1955 Grand Prix Trophy</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=14553.0">1967 Sports Cars Trophy</A><br>
 </P>
 
 <P align="justify">
@@ -62,6 +61,8 @@ on-line there are some invaluable hints and tips in our <A HREF='//www.simracing
 <P><BIG>We do not have any funded race servers.  All our servers are provided by our members free of charge for the benefit of the drivers. These members are:
 
 <BR/>	
+<A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=3776"> BadBlood</A>
+<BR/>
 <A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=5475"> Cookie</A>
 <BR/>
 <A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=2660"> Turkey Machine</A>
