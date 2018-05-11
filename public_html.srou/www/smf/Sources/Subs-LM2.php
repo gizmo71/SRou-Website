@@ -909,7 +909,7 @@ function lm2MakeWeatherLinks($location_row) {
 
 	$links = array();
 
-	if ($wstation = $location_row['wu_station']) {
+	if (false && $wstation = $location_row['wu_station']) {
 		$links['rssId'] = str_replace("/", "_", "WU_$wstation");
 		$links['rssUrl'] = "http://www.weatherunderground.com/auto/rss_full/$wstation.xml";
 		$links['rssFile'] = "$boarddir/../mkportal/cache/{$links['rssId']}.rss";
