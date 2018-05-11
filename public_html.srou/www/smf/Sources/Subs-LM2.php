@@ -918,7 +918,7 @@ function lm2MakeWeatherLinks($location_row) {
 	}
 
 	if (!is_null($n = $location_row['latitude_n']) && !is_null($e = $location_row['longitude_e'])) {
-		$links['weatherLink'] = "<A HREF='http://www.weatherunderground.com/cgi-bin/findweather/getForecast?query=$n,$e&units=metric'>Weather Underground</A>";
+		$links['weatherLink'] = "<A HREF='https://www.wunderground.com/forecast/$n%2C$e'>Weather Underground</A>";
 		$links['climateLink'] = sprintf("<A HREF='http://www.worldclimate.com/cgi-bin/grid.pl?gr=%s%02d%s%03d'>World Climate</A>", $n < 0 ? 'S' : 'N', abs($n), $e < 0 ? 'W' : 'E', abs($e));
 	} else {
 		$links['weatherLink'] = $links['climateLink'] = null;
