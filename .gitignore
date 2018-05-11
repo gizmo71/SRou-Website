@@ -21,6 +21,7 @@ minified.css
 /.viminfo
 /.zshrc
 /.zhistory
+/.bash_history
 
 /public_html.davegymer.org/
 /public_html.test/
