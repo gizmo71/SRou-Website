@@ -5,7 +5,7 @@
 <BR/><A HREF='/index.php/moderating/roles'>Moderating</A>
 </P>
 
-<P><A HREF='http://ukgpl3.dyndns.org/inc_replaysS27_js.aspx'>Replays</A></P>
+<P><A HREF='ftp://ftp.ukgpl9.co.uk:32122/'>Replays</A></P>
 
 <!-- P><A HREF='/ukgpl/statz/index.html'>Statistics</A></P -->
 
