@@ -1613,7 +1613,7 @@ function lm2MakeEventList($field, $id, $title = null) {
 		AND " . ($field == 'id_circuit'
 		   ? "race_pos = 1 AND driver_member = {$GLOBALS['lm2_db_prefix']}event_entries.member"
 		   : "id_circuit_location = circuit_location") . "
-		GROUP BY id_event
+		GROUP BY id_event, id_event_group, smf_topic, short_desc, event_date
 		ORDER BY event_date
 		", array('id'=>$id));
 	$sep = ($title ? lm2_table_open("$title") : "") . "<TABLE>\n";
