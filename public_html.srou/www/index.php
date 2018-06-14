@@ -85,7 +85,8 @@ echo "<BR/><TABLE WIDTH='100%'><TR>
 SimRacing.org.uk is an umbrella organisation formed to expand UKGTR's horizons to encompass GT Legends and beyond.
 SimRacing.org.uk was founded by Dave Gymer, founder of UKGTR and long time technical administrator of UKGPL.
 <BR/><BR/>
-We currently have active leagues for GTR2, Power & Glory 2, iRacing and GT Legends.
+We currently have active leagues for Assetto Corsa, Race Room Experience and GT Legends,
+and also support the <A HREF='//www.ukgpl.com/'>UK Grand Prix Legends</A> league.
 <BR/><BR/>
 Please visit our <A HREF='smf/index.php?board=40'>Start Here! board</A> if you would like to participate, or just want to know more about the league.
 <BR/><BR/>
