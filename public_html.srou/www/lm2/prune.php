@@ -33,17 +33,19 @@ $query = lm2_query("
 	, IF(lastLogin = 0, NULL, FROM_UNIXTIME(lastLogin)) AS lastLogin
 	, (SELECT IF(COUNT(*) = 0, NULL, COUNT(*)) FROM {$db_prefix}personal_messages WHERE id_member_from = id_member) AS pm_sent
 	, (SELECT IF(COUNT(*) = 0, NULL, COUNT(*)) FROM {$db_prefix}pm_recipients WHERE {$db_prefix}members.id_member = {$db_prefix}pm_recipients.id_member) AS pm_recv
+	, IF(CONCAT(',', additionalGroups, ',') LIKE '%,103,%', 'Manual reg', NULL) AS manreg
 	FROM {$db_prefix}members
 	WHERE ((is_activated = 0 OR lastLogin = 0) AND FROM_UNIXTIME(dateRegistered) < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 2 MONTH))
 	   OR (lastLogin > 0 AND FROM_UNIXTIME(lastLogin) < DATE_SUB(" . php2timestamp(time()) . ", INTERVAL 12 MONTH) AND posts = 0)
 	   OR (posts = 0 AND (websiteUrl <> '' OR signature <> ''))
 	HAVING events IS NULL AND pm_sent IS NULL AND pm_recv IS NULL
-	ORDER BY IFNULL(posts, 0) > 0 OR IFNULL(events, 0) > 0
+	ORDER BY IF(manreg IS NULL, 0, 1), IFNULL(posts, 0) > 0 OR IFNULL(events, 0) > 0
 	, IF(lastLogin > dateRegistered, lastLogin, dateRegistered)
 	", __FILE__, __LINE__);
 while ($row = mysql_fetch_assoc($query)) {
-	$allNull = is_null($row['posts']) && is_null($row['events']) && is_null($row['pm_sent']) && is_null($row['pm_recv']);
+	$allNull = is_null($row['posts']) && is_null($row['events']) && is_null($row['pm_sent']) && is_null($row['pm_recv']) && is_null($row['manreg']);
 	echo "<TR>
+		<TD ALIGN=RIGHT>{$row['manreg']}</TD>
 		<TD><INPUT TYPE='CHECKBOX' NAME='memberToDelete[]' VALUE='{$row['id']}'" . ($allNull ? " CHECKED" : "") . " /></TD>
 		<TD TITLE=\"{$row['signature']}\"><A HREF=\"$boardurl/index.php?action=profile;u={$row['id']}\">{$row['name']}</A></TD>
 		<TD><SMALL>" . ($row['websiteUrl'] ? "<A HREF=\"{$row['websiteUrl']}\">{$row['websiteTitle']}</A>" : $row['websiteTitle']) . "</SMALL></TD>
