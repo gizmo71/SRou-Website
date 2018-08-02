@@ -10,6 +10,7 @@ if ($membersToDelete = $_REQUEST['memberToDelete']) {
 <INPUT TYPE="BUTTON" VALUE="Delete selected users" onClick="if (confirm('Delete users?')) form.submit();" />
 <TABLE>
 <TR>
+	<TH>Notes</TH>
 	<TH></TH>
 	<TH TITLE="Signature">Member</TH>
 	<TH>Website</TH>
