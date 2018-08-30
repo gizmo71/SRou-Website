@@ -19,7 +19,7 @@
 
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>gizmo71:srou_smf</id>
-	<version>1.11</version>
+	<version>1.12</version>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -463,6 +463,21 @@ require_once('Subs-LM2.php'); // Not actually used here but needed for the templ
 			<add><![CDATA[
 		'LM2R' => array('Subs-LM2.php', 'LM2R'),
 ]]></add>
+		</operation>
+		<!-- To cope with PHP 5.6 -->
+		<operation>
+			<search position="replace"><![CDATA[error_reporting(E_ALL)]]></search>
+			<add><![CDATA[error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE)]]></add>
+		</operation>
+	</file>
+
+	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+	<file name="$boarddir/SSI.php">
+		<!-- To cope with PHP 5.6 -->
+		<operation>
+			<search position="replace"><![CDATA[error_reporting(E_ALL)]]></search>
+			<add><![CDATA[error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE)]]></add>
 		</operation>
 	</file>
 
