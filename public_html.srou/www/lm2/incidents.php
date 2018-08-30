@@ -305,13 +305,13 @@ function generate_list($event) {
 	mysql_free_result($query);
 ?>
 <INPUT TYPE=HIDDEN NAME="event" VALUE="<?php echo $event; ?>" />
-<BR/><INPUT TYPE=RADIO NAME="event_status" VALUE="U"<?php echo $event_status == 'U' ? ' CHECKED' : '' ?> /> Unofficial
+<BR/><LABEL><INPUT TYPE=RADIO NAME="event_status" VALUE="U"<?php echo $event_status == 'U' ? ' CHECKED' : '' ?> id="event_status_U" /> Unofficial</LABEL>
 <?php if ($row['event_type'] == 'F') { ?>
-<BR/><INPUT TYPE=RADIO NAME="event_status" VALUE="P"<?php echo $event_status == 'P' ? ' CHECKED' : '' ?> /> Published but unofficial (for fun races)
+<BR/><LABEL><INPUT TYPE=RADIO NAME="event_status" VALUE="P"<?php echo $event_status == 'P' ? ' CHECKED' : '' ?> id="event_status_P" /> Published but unofficial</LABEL> (for fun races)
 <?php } else { ?>
-<BR/><INPUT TYPE=RADIO NAME="event_status" VALUE="O"<?php echo $event_status == 'O' ? ' CHECKED' : '' ?> /> Official (for champ/non-champ events)
+<BR/><LABEL><INPUT TYPE=RADIO NAME="event_status" VALUE="O"<?php echo $event_status == 'O' ? ' CHECKED' : '' ?> id="event_status_O" /> Official</LABEL> (for champ/non-champ events)
 <?php } ?>
-<BR/><INPUT TYPE=RADIO NAME="event_status" VALUE="H"<?php echo $event_status == 'H' ? ' CHECKED' : '' ?> /> Historic (for migrated UKGPL data)
+<BR/><LABEL><INPUT TYPE=RADIO NAME="event_status" VALUE="H"<?php echo $event_status == 'H' ? ' CHECKED' : '' ?> id="event_status_H" /> Historic</LABEL> (for migrated UKGPL data)
 <BR/><INPUT TYPE=SUBMIT VALUE="Update Status" />
 </FORM>
 <FORM METHOD="POST">
