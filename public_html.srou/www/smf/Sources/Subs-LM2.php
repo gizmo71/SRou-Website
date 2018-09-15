@@ -1148,14 +1148,22 @@ function lm2ShowDriverInfo($context) {
 	echo lm2_table_close();
 }
 
+function lm2IsLeagueMod() {
+	global $lm2_mods_group, $lm2_mods_group_ukgpl, $user_info;
+	$groups = array($lm2_mods_group, $lm2_mods_group_ukgpl);
+        return count(array_intersect($groups, $user_info['groups']));
+}
+
 function lm2ShowDriverProfile($driver) {
 	global $lm2_circuit_link_clause, $lm2_circuit_html_clause, $lm2_penalty_points_clause;
 	global $colsep;
 	global $ID_MEMBER, $boardurl;
 	global $context, $lm2_db_prefix, $db_prefix;
-	
-	echo lm2_table_open("Aliases");
-?><A NAME="aliases"></A>
+
+	echo '<A NAME="aliases"></A>';
+	if (lm2IsLeagueMod()) {
+		echo lm2_table_open("Aliases");
+?>
 	<TABLE BORDER='1' CELLPADDING='2' CELLSPACING='0'>
 	<TR><TH>Sims</TH><TH>Driving Names</TH><TH>Lobby Names</TH></TR>
 <?php
@@ -1181,7 +1189,8 @@ function lm2ShowDriverProfile($driver) {
 ?>
 	</TABLE>
 <?php
-	echo lm2_table_close();
+		echo lm2_table_close();
+	}
 
 	$header = lm2_table_open("Championship Registrations and Licenses") . "<TABLE>\n";
 	$footer = "";
