@@ -1246,6 +1246,12 @@ function lm2SqlString($s, $emptyIfNull = false) {
 	return is_null($s) ? "NULL" : "'" . mysqli_real_escape_string($db_connection, $s) . "'";
 }
 
+function lm2IsLeagueMod() {
+	global $lm2_mods_group, $lm2_mods_group_ukgpl, $user_info;
+	$groups = array($lm2_mods_group, $lm2_mods_group_ukgpl);
+        return count(array_intersect($groups, $user_info['groups']));
+}
+
 // Returns member ID, or null if none found.
 function lm2FindEventModerator($event) {
 	global $lm2_guest_member_id;

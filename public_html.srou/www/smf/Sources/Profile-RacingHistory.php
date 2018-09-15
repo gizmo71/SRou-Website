@@ -32,32 +32,37 @@ function lm2ShowDriverProfile($driver) {
 
 	$ID_MEMBER = $user_info['id'];
 	
-	echo lm2_table_open("Aliases");
-?><A NAME="aliases"></A>
+	echo '<A NAME="aliases"></A>';
+	if (lm2IsLeagueMod()) {
+		echo lm2_table_open("Aliases");
+?>
 	<TABLE BORDER='1' CELLPADDING='2' CELLSPACING='0'>
 	<TR><TH>Sims</TH><TH>Driving Names</TH><TH>Lobby Names</TH></TR>
 <?php
-	$query = $smcFunc['db_query'](null, "SELECT sim_name, driving_name, lobby_name
-		FROM {$GLOBALS['lm2_db_prefix']}sim_drivers
-		JOIN {$GLOBALS['lm2_db_prefix']}sims ON sim = id_sim
-		WHERE member = {int:driver}
-		", array('driver'=>$driver));
-	while ($row = $smcFunc['db_fetch_assoc']($query)) {
-		echo "<TR><TD>";
-		echo $row['sim_name'];
-		echo "</TD><TD>";
-		if ($name = $row['driving_name']) {
-			echo $name;
+		$query = $smcFunc['db_query'](null, "SELECT sim_name, driving_name, lobby_name
+			FROM {$GLOBALS['lm2_db_prefix']}sim_drivers
+			JOIN {$GLOBALS['lm2_db_prefix']}sims ON sim = id_sim
+			WHERE member = {int:driver}
+			", array('driver'=>$driver));
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
+			echo "<TR><TD>";
+			echo $row['sim_name'];
+			echo "</TD><TD>";
+			if ($name = $row['driving_name']) {
+				echo $name;
+			}
+			echo "</TD><TD>";
+			if ($name = $row['lobby_name']) {
+				echo $name;
+			}
+			echo "</TD></TR>\n";
 		}
-		echo "</TD><TD>";
-		if ($name = $row['lobby_name']) {
-			echo $name;
-		}
-		echo "</TD></TR>\n";
-	}
-	$smcFunc['db_free_result']($query);
+		$smcFunc['db_free_result']($query);
 ?>
 	</TABLE>
+<?php
+		echo lm2_table_close();
+	}
 <?php
 	echo lm2_table_close();
 
