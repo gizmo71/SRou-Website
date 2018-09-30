@@ -1278,8 +1278,15 @@ class EventEntries extends RefData {
 		<BR/><TT>qual_pos</TT>: <SMALL>classified qualifying results, normally generated from times;</SMALL>
 			<SMALL><TT>start_pos</TT>: actual grid position, in case it doesn't match qualifying</SMALL>
 		<BR/><I>Only the first 50 entries are displayed.</I>
-		</P>
 <?php
+		global $filterId;
+		if (substr($filterId, 0, 1) == 'e') {
+?>
+		<BR/>Reverse the top <INPUT NAME="reverseTop" VALUE="" SIZE=2 /> start positions
+			(hit Return or press Update after entering a number).
+<?php
+		}
+		echo "</P>\n";
 	}
 
 	function getFilters() {
@@ -1395,10 +1402,20 @@ class EventEntries extends RefData {
 	}
 
 	function rebuild() {
-		global $filterId;
-		if ($eventId = (substr($filterId, 0, 1) == 'e' ? substr($filterId, 1) : null)) {
+		global $filterId, $lm2_db_prefix;
+		if ($eventId = (substr($filterId, 0, 1) == 'e' ? (int) substr($filterId, 1) : null)) {
 			echo "</BR>Resetting positions...\n";
 			reset_unadjusted_positions($eventId);
+		}
+
+		$reverseTop = (int) $_REQUEST['reverseTop'];
+		if ($reverseTop && $eventId) {
+			echo "</BR>Reversing top {$reverseTop}...\n";
+			lm2_query("
+				UPDATE {$lm2_db_prefix}event_entries
+				SET start_pos = $reverseTop + 1 - start_pos
+				WHERE event = $eventId AND start_pos <= $reverseTop
+				", __FILE__, __LINE__);
 		}
 	}
 
