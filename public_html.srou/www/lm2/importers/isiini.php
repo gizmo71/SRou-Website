@@ -130,7 +130,7 @@ function parse_section_lines($lineText) {
 		if ($name == 'Lap') {
 			// Have to handle these specially because there's more than one of them.
 			(sscanf($value, "(%d, %g, %s)", $lapIndex, $offset, $lapTime) == 3) || die("$line_no: bad lap $value");
-				$lap = array(Lap=>$lapIndex, Time=>parseTime($lapTime, "reading individual Lap data"));
+				$lap = array('Lap'=>$lapIndex, 'Time'=>parseTime($lapTime, "reading individual Lap data"));
 			if ($bestLap == null || $bestLap['Time'] > $lap['Time']) {
 				$bestLap = $lap;
 			}
@@ -162,12 +162,12 @@ function parse_section_lines($lineText) {
 	}
 
 	if (array_key_exists('BestLap', $lines)) {
-		$gtrBestLap = array(Lap=>null, Time=>$lines['BestLap']);
+		$gtrBestLap = array('Lap'=>null, 'Time'=>$lines['BestLap']);
 	}
 
 	if (is_null($bestLap)) {
 		if (!is_null($gtrBestLap)) {
-			$bestLap = array(Lap=>null, Time=>$gtrBestLap);
+			$bestLap = array('Lap'=>null, 'Time'=>$gtrBestLap);
 		}
 	} else if (!is_null($gtrBestLap)) {
 		if ($gtrBestLap != $bestLap['Time']) {
