@@ -18,6 +18,7 @@ if (!is_null($id_race1 = lm2ArrayValue($_REQUEST, 'id_race1'))) {
 		SET r2.driver_type = r1.driver_type
 		WHERE r1.event = $id_race1 AND r2.event = $id_event AND r1.sim_driver = r2.sim_driver
 		", __FILE__, __LINE__);
+	echo "<P>Reverse the top <i>n</i> positions <a href='?action=refdata&refData=eve&rdFilt=e$id_event&sortOrder='>here</a>.</P>\n";
 } else if (is_null($id_event) || $id_event == "") {
 	show_event_selector();
 } else if (is_null($sim = lm2ArrayValue($_REQUEST, 'id_sim'))) {
