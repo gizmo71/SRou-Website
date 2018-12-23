@@ -1,4 +1,4 @@
-#!/bin/zsh -e
+#!/bin/zsh -ex
 
 #unsetopt NOMATCH
 
@@ -8,6 +8,6 @@ cat <<EOF | while read dir args; do
 public_html.srou --exclude=*/smf/Packages/backups --exclude=smf2*
 public_html.ukgpl
 EOF
-  rsync ${=COMMON_OPTS} ${=args} boxfish:${dir} $HOME/boxfish || exit 1
+  rsync ${=COMMON_OPTS} ${=args} gizmo71@boxfish.aquarium.davegymer.org:${dir} $HOME/boxfish || exit 1
   sleep 1
 done

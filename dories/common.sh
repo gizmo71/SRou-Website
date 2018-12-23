@@ -6,7 +6,7 @@ if [ ! -d .git ]; then
     exit 1
 fi
 
-eval $(grep -E 'SetEnv\s+SROU_' $(grep -l "SetEnv SROU_ROOT $(pwd)" /etc/httpd/conf.d/*.conf) |
+test ! -d /etc/httpd/conf.d || eval $(grep -E 'SetEnv\s+SROU_' $(grep -l "SetEnv SROU_ROOT $(pwd)" /etc/httpd/conf.d/*.conf) |
     sed -re 's/^\s+SetEnv\s+//' |
     while read name value; do echo $name=$value; done
 )
