@@ -15,7 +15,6 @@ date
 
 #cpg
 SHARED_OPTIONS="--user=$1 --password=$2"
-BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
 lm2 lm2_circuits= lm2_circuit_locations= lm2_championships= lm2_championship_points= lm2_events= lm2_event_entries=
 smf smf_messages=id_msg smf_topics= smf_personal_messages=id_pm smf_pm_recipients=
