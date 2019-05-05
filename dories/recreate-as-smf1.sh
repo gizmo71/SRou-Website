@@ -10,6 +10,7 @@ fi
 (
 	for db in smf lm2 ukgpl views; do
 		cat <<-EOF
+			PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 5 MINUTE);
 			DROP DATABASE IF EXISTS ${SROU_DB_PREFIX}$db;
 			CREATE DATABASE ${SROU_DB_PREFIX}$db DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 			GRANT ALL ON ${SROU_DB_PREFIX}$db.* TO '${SROU_DB_PREFIX}smf'@'%';
@@ -17,20 +18,25 @@ fi
 	done
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
-SSH_BOXFISH="ssh -l gizmo71 boxfish.aquarium.davegymer.org"
+SSH_DATADUMP="ssh -l gizmo plaice.aquarium.davegymer.org"
 for type in 0 1 2; do for db in smf lm2 ukgpl views; do
 	sleep 2 # Give replication a chance to work
-	sort =(${=SSH_BOXFISH} "ls -1 /var/backup/boxfish/boxfish_${db}_${type}_*.sql.gz") | while read sql; do
+	sort =(${=SSH_DATADUMP} "ls -1 /var/backup/mysql/boxfish/mysql/gizmo71_${db}-${type}_*.sql.gz") | while read sql; do
 		echo "** Processing $(basename $sql)..."
 		DB_HOST="--host ${SROU_DB_HOST}"
-		${=SSH_BOXFISH} "zcat $sql" </dev/null | sed --regexp-extended -e "s/gizmo71_(smf|lm2)/${SROU_DB_PREFIX}\1/g" \
+		${=SSH_DATADUMP} "zcat $sql" </dev/null | sed --regexp-extended -e "s/gizmo71_(smf|lm2)/${SROU_DB_PREFIX}\1/g" \
 			-e "s/(DEFAULT CHARSET=|CHARACTER SET )latin1([; ])/\1utf8\2/g" \
+	-e "s/XX(!50001 CREATE ALGORITHM=\S+\s+)/Ignore \1 - stupid bugs in dump and restore of views /g" \
+	-e "s/XX(!50013 DEFINER=\S+@\S+ SQL SECURITY INVOKER)/Ignore \1 - user isn't local /g" \
 			-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
 			-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
 			-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
 			-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g" |
-			mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${=DB_HOST} ${SROU_DB_PREFIX}${db}
-		echo "FLUSH LOGS;" | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
+			mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} ${SROU_DB_PREFIX}${db}
+		(
+			echo "FLUSH LOGS;"
+			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 1 MINUTE);"
+		) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
 	done
 done; done
 
