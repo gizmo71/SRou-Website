@@ -15,10 +15,9 @@ date
 
 #cpg
 SHARED_OPTIONS="--user=$1 --password=$2"
-BIG_SMF_TABLES="messages topics personal_messages pm_recipients"
 cat <<EOF | while read db big_tables
 lm2 lm2_circuits= lm2_circuit_locations= lm2_championships= lm2_championship_points= lm2_events= lm2_event_entries=
-smf smf_messages=id_msg smf_topics= smf_personal_messages= smf_pm_recipients=
+smf smf_messages=id_msg smf_topics= smf_personal_messages=id_pm smf_pm_recipients=
 ukgpl _map_drivers= _map_teams=
 views
 EOF
@@ -39,7 +38,7 @@ do
 			if [ -z "$chunk_key" ]; then
 				mysqldump --no-create_info --complete_insert --opt --disable-keys $SHARED_OPTIONS gizmo71_${db} ${table} | gzip -9v >boxfish_${db}_2_${table}_data.sql.gz
 			else
-				chunk_size=20000
+				chunk_size=10000
 				absolute_max_id=2000000
 				max_id=${chunk_size}
 				while [ $max_id -le $absolute_max_id ]; do
