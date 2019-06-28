@@ -51,7 +51,7 @@ function processJson($filename, $isRace, &$cars) {
 		$slot = array(
 			'#'=>$leaderBoardLine['car']['raceNumber'],
 			'Team'=>$leaderBoardLine['car']['teamName'],
-			'VehicleNumber'=>$leaderBoardLine['car']['carId'],
+			//'VehicleNumber'=>$leaderBoardLine['car']['carId'],
 			'VehicleFile'=>$leaderBoardLine['car']['carModel'],
 			'VehicleType'=>$leaderBoardLine['car']['cupCategory'],
 			// Unused: Vehicle, UpgradeCode
