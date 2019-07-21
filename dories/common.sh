@@ -15,4 +15,4 @@ fi
 
 SMF_LOGIN="--user=${SROU_DB_PREFIX}smf --password=$(cat cfg/smf-db.password)"
 MIGRATE_LOGIN="--user=root --password=${MYSQL_ROOT_PASSWORD}"
-SHARED_OPTIONS="--host=${SROU_DB_HOST} --batch"
+SHARED_OPTIONS="--host=${SROU_DB_HOST} --batch -v"
