@@ -19,7 +19,7 @@ fi
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
 SSH_DATADUMP="ssh -l gizmo plaice.aquarium.davegymer.org"
-for type in 0 1 2; do for db in smf lm2 ukgpl views; do
+for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
 	sleep 2 # Give replication a chance to work
 	sort =(${=SSH_DATADUMP} "ls -1 /var/backup/mysql/boxfish/mysql/gizmo71_${db}-${type}_*.sql.gz") | while read sql; do
 		echo "** Processing $(basename $sql)..."
