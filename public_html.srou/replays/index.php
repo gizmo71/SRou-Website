@@ -96,8 +96,9 @@ foreach ($list AS $file) {
 		"    <TD ALIGN=LEFT><TT>$filename</TT></TD>\n",
 		"    <TD ALIGN=RIGHT>{$file['size']}</TD>\n",
 		"    <TD ALIGN=RIGHT>{$file['date']}</TD>\n",
-		"    <TD ALIGN=RIGHT>", $file['explode'] ?
-			"<A HREF=\"{$file['explode']}\">Examine contents</A>" : "", "</TD>\n",
+//TODO: how do we make this work in the split HTTPD/FPM-PHP world? Rewrite in pure PHP?
+//		"    <TD ALIGN=RIGHT>", $file['explode'] ?
+//			"<A HREF=\"{$file['explode']}\">Examine contents</A>" : "", "</TD>\n",
 		"  </TR>\n";
 	$explodeUrl = "https://{$_SERVER['SROU_HOST_REPLAY']}/cgi-bin/explode.cgi?zip=$dir/{$file['url']}";
 	if ($isExploded && ($ph = fopen($explodeUrl, "r"))) {
