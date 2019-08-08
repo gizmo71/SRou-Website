@@ -36,18 +36,11 @@ for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
 	done
 done; done
 
+if [ ${SROU_HOST_WWW} = wwwqa.simracing.org.uk ]; then
 (
-# Don't need this post-Boxfish.
-#	mysqlshow ${=SHARED_OPTIONS/--batch/} ${=SMF_LOGIN} gizmo71_smf "mkp*" | grep mkp_ | cut -d' ' -f2 | grep -v mkp_pages | while read mkp; do
-#		echo "DROP TABLE $mkp;"
-#	done
-# Don't need this on Docker do we?
-#	ROOT_PATH_RE='^/.*(/public_html\.(?:srou|ukgpl).*)$'
-#	for table in settings themes; do
-#		echo -E "UPDATE smf_$table SET value = REGEXP_REPLACE(value, '$ROOT_PATH_RE', '${SROU_ROOT}\\\\1') WHERE value REGEXP '$ROOT_PATH_RE';"
-#	done
-#TODO: only do these for QA, or find a better way to distinguish it from Prod.
-#	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
-#	echo "UPDATE smf_members SET realName = REPLACE(REVERSE(realName), ';930#&', '&#039;'), hideEmail = 0, emailAddress =
-#		CASE id_member WHEN 2 THEN 'micra.geo@yahoo.com' WHEN 3 THEN 'dgymer23@ford.com' ELSE 'smf2test@simracing.org.uk' END;"
+	echo "UPDATE smf_settings SET value = '1' WHERE smf_settings.variable = 'enableErrorLogging';"
+	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
+	echo "UPDATE smf_members SET realName = REPLACE(REVERSE(realName), ';930#&', '&#039;'), hideEmail = 0, emailAddress =
+		CASE id_member WHEN 2 THEN 'micra.geo@yahoo.com' WHEN 3 THEN 'dgymer23@ford.com' ELSE 'smf2test@simracing.org.uk' END;"
 ) | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} gizmo71_smf
+fi
