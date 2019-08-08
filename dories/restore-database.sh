@@ -11,6 +11,7 @@
 			GRANT ALL ON gizmo71_$db.* TO 'gizmo71_smf'@'%';
 		EOF
 	done
+	# Really, we should ensure no single table dump is too big for a single packet. But just in case...
     echo 'set global max_allowed_packet = 154857600;'
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
