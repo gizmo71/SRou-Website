@@ -102,4 +102,7 @@ $image_proxy_enabled = 1;
 # Note: You shouldn't touch these settings.
 $db_last_error = 1296596322;
 
+$cache_accelerator = '';
+$cache_enable = 0;
+$cache_memcached = '';
 ?>
