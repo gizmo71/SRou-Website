@@ -1,5 +1,6 @@
 set -e
 set -x
+setopt pipefail
 
 cd $(dirname $0)/..
 if [ ! -d .git ]; then
