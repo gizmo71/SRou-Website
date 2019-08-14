@@ -435,9 +435,9 @@ function template_group() {
 		echo lm2_table_open($block_title) . $context['lm2']['group']['block_text'] . lm2_table_close();
 	} else if ($pid = $context['lm2']['group']['pid']) {
 		$query = $smcFunc['db_query'](null, "SELECT title, content FROM mkp_pages WHERE id = {string:pid}", array('pid'=>$pid));
-		($row = $smcFunc['dbl_fetch_assoc']($query)) || die("can't find page $pid for group $group");
+		($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find page $pid for group $group");
 		echo lm2_table_open(stripslashes($row['title'])) . stripslashes($row['content']) . lm2_table_close();
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 	}
 
 	if ($topic = $context['lm2']['group']['reg_topic']) {
