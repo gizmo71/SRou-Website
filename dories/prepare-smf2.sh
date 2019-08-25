@@ -27,35 +27,17 @@ EOF
 
 cd public_html.srou/www
 
-mkdir smf.keep
-mv -v smf/{Settings.php,avatars,attachments,Smileys} smf.keep/
-rm -rf smf
-mv -v smf.keep smf
-git checkout -- smf
-
 cd smf
-(cd $HOME/SMF2.1 && tar  --exclude=.git\* -c -f - .) | tar xvf -
 
+wget -O - https://download.simplemachines.org/index.php/smf_2-1-rc2_upgrade.tar.bz2 | bzip2 -d | tar xvf -
+
+rm -rf Packages
+mkdir Packages
 touch Packages/installed.list
 cp -v ~/smf-mods/srou-smf-*.zip Packages/
 
 touch db_last_error.php
 
-cd other
-
-# "IGNORE" was Removed from ALTER TABLE in MySQL 5.7.x. :-(
-sed -i -e 's/ALTER IGNORE TABLE/ALTER TABLE/' upgrade*.sql
-# ... and this...
-#sed -i -e 's/\(nextSubStep(\$substep);\)///\1/' upgrade.php
-# No way to set this from the command line
-#sed -i -e 's/\(initialize_inputs();\)/$GLOBALS["db_type"] = "mysqli"; \1/' upgrade.php
-#emacs upgrade_2-0_mysql.sql upgrade.php
-
-rm -v *postgres*.sql
-mv -v upgrade* ..
-
-cd ..
-rm -rf other
 chmod 0755 .
 
 git checkout smf2
