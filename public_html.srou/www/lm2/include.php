@@ -101,7 +101,7 @@ function reset_unadjusted_positions($id_event) {
 			AND IFNULL(victim_report, 'Y') = 'Y'
 		), 0)
 		WHERE " . (is_null($id_event) ? "NOT is_protected_c AND event_status NOT IN ('H', 'U')" : "id_event = $id_event") . "
-		", __FILE__, __LINE__); 
+		", __FILE__, __LINE__);
 
 	// Finally, reorder the race results.
 	$temp_db_prefix = "{$lm2_db_prefix}TEMP_";
