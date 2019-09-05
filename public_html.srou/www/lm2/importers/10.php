@@ -21,33 +21,44 @@ function doImportJson($qFilename, $rFilename) {
 
 	processJson($rFilename, true, $cars);
 	if ($qFilename) processJson($qFilename, false, $cars);
+	addCircutLayout();
+}
 
-	// ACC inexplicably has no location information in the export!
+// Unknown whether ACC provides sufficient granularity in the location names to distinguish different layouts.
+function addCircutLayout() {
+	$foundRow = null;
 	global $current_circuit, $lm2_db_prefix, $location;
 	$query = db_query("
-		SELECT CONCAT((SELECT brief_name FROM {$lm2_db_prefix}circuit_locations WHERE id_circuit_location = circuit_location)
-		              , CONCAT(' (', layout_name, ')')) AS location
+		SELECT layout_name
 		FROM {$lm2_db_prefix}circuits
 		WHERE id_circuit = (SELECT circuit FROM {$lm2_db_prefix}sim_circuits WHERE id_sim_circuit = {$current_circuit['id_sim_circuit']})
 		", __FILE__, __LINE__);
 	while ($row = mysql_fetch_assoc($query)) {
-		is_null($location) || die("multiple matches for sim circuit {$current_circuit['id_sim_circuit']}");
-		$location = $row['location'];
+		is_null($foundRow) || die("multiple matches for sim circuit {$current_circuit['id_sim_circuit']}");
+		$foundRow = $row;
 	}
 	mysql_free_result($query);
+
+	if ($foundRow['layout_name']) $location .= "/{$foundRow['layout_name']}";
+}
+
+function asSeconds($milliseconds) {
+	return $milliseconds == '2147483647' ? null : bcdiv($milliseconds, 1000, 3);
 }
 
 function processJson($filename, $isRace, &$cars) {
-	global $entries, $modReport;
+	global $entries, $modReport, $location;
 
 	$contents = file_get_contents($filename);
 	$contents = mb_convert_encoding($contents, "UTF-8", "UTF-16LE"); //UCS-2LE
 	($json = json_decode($contents, true)) || die("Couldn't convert to JSON because " . json_last_error() . ": $contents");
 
-	($json['type'] == ($isRace ? 1 : 0)) || die("Type '{$json['type']}' doesn't match isRace $isRace");
+	($json['sessionType'] == ($isRace ? 'R' : 'Q')) || die("Type '{$json['sessionType']}' doesn't match isRace $isRace");
+
+	if ($isRace) $location = $json['trackName'];
 
 	$simPos = 0;
-	foreach ($json['leaderBoardLines'] as $leaderBoardLine) {
+	foreach ($json['sessionResult']['leaderBoardLines'] as $leaderBoardLine) {
 		$slot = array(
 			'#'=>$leaderBoardLine['car']['raceNumber'],
 			'Team'=>$leaderBoardLine['car']['teamName'],
@@ -62,8 +73,8 @@ function processJson($filename, $isRace, &$cars) {
 
 		if ($isRace) {
 			$entry['raceLaps'] = $leaderBoardLine['timing']['lapCount'];
-			//$entry['raceTime'] = bcdiv($leaderBoardLine['timing']['totalTime'], 1000, 3);
-			$entry['raceBestLapTime'] = bcdiv($leaderBoardLine['timing']['bestLap'], 1000, 3);
+			$entry['raceTime'] = asSeconds($leaderBoardLine['timing']['totalTime']);
+			$entry['raceBestLapTime'] = asSeconds($leaderBoardLine['timing']['bestLap']);
 			//$entry['raceBestLapNo'] = ;
 			//$entry['Pitstops'] = ;
 			//$entry['LapsLed'] = ;
@@ -71,7 +82,7 @@ function processJson($filename, $isRace, &$cars) {
 			$entry['RacePos'] = ++$simPos;
 		} else {
 			$entry['qualLaps'] = $leaderBoardLine['timing']['lapCount'];
-			$entry['qualBestLapTime'] = bcdiv($leaderBoardLine['timing']['bestLap'], 1000, 3);
+			$entry['qualBestLapTime'] = asSeconds($leaderBoardLine['timing']['bestLap']);
 			//$entry['qualBestLapNo'] = ;
 			$entry['GridPos'] = ++$simPos;
 		}
