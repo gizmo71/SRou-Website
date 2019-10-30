@@ -108,7 +108,10 @@ function reset_unadjusted_positions($id_event) {
 	lm2_query("SET @pos = -1", __FILE__, __LINE__);
 	lm2_query("SET @race = -1", __FILE__, __LINE__);
 	$live = "(NOT is_protected_c AND event NOT IN (SELECT id_event FROM {$lm2_db_prefix}events WHERE event_status = 'H'))";
-	lm2_query("CREATE TEMPORARY TABLE {$temp_db_prefix}p2 (INDEX (race2)) AS SELECT event AS race2, race_pos_sim AS sim_pos2 FROM {$lm2_db_prefix}event_entries WHERE race_pos_sim IS NOT NULL AND $live", __FILE__, __LINE__);
+	lm2_query("CREATE TEMPORARY TABLE {$temp_db_prefix}p2 (INDEX (race2)) AS
+		SELECT event AS race2, race_pos_sim AS sim_pos2
+		FROM {$lm2_db_prefix}event_entries WHERE race_pos_sim IS NOT NULL AND $live
+		", __FILE__, __LINE__);
 	//TODO: consider if it should be 'race_laps IS NULL' for standing starts, and how to do '50% of winners distance' type things.
 	$unclassified = "(excluded_c = 'Y' OR (race_time_adjusted IS NULL AND (IFNULL(race_laps, 0) = 0)) AND race_pos_sim IS NULL)";
 	lm2_query("

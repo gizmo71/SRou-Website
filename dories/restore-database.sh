@@ -2,8 +2,13 @@
 
 . ./common.sh
 
+CREATE_DBS="smf lm2 ukgpl views"
+if [ ${SROU_HOST_WWW} = wwwqa.simracing.org.uk ]; then
+	CREATE_DBS="$CREATE_DBS regr"
+fi
+
 (
-	for db in smf lm2 ukgpl views; do
+	for db in ${=CREATE_DBS}; do
 		cat <<-EOF
 			PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 5 MINUTE);
 			DROP DATABASE IF EXISTS gizmo71_$db;
@@ -42,5 +47,9 @@ if [ ${SROU_HOST_WWW} = wwwqa.simracing.org.uk ]; then
 	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
 	echo "UPDATE smf_members SET realName = REPLACE(REVERSE(realName), ';930#&', '&#039;'), hideEmail = 0, emailAddress =
 		CASE id_member WHEN 2 THEN 'micra.geo@yahoo.com' WHEN 3 THEN 'dgymer23@ford.com' ELSE 'smf2test@simracing.org.uk' END;"
+	for table in championship_points event_points event_groups event_group_tree events event_entries championships penalties; do
+		echo "CREATE TABLE gizmo71_regr.lm2_${table} LIKE gizmo71_lm2.lm2_${table};"
+		echo "INSERT gizmo71_regr.lm2_${table} SELECT * FROM gizmo71_lm2.lm2_${table};"
+	done
 ) | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} gizmo71_smf
 fi

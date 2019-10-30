@@ -1,33 +1,33 @@
 <?php
 
-//TODO: get rid of everything which isn't directly points-related when regression testing.
 // The stuff which is removed should run automatically when importing/moderating/adjusting results as appropriate.
 
 class StandingsGenerator {
 	var $lm2_db_prefix;
 	var $temp_db_prefix;
 	var $champ_id_clause;
-	var $regression_test;
 
-	var $regression_tables = array(
-		"championship_points"=>array(
-			'keys'=>array("championship", "id"),
-			'data'=>array("points", "position", "champ_points_lost"),
-			'debug'=>array("tie_breaker", "tokens", "single_car")
+	var $tables = array(
+		"event_points" => array(
+			'keys' => array("championship", "id", "event_entry"),
+			'data' => array("points", "position", "is_dropped", "ep_penalty_points"),
+			'debug' => array(),
+			'temp_fields' => array('champ_points_lost' => 'DECIMAL(6,1)', 'tokens' => 'DECIMAL(4,1)')
 		),
-		"event_points"=>array(
-			'keys'=>array("championship", "id", "event_entry"),
-			'data'=>array("points", "position", "is_dropped", "ep_penalty_points"),
-			'debug'=>array()
+		"championship_points"=>array(
+			'keys' => array("championship", "id"),
+			'data' => array("points", "position", "champ_points_lost"),
+			'debug' => array("tie_breaker", "tokens", "single_car"),
+			'temp_fields' => array()
 		),
 	);
 
 	var $ukgpls18tokensPredicate = "max_tokens < 0";
 
-	function StandingsGenerator($lm2_db_prefix, $regression_test) {
-		$this->lm2_db_prefix = $lm2_db_prefix;
-		$this->regression_test = $regression_test;
+	function StandingsGenerator() {
+		global $lm2_db_prefix;
 
+		$this->lm2_db_prefix = $lm2_db_prefix;
 		$this->temp_db_prefix = "{$this->lm2_db_prefix}TEMP_";
 		$this->champ_id_clause = "CASE champ_type WHEN 'T' THEN {$this->lm2_db_prefix}event_entries.team WHEN 'M' THEN manuf ELSE member END";
 	}
@@ -37,68 +37,33 @@ class StandingsGenerator {
 
 		$start = microtime_float();
 		
-		if ($this->regression_test) {
-			echo "<P>Performing regression test...</P>\n";
-		}
+		echo "<P>Making temporary points tables...";
 
-		echo "<P>Working out round numbers...</P>\n";
-
-		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}rounds
-			(INDEX (round_event, round_championship))
-			AS SELECT id_championship AS round_championship
-			, id_event AS round_event
-			, event_date
-			, -1 AS round_no" . /* Rounds are numbered from 1 as the most recent to n as the first. */ "
-			, entries_c AS entries
-			FROM {$this->lm2_db_prefix}events
-			, {$this->lm2_db_prefix}championships" . /* Join with only those which need doing... */ "
-			, {$this->lm2_db_prefix}event_group_tree
-			, {$this->lm2_db_prefix}event_entries
-			WHERE entries_c > 0
-			" . ($this->regression_test ? "" : " AND NOT is_protected_c") . "
-			AND rounds IS NOT NULL
-			AND event_type = 'C'
-			AND event = id_event
-			AND {$this->lm2_db_prefix}championships.event_group = {$this->lm2_db_prefix}event_group_tree.container
-			AND {$this->lm2_db_prefix}event_group_tree.contained = {$this->lm2_db_prefix}events.event_group
-			GROUP BY id_championship, id_event
-			", __FILE__, __LINE__);
-
-		lm2_query("SET @round = -1", __FILE__, __LINE__);
-		lm2_query("SET @champ = -1", __FILE__, __LINE__);
-		lm2_query("UPDATE {$this->temp_db_prefix}rounds"
-			. " SET round_no = (@round := IF(@champ = round_championship, @round + 1,"
-			. " ((@champ := round_championship)) * 0 + 1))"
-			. " ORDER BY round_championship, event_date DESC, round_event"
-			, __FILE__, __LINE__);
-
-		if (!$this->regression_test) {
-			$this->update_drivers_and_teams();
-			$this->update_penalty_points();
-
-			echo "<P>Generating positions...</P>\n";
-
-			$this->update_cached_exclusion_flags();
-		}
-		$this->ukgplS18tokens($this->regression_test);
-		if (!$this->regression_test) {
-			reset_unadjusted_positions(null);
-			$this->set_positions_lost();
-			$this->set_class_positions(); //XXX: drag this into the regression test...
-		}
-
-		// At this point, we've finished doing updates the events and entries and are ready to start on the points.
-
-		echo "<P>Making temporary points tables...</P>\n";
-
-		foreach ($this->regression_tables as $table => $fields) {
+		foreach ($this->tables as $table => $fields) {
 			lm2_query("
 				CREATE TEMPORARY TABLE {$this->temp_db_prefix}$table
 				LIKE {$this->lm2_db_prefix}$table
 				" , __FILE__, __LINE__);
+			foreach ($fields['temp_fields'] as $name => $type) {
+				lm2_query("ALTER TABLE {$this->temp_db_prefix}$table ADD ($name $type)", __FILE__, __LINE__);
+			}
+//XXX: do we need to drop any unwanted indexes?
 		}
-		db_query("ALTER TABLE {$this->temp_db_prefix}event_points ADD (champ_points_lost DECIMAL(6,1), tokens DECIMAL(4,1))" , __FILE__, __LINE__);
-		//XXX: do we need to drop any unwanted indexes?
+
+		$this->update_drivers_and_teams();
+		$this->update_penalty_points();
+
+		echo "<P>Generating positions...</P>\n";
+
+		$this->update_cached_exclusion_flags();
+		$this->ukgplS18tokens();
+		reset_unadjusted_positions(null);
+		$this->set_positions_lost();
+		$this->set_class_positions();
+
+		$this->calculate_round_numbers();
+
+		// At this point, we've finished doing updates the events and entries and are ready to start on the points.
 
 		echo "<P>Preparing skeleton positions rows...";
 
@@ -114,6 +79,7 @@ class StandingsGenerator {
 			, event
 			, id_championship AS championship
 			, max_rank
+"/*TODO: do we need to do the 'H' thing here? Do any H races /have/ pos penalties? */."
 			, IFNULL(IF(event_status <> 'H', race_pos_penalty, NULL), 0) + race_pos AS adjusted_race_pos
 			, race_pos AS position
 			, IFNULL(rating, 100.0) AS rating
@@ -123,13 +89,13 @@ class StandingsGenerator {
 			, free_car_changes
 			, {$this->lm2_db_prefix}events.event_date AS event_date
 			, ballast_driver
-			, 'fuck off you ugly fat pig of a FIXME' AS fat_bastard
+			, 'you ugly fat pig of a FIXME' AS fat_bastard
 			, retirement_reason = -2 AS disco
 			, IF(penalty_group_mode <> 'S', (SELECT SUM($lm2_penalty_points_clause) FROM {$this->lm2_db_prefix}penalties WHERE event_entry = id_event_entry), NULL) AS entry_penalty_points
 			, (SELECT SUM(points_lost) FROM {$this->lm2_db_prefix}penalties WHERE event_entry = id_event_entry AND IFNULL(penalty_champ_type, champ_type) = champ_type) AS champ_points_lost
 			, minimum_distance
 			FROM {$this->lm2_db_prefix}event_entries
-			JOIN {$this->lm2_db_prefix}events ON event = id_event AND event_type = 'C'
+			JOIN {$this->lm2_db_prefix}events ON event = id_event AND event_type = 'C' AND NOT is_protected_c AND event_status <> 'H'
 			JOIN {$this->lm2_db_prefix}event_group_tree ON {$this->lm2_db_prefix}event_group_tree.contained = {$this->lm2_db_prefix}events.event_group
 			JOIN {$this->lm2_db_prefix}championships ON {$this->lm2_db_prefix}championships.event_group = {$this->lm2_db_prefix}event_group_tree.container
 			JOIN {$this->lm2_db_prefix}event_groups ON {$this->lm2_db_prefix}championships.event_group = id_event_group
@@ -144,13 +110,13 @@ class StandingsGenerator {
 			AND {$this->champ_id_clause} IS NOT NULL
 			AND car_class_c REGEXP CONCAT('^(',{$this->lm2_db_prefix}championships.class,')\$')
 			AND IFNULL(reg_class,'') REGEXP CONCAT('^(',IFNULL(reg_class_regexp,''),')\$')
-			" . ($this->regression_test ? "" : " AND NOT is_protected_c") . "
 			", __FILE__, __LINE__);
 
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}rounds", __FILE__, __LINE__);
 
 		echo " lap minima...";
 
+//TODO: not for historic stuff?
 		lm2_query("
 			CREATE TEMPORARY TABLE {$this->temp_db_prefix}minlaps
 			(INDEX (championship, event))
@@ -209,15 +175,15 @@ class StandingsGenerator {
 		lm2_query("SET @id = -1", __FILE__, __LINE__);
 		lm2_query("SET @champ = -1", __FILE__, __LINE__);
 		lm2_query("SET @changes = 999", __FILE__, __LINE__);
-		lm2_query("UPDATE {$this->temp_db_prefix}positions"
-			. (" SET fat_bastard = CONCAT('@id=', @id, ', @champ=', @champ, ', @car=', @car, ', @free=', @changes)"
-				. ", penalty = IF(@champ <> championship OR @id <> id,"
-				. " NULL * (@champ := championship) * (@id := id) * (@changes := IFNULL(free_car_changes, 999)),"
-				. " IF(@car <> car, IF(@changes > 0, NULL * (@changes := @changes - 1), penalty), NULL)"
-				. ") + 0 * (@car := car)")
-			. " WHERE penalty IS NOT NULL"
-			. " ORDER BY championship, id, id_event_entry, event_date"
-			, __FILE__, __LINE__);
+		lm2_query("UPDATE {$this->temp_db_prefix}positions
+			SET fat_bastard = CONCAT('@id=', @id, ', @champ=', @champ, ', @car=', @car, ', @free=', @changes)
+			, penalty = IF(@champ <> championship OR @id <> id
+				     , NULL * (@champ := championship) * (@id := id) * (@changes := IFNULL(free_car_changes, 999))
+				     , IF(@car <> car, IF(@changes > 0, NULL * (@changes := @changes - 1), penalty), NULL)
+				) + 0 * (@car := car)
+			WHERE penalty IS NOT NULL
+			ORDER BY championship, id, id_event_entry, event_date
+			", __FILE__, __LINE__);
 
 		echo " slaves...";
 
@@ -280,6 +246,7 @@ class StandingsGenerator {
 		lm2_query("SET @ratingsum = -1.0", __FILE__, __LINE__);
 		lm2_query("SET @finisherssum = -1", __FILE__, __LINE__);
 		$STARTED = "race_laps IS NOT NULL";
+		$FUDGE_FACTOR = "1";
 		$RACE_ENTRANT_POINTS = "(@finisherssum := IF(@event = {$this->temp_db_prefix}positions.event AND @champ = championship, @finisherssum + 1, 1 + 0 * ((@event := {$this->temp_db_prefix}positions.event) + (@champ := championship) + (@ratingsum := 0.0))))";
 		lm2_query("
 			INSERT INTO {$this->temp_db_prefix}event_points
@@ -287,11 +254,12 @@ class StandingsGenerator {
 			SELECT championship
 			, {$this->temp_db_prefix}positions.id_event_entry
 			, position
-			" . (", CEILING(IF($STARTED,"
-				. " 0 * ($RACE_ENTRANT_POINTS) + IF(position IS NULL,"
-					. " IF(excluded_c, NULL, 1),"
-					. " @finisherssum + (1 * (@ratingsum / rating)) + 0 * (@ratingsum := @ratingsum + rating))," // "1 *" is fudge factor
-				. " NULL) * IFNULL(1.0 - penalty, 1.0))") . "
+			, CEILING(IF($STARTED
+			           , 0 * ($RACE_ENTRANT_POINTS) + IF(position IS NULL
+			                                           , IF(excluded_c, NULL, 1)
+			                                           , @finisherssum + ($FUDGE_FACTOR * (@ratingsum / rating)) + 0 * (@ratingsum := @ratingsum + rating)
+			                                          )
+			           , NULL) * IFNULL(1.0 - penalty, 1.0))
 			, id
 			, is_protected_c
 			, entry_penalty_points
@@ -496,18 +464,19 @@ class StandingsGenerator {
 		echo " done</P>\n";
 
 		/*FIXME: add in drivers who haven't raced. Preferably above with a LEFT JOIN...
-		  Perhaps even add in from the appropriate member group(s) with reserve status; might eliminate the need for a driver list. */
+		  Perhaps even add in from the appropriate member group(s) with reserve status; might eliminate the need for a driver list,
+		  though it would prevent the groups from ever being cleaned up. */
 
 		echo "<P>Updating event points cache...</P>\n";
 
 		//TODO: rewrite to use a subquery.
-		//TODO: don't do protected events (unless regression testing).
+		//TODO: don't do protected events.
 		//XXX: consider doing this after everything else rather than in here. What exactly do we use this field for?
 		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}event_points2"
 			. " (UNIQUE (event))"
 			. " AS SELECT id_event AS event, IFNULL(COUNT(id), 0) > 0 AS points"
 			. " FROM {$this->lm2_db_prefix}events"
-			. " LEFT JOIN {$this->lm2_db_prefix}event_entries ON id_event = event"
+			. " LEFT JOIN {$this->lm2_db_prefix}event_entries ON id_event = event" //TODO: do we need to join this table?
 			. " LEFT JOIN {$this->temp_db_prefix}event_points ON id_event_entry = event_entry"
 			. " GROUP BY id_event",
 			__FILE__, __LINE__);
@@ -516,48 +485,66 @@ class StandingsGenerator {
 			JOIN {$this->temp_db_prefix}event_points2 ON id_event = event
 			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
 			SET points_c = points
-			" . ($this->regression_test ? "" : " WHERE NOT is_protected") . "
+			WHERE NOT is_protected
 			", __FILE__, __LINE__);
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}event_points2", __FILE__, __LINE__);
 
 		// Okay, done the main thing, but not yet copied data back.
 
-		if ($this->regression_test) {
-			// Relink anything which is new.
-//			lm2_query("
-//				UPDATE {$this->lm2_db_prefix}championship_points AS rcp
-//				JOIN {$this->temp_db_prefix}championship_points AS tcp USING (championship, id)
-//				SET rcp.single_car = tcp.single_car
-//				WHERE rcp.is_protected_c
-//				", __FILE__, __LINE__);
-
-			$this->perform_regression_tests();
-		} else {
-			//XXX: drive this off regression table list... ????
-
-			// Not needed now and don't match the live table.
-			db_query("ALTER TABLE {$this->temp_db_prefix}event_points DROP champ_points_lost, DROP tokens" , __FILE__, __LINE__);
+		foreach ($this->tables as $table => $fields) {
+			foreach ($fields['temp_fields'] as $name => $type) {
+				db_query("ALTER TABLE {$this->temp_db_prefix}${table} DROP {$name}" , __FILE__, __LINE__);
+			}
 			
-			lm2_query("DELETE FROM {$this->lm2_db_prefix}championship_points WHERE NOT is_protected_c", __FILE__, __LINE__);
-			lm2_query("INSERT INTO {$this->lm2_db_prefix}championship_points
-				SELECT * FROM {$this->temp_db_prefix}championship_points", __FILE__, __LINE__);
-
-			lm2_query("DELETE FROM {$this->lm2_db_prefix}event_points WHERE NOT is_protected_c", __FILE__, __LINE__);
-			lm2_query("INSERT INTO {$this->lm2_db_prefix}event_points
-				SELECT * FROM {$this->temp_db_prefix}event_points", __FILE__, __LINE__);
-
-			echo "<P>Updating lap records...</P>\n";
-
-			// Finally, update the lap records.
-			lm2_query("DELETE FROM {$this->lm2_db_prefix}lap_records", __FILE__, __LINE__);
-			$this->make_lap_records('race_best_lap_time', 'R');
-			$this->make_lap_records('qual_best_lap_time', 'Q');
+			lm2_query("DELETE FROM {$this->lm2_db_prefix}{$table} WHERE NOT is_protected_c", __FILE__, __LINE__);
+			lm2_query("INSERT INTO {$this->lm2_db_prefix}{$table}
+				SELECT * FROM {$this->temp_db_prefix}{$table}", __FILE__, __LINE__);
 		}
+
+		echo "<P>Updating lap records...</P>\n";
+
+		// Finally, update the lap records.
+		lm2_query("DELETE FROM {$this->lm2_db_prefix}lap_records", __FILE__, __LINE__);
+		$this->make_lap_records('race_best_lap_time', 'R');
+		$this->make_lap_records('qual_best_lap_time', 'Q');
 
 		$end = microtime_float();
 		if (($ms = ($end - $start) * 1000.0) >= 1) {
 			printf("<P>Standings generation complete. Took %dms.</P>\n", $ms);
 		}
+	}
+
+	function calculate_round_numbers() {
+		echo "</P>\n<P>Working out round numbers...</P>\n";
+
+		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}rounds
+			(INDEX (round_event, round_championship))
+			AS SELECT id_championship AS round_championship
+			, id_event AS round_event
+			, event_date
+			, -1 AS round_no" . /* Rounds are numbered from 1 as the most recent to n as the first. */ "
+			, entries_c AS entries
+			FROM {$this->lm2_db_prefix}events
+			, {$this->lm2_db_prefix}championships" . /* Join with only those which need doing... */ "
+			, {$this->lm2_db_prefix}event_group_tree
+			, {$this->lm2_db_prefix}event_entries
+			WHERE entries_c > 0
+			AND NOT is_protected_c
+			AND rounds IS NOT NULL
+			AND event_type = 'C'
+			AND event = id_event
+			AND {$this->lm2_db_prefix}championships.event_group = {$this->lm2_db_prefix}event_group_tree.container
+			AND {$this->lm2_db_prefix}event_group_tree.contained = {$this->lm2_db_prefix}events.event_group
+			GROUP BY id_championship, id_event
+			", __FILE__, __LINE__);
+
+		lm2_query("SET @round = -1", __FILE__, __LINE__);
+		lm2_query("SET @champ = -1", __FILE__, __LINE__);
+		lm2_query("UPDATE {$this->temp_db_prefix}rounds"
+			. " SET round_no = (@round := IF(@champ = round_championship, @round + 1,"
+			. " ((@champ := round_championship)) * 0 + 1))"
+			. " ORDER BY round_championship, event_date DESC, round_event"
+			, __FILE__, __LINE__);
 	}
 
 	function show_unbroken_ties() {
@@ -576,104 +563,10 @@ class StandingsGenerator {
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}champ_ties", __FILE__, __LINE__);
 	}
 
-	function perform_regression_tests() {
-/*
-		echo "<P STYLE='color: blue'>Hacking data:";
-		db_query("DELETE FROM {$this->temp_db_prefix}championship_points"
-		. " WHERE id = 1"
-		, __FILE__, __LINE__);
-		echo " " . db_affected_rows();
-		db_query("INSERT INTO {$this->temp_db_prefix}championship_points"
-		. " (championship, id, points, position)"
-		. " VALUES (666, 666, 42, 69)"
-		. ", (10, 1, 13, 7)"
-		. ", (39, 1, 175, 180)"
-		. ", (48, 1, 1234, 1)"
-		, __FILE__, __LINE__);
-		echo " " . db_affected_rows();
-		db_query("DELETE FROM {$this->temp_db_prefix}event_points"
-		. " WHERE id = 1 AND championship = 38"
-		, __FILE__, __LINE__);
-		echo " " . db_affected_rows();
-		echo "</P>\n";
-*/
-
-		echo "<P>Comparing regression test data...</P>\n";
-
-		$unmatched = 0;
-		$maxShown = 10;
-
-		foreach ($this->regression_tables as $table => $fields) {
-			$field_list = "";
-			$sep = "";
-			foreach (array_merge($fields['keys']) AS $field) {
-				$field_list .= "$sep a.$field";
-				$sep = ",";
-			}
-			foreach (array_merge($fields['data'], $fields['debug']) AS $field) {
-				$field_list .= "$sep o.$field AS {$field}_OLD";
-				$sep = ",";
-				$field_list .= "$sep r.$field AS {$field}_NEW";
-			}
-
-			db_query("
-				CREATE TEMPORARY TABLE {$this->temp_db_prefix}all_entries
-				(INDEX (" . implode(", ", $fields['keys']) . "))
-				SELECT DISTINCT " . implode(", ", $fields['keys']) . " FROM {$this->temp_db_prefix}$table
-				UNION DISTINCT
-				SELECT DISTINCT " . implode(", ", $fields['keys']) . " FROM {$this->lm2_db_prefix}$table
-				", __FILE__, __LINE__);
-
-			$using = "USING (". implode(", ", $fields['keys']) . ")";
-			$where = "WHERE NOT (";
-			$sep = "";
-			foreach ($fields['data'] AS $field) {
-				$where .= "{$sep}r.$field <=> o.$field";
-				$sep = " AND ";
-			}
-			$where .= ")";
-echo "<B><I>Warning! Regression testing of cumulative champsionships is disabled!</I></B>\n";
-$where .= " AND a.championship NOT IN (SELECT id_championship FROM {$this->lm2_db_prefix}championships WHERE scoring_scheme IN (SELECT id_scoring_scheme FROM {$this->lm2_db_prefix}scoring_schemes WHERE scoring_type = 'C'))";
-
-			$sql = "
-				SELECT $field_list
-				FROM {$this->temp_db_prefix}all_entries AS a
-				LEFT JOIN {$this->temp_db_prefix}$table AS r USE INDEX (PRIMARY) $using
-				LEFT JOIN {$this->lm2_db_prefix}$table AS o USE INDEX (PRIMARY) $using
-				$where
-				";
-			echo "<PRE>$sql</PRE>\n";
-
-			($query = lm2_query("$sql LIMIT " . ($maxShown + 1), __FILE__, __LINE__)) || die("failed to run $sql");
-			$localUnmatched = 0;
-			$sep = "<PRE>";
-			$closer = '';
-			while ($row = mysql_fetch_assoc($query)) {
-				echo $sep . print_r($row, true)  . "\n";
-				$sep = "<BR/>";
-				$closer = "</PRE>";
-				++$unmatched;
-				if (++$localUnmatched >= $maxShown) {
-					echo "<BR/><I STYLE='color: purple'>There are more rows...</I></P>\n";
-					break; // Don't get carried away!
-				}
-			}
-			echo $closer;
-			mysql_free_result($query);
-
-			db_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}all_entries", __FILE__, __LINE__);
-		}
-
-		if ($unmatched > 0) {
-			echo "<BR/><B STYLE='color: red'>At least $unmatched mismatched rows</B></P>\n";
-		} else {
-			echo "<P><B STYLE='color: green'>Passed!</B></P>\n";
-		}
-	}
-
 	function update_drivers_and_teams() {
 		echo "<P>Updating driver list...";
 
+//TODO: why do this? We don't actually use the drivers table... Removing it would remove the need for 'live' changes to the method.
 		rebuild_driver_cache();
 
 		echo " team associations...";
@@ -707,31 +600,36 @@ $where .= " AND a.championship NOT IN (SELECT id_championship FROM {$this->lm2_d
 
 		// Note that we cannot avoid a temporary table of some sort (even if it's implicit) because MySQL cannot update a table which is used in the FROM clause of a subquery.
 
-		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries SET penalty_points = NULL WHERE NOT is_protected_c", __FILE__, __LINE__);
+//TODO: remove the nulling and left join when updating?
+		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries
+			SET penalty_points = NULL
+			WHERE NOT is_protected_c AND event NOT IN (
+				SELECT id_event FROM {$this->lm2_db_prefix}events WHERE event_status = 'H')
+			", __FILE__, __LINE__);
 		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}totting_penalties
-			(INDEX (penalty_group, member), INDEX (totting_active_from))
+			(INDEX (penalty_group, member), INDEX (totting_active_after), INDEX (totting_active_until))
 			AS SELECT member
 			, penalty_group
-			, $penalty_points_clause AS totting_ycp
-			, report_published AS totting_active_from
+			, SUM($penalty_points_clause) AS totting_ycp
+			, report_published AS totting_active_after
+			, DATE_ADD(report_published, INTERVAL penalty_group_months MONTH) AS totting_active_until
 			FROM {$this->lm2_db_prefix}penalties
-			JOIN {$this->lm2_db_prefix}event_entries ON id_event_entry = event_entry
-			JOIN {$this->lm2_db_prefix}events ON id_event = event
+			JOIN {$this->lm2_db_prefix}event_entries ON id_event_entry = event_entry AND IFNULL(victim_report, 'Y') = 'Y'
+			JOIN {$this->lm2_db_prefix}events ON id_event = event AND event_status IN ('O', 'H') AND report_published IS NOT NULL
 			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
-			WHERE event_status IN ('O', 'H')
-			AND IFNULL(victim_report, 'Y') = 'Y'
+			JOIN {$this->lm2_db_prefix}penalty_groups pg USING (penalty_group)
+			GROUP BY penalty_group, member, report_published
+			HAVING totting_ycp IS NOT NULL
 			", __FILE__, __LINE__);
 		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}active_penalty_points
 			(UNIQUE (event_entry))
 			SELECT id_event_entry AS event_entry
 			, SUM(totting_ycp) AS active
 			FROM {$this->lm2_db_prefix}event_entries
-			JOIN {$this->lm2_db_prefix}events ON id_event = event
-			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
-			JOIN {$this->lm2_db_prefix}penalty_groups USING (penalty_group)
+			JOIN {$this->lm2_db_prefix}events ON id_event = event AND event_status <> 'H'
+			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group AND NOT is_protected
 			JOIN {$this->temp_db_prefix}totting_penalties USING (penalty_group, member)
-			WHERE NOT is_protected_c
-			AND totting_active_from < event_date AND totting_active_from >= DATE_SUB(event_date, INTERVAL penalty_group_months MONTH)
+			WHERE event_date > totting_active_after AND event_date <= totting_active_until
 			GROUP BY id_event_entry
 			", __FILE__, __LINE__);
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}totting_penalties", __FILE__, __LINE__);
@@ -761,7 +659,7 @@ $where .= " AND a.championship NOT IN (SELECT id_championship FROM {$this->lm2_d
 			", __FILE__, __LINE__);
 	}
 
-	function ukgplS18tokens($regression) {
+	function ukgplS18tokens() {
 		echo "<P>Stateful tokens...</P>\n";
 
 		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}ukgpls18_tokens
@@ -778,17 +676,17 @@ $where .= " AND a.championship NOT IN (SELECT id_championship FROM {$this->lm2_d
 			JOIN {$this->lm2_db_prefix}event_groups ON id_event_group = event_group
 			JOIN {$this->lm2_db_prefix}events USING (event_group)
 			WHERE {$this->ukgpls18tokensPredicate}
-			" . ($regression ? "" : "AND NOT is_protected") . "
+			AND NOT is_protected
 			GROUP BY id_championship, event_group, scoring_scheme
 			", __FILE__, __LINE__)) || die("failed to read championships");
 		while ($row = mysql_fetch_assoc($query)) {
 //**/		echo "<P><I>" . print_r($row, true) . "</I></P>\n";
-			$this->ukgplS18tokensForOneGroup($regression, $row['id_championship'], $row['event_group'], $row['scoring_scheme'], $row['events']);
+			$this->ukgplS18tokensForOneGroup($row['id_championship'], $row['event_group'], $row['scoring_scheme'], $row['events']);
 		}
 		mysql_free_result($query);
 	}
 
-	function ukgplS18tokensForOneGroup($regression, $championship, $event_group, $scoring_scheme, $events) {
+	function ukgplS18tokensForOneGroup($championship, $event_group, $scoring_scheme, $events) {
 		global $guest_member_id;
 
 //**/		printf("%f events, halved to %g", $events, $events / 2);
@@ -825,20 +723,15 @@ $row['postBALANCE'] = "{$balances[$row['member']]}";
 			if ($balances[$row['member']] < 0) {
 $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 				$balances[$row['member']] = 0;
-				if ($regression) {
-					//XXX: check!
-				} else {
-					lm2_query("UPDATE {$this->lm2_db_prefix}event_entries
-						SET excluded_c = 'Y'
-						WHERE id_event_entry = {$row['id_event_entry']}
-						", __FILE__, __LINE__);
-				}
+				lm2_query("UPDATE {$this->lm2_db_prefix}event_entries
+					SET excluded_c = 'Y'
+					WHERE id_event_entry = {$row['id_event_entry']}
+					", __FILE__, __LINE__);
 			}
 
 //**/			echo "<br/><tt>" . print_r($row, true) . "</tt>\n";
 		}
 		mysql_free_result($query);
-		echo "</P>\n";
 
 		foreach ($balances as $id => $tokens) {
 			lm2_query("INSERT INTO {$this->temp_db_prefix}ukgpls18_tokens
@@ -867,29 +760,30 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 			UPDATE {$this->lm2_db_prefix}event_entries
 			SET race_pos_penalty = 0
 			WHERE NOT is_protected_c
-			" , __FILE__, __LINE__); 
-
-		lm2_query("CREATE TEMPORARY TABLE {$this->temp_db_prefix}positions_lost
+			" , __FILE__, __LINE__);
+/*Hmm
+SELECT event_entry, count(*) AS howmany, GROUP_CONCAT(extra_positions_lost, ',') AS epl
+FROM lm2_penalties GROUP BY event_entry
+HAVING howmany > 1 AND epl IS NOT NULL
+ORDER BY 1, 2
+*/			
+		lm2_query("
+			CREATE TEMPORARY TABLE {$this->temp_db_prefix}positions_lost
 			(UNIQUE (event_entry))
 			AS SELECT event_entry
 			, SUM(IFNULL(positions_lost, 0) + IFNULL(extra_positions_lost, 0)) AS positions_lost
 			FROM {$this->lm2_db_prefix}event_entries
-			, {$this->lm2_db_prefix}penalties
-			, {$this->lm2_db_prefix}incidents
-			, {$this->lm2_db_prefix}events
-			WHERE id_event_entry = event_entry
-			AND id_incident = incident
-			AND {$this->lm2_db_prefix}event_entries.event = id_event
-			AND {$this->lm2_db_prefix}incidents.event = id_event
-			AND IFNULL(victim_report, 'Y') = 'Y'
-			AND event_status IN ('O', 'H')
-			AND NOT is_protected_c
-			GROUP BY id_event_entry
+			JOIN {$this->lm2_db_prefix}penalties ON id_event_entry = event_entry AND IFNULL(victim_report, 'Y') = 'Y'
+			JOIN {$this->lm2_db_prefix}incidents ON id_incident = incident
+			JOIN {$this->lm2_db_prefix}events ON {$this->lm2_db_prefix}incidents.event = id_event
+			WHERE NOT is_protected_c AND event_status IN ('O', 'H')
+			GROUP BY event_entry
 			", __FILE__, __LINE__);
-		lm2_query("UPDATE {$this->lm2_db_prefix}event_entries, {$this->temp_db_prefix}positions_lost"
-			. " SET race_pos_penalty = positions_lost"
-			. " WHERE id_event_entry = event_entry",
-			__FILE__, __LINE__);
+		lm2_query("
+			UPDATE {$this->lm2_db_prefix}event_entries, {$this->temp_db_prefix}positions_lost
+			SET race_pos_penalty = positions_lost
+			WHERE id_event_entry = event_entry
+			", __FILE__, __LINE__);
 		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}positions_lost", __FILE__, __LINE__);
 	}
 
@@ -991,7 +885,6 @@ $row['postBALANCE'] = "<SPAN STYLE='color: red'>{$row['postBALANCE']}<SPAN>";
 		$mode || die("no mode");
 
 		if (!is_null($clause)) {
-//if ($this->regression_test) echo "<BR/><TT>$clause</TT>...\n";
 			$sql = "
 				SELECT id_championship AS brk_champ, position AS old_pos, -1 AS rank, id AS brk_id, IFNULL($clause, $nullValue) AS breaker
 				FROM {$this->temp_db_prefix}champ_ties
@@ -1062,6 +955,6 @@ function explain($sql) {
 
 ob_end_flush();
 
-$gen = new StandingsGenerator($lm2_db_prefix, $_REQUEST['regression'] == 'true');
-$gen->generate_standings();
+//global $inhibitTimings; $inhibitTimings = 10;
+(new StandingsGenerator())->generate_standings();
 ?>
