@@ -1697,7 +1697,7 @@ class ScoringSchemes extends RefData {
 				. " GROUP BY id_points_scheme"
 				. " ORDER BY description", true),
 			new RefDataFieldEdit("minimum_distance", 4), //FIXME: need a numeric field type - DECIMAL(3,2) in this case.
-			new RefDataFieldFK("scoring_type", array('T'=>'Traditional', 'C'=>'Cumulative', 'A'=>'Average'), false),
+			new RefDataFieldFK("scoring_type", array('T'=>'Traditional', 'C'=>'Cumulative', 'A'=>'Average', '+'=>'Composite'), false),
 			new RefDataFieldFK("zeros_count", array('0'=>'No', '1'=>'Yes'), true),
 			new RefDataFieldEdit("car_change_penalty", 4), //FIXME: need a numeric field type - DOUBLE(4,2) in this case.
 			new RefDataFieldEdit("free_car_changes", 1), //FIXME: need a numeric field type - INT(1) in this case.
