@@ -928,7 +928,7 @@ class Championships extends RefData {
 			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql()),
 			new RefDataFieldFK("champ_type", array('D'=>'Drivers', 'T'=>'Teams', 'M'=>'Manufacturers'), false),
 			new RefDataFieldFK("champ_master", "
-				SELECT id_championship AS id, CONCAT(short_desc, '/', champ_type) AS description, is_protected OR champ_type <> 'D' AS hide
+				SELECT id_championship AS id, CONCAT(short_desc, '/', champ_type, '@', champ_sequence) AS description, is_protected OR champ_type <> 'D' AS hide
 				FROM {$GLOBALS['lm2_db_prefix']}championships
 				JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
 				ORDER BY description
