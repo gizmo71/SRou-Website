@@ -272,7 +272,7 @@ class StandingsGenerator {
 
 		echo " average...";
 
-		// Finally, the 'average' championships. These were used in UKGPL for teams from S4 to S9; S9 had an additional single car factor of 70%.
+		// Next, the 'average' championships. These were used in UKGPL for teams from S4 to S9; S9 had an additional single car factor of 70%.
 		$s9nonDiscoPoints = "SUM(IF(disco, 0, points))";
 		$s9nonDiscoCount = "SUM(IF(disco, 0, IF(zeros_count = 0, {$this->temp_db_prefix}positions.position IS NOT NULL, points > 0)))";
 		$s9noScoreDiscoCount = "SUM(IF(disco AND IFNULL(points, 0) = 0, 0, 1))";
@@ -294,6 +294,46 @@ class StandingsGenerator {
 			LEFT JOIN {$this->lm2_db_prefix}points_schemes ON id_points_scheme = points_scheme
 				AND {$this->temp_db_prefix}positions.position = {$this->lm2_db_prefix}points_schemes.position
 			GROUP BY event, id
+			" , __FILE__, __LINE__);
+
+		echo " composite...";
+
+		lm2_query("
+			CREATE TEMPORARY TABLE {$this->temp_db_prefix}composite_groups AS
+			SELECT event_group
+			FROM {$this->lm2_db_prefix}championships
+			JOIN {$this->lm2_db_prefix}scoring_schemes ON id_scoring_scheme = scoring_scheme
+			WHERE scoring_type = '+'
+			", __FILE__, __LINE__);
+		lm2_query("
+			CREATE TEMPORARY TABLE {$this->temp_db_prefix}composite_points AS
+			SELECT event_entry AS comp_event_entry
+			, SUM(points) AS comp_points
+			, champ_type AS comp_champ_type
+			, MAX(champ_points_lost) AS comp_champ_points_lost
+			, id AS comp_id
+			, is_protected_c
+			FROM {$this->temp_db_prefix}event_points
+			JOIN {$this->lm2_db_prefix}championships
+			  ON id_championship = championship
+			 AND event_group IN (SELECT event_group FROM {$this->temp_db_prefix}composite_groups)
+			GROUP BY champ_type, event_entry, id, is_protected_c
+			", __FILE__, __LINE__);
+		lm2_query("
+			INSERT INTO {$this->temp_db_prefix}event_points
+			(championship, event_entry, position, points, id, is_protected_c, champ_points_lost)
+			SELECT championship
+			, comp_event_entry
+			, NULL
+			, comp_points
+			, comp_id
+			, is_protected_c
+			, comp_champ_points_lost
+			FROM {$this->temp_db_prefix}positions
+			JOIN {$this->lm2_db_prefix}championships ON id_championship = championship
+			 AND scoring_scheme IN (SELECT id_scoring_scheme FROM {$this->lm2_db_prefix}scoring_schemes WHERE scoring_type = '+')
+			LEFT JOIN {$this->temp_db_prefix}composite_points
+			       ON comp_id = id AND comp_champ_type = champ_type AND id_event_entry = comp_event_entry
 			" , __FILE__, __LINE__);
 
 		echo " done</P>\n";
