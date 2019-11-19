@@ -306,9 +306,9 @@ function template_group() {
 		} else if ($scoring_type == 'T' || $scoring_type == 'A') {
 			$query = db_query("
 				SELECT position, points
-				FROM {$lm2_db_prefix}scoring_schemes, {$lm2_db_prefix}points_schemes
+				FROM {$lm2_db_prefix}scoring_schemes
+				JOIN {$lm2_db_prefix}points_schemes ON id_points_scheme = points_scheme
 				WHERE id_scoring_scheme = $scoring_scheme
-				AND id_points_scheme = points_scheme
 				ORDER BY position
 				", __FILE__, __LINE__);
 			$sep = "";

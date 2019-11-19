@@ -283,7 +283,8 @@ class StandingsGenerator {
 			SELECT championship
 			, id_event_entry
 			, NULL
-			, IF($s9nonDiscoPoints > 0, $s9nonDiscoPoints / $s9nonDiscoCount, $s9discoPoints) * IF($s9noScoreDiscoCount = 1, IFNULL(single_car_penalty, 1.0), 1.0)
+			, IF($s9nonDiscoPoints > 0, $s9nonDiscoPoints / $s9nonDiscoCount, $s9discoPoints)
+			  * IF($s9noScoreDiscoCount = 1, IFNULL(single_car_penalty, 1.0), 1.0)
 			, {$this->temp_db_prefix}positions.id
 			, is_protected
 			, SUM(champ_points_lost)
