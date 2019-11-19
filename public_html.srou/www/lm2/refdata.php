@@ -2017,7 +2017,7 @@ $refDatas = Array(
 	'evt'=>array('refData'=>new Events()),
 	'eve'=>array('refData'=>new EventEntries()),
 	'sdr'=>array('refData'=>new SimDrivers(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_server, $lm2_mods_group_ukgpl)),
-	'wth'=>array('refData'=>new Weather(), 'groups'=>array($lm2_mods_group_server)),
+//	'wth'=>array('refData'=>new Weather(), 'groups'=>array($lm2_mods_group_server)),
 	'mon'=>array('refData'=>new Money(), 'groups'=>array(1)),
 );
 
