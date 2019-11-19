@@ -981,6 +981,41 @@ class Championships extends RefData {
 	}
 }
 
+class ChampComposit extends RefData {
+	function getName() { return "Composite"; }
+	function getTable() { return "{$this->lm2_db_prefix}champ_composit"; }
+
+	function getFields() {
+		return Array(
+			new RefDataFieldID("id_champ_composit", true),
+			new RefDataFieldFK("target_champ", "
+				SELECT DISTINCT id_championship AS id, CONCAT(short_desc,' ',champ_class_desc) AS description
+				FROM {$this->lm2_db_prefix}championships, {$this->lm2_db_prefix}event_groups
+				WHERE event_group = id_event_group
+				AND is_protected <> 1
+				AND champ_type = 'D'
+				ORDER BY short_desc, champ_sequence
+				", true),
+			new RefDataFieldFK("source_champ", "
+				SELECT DISTINCT id_championship AS id, CONCAT(short_desc,' ',champ_class_desc) AS description
+				FROM {$this->lm2_db_prefix}championships, {$this->lm2_db_prefix}event_groups
+				WHERE event_group = id_event_group
+				AND is_protected <> 1
+				AND champ_type = 'D'
+				ORDER BY short_desc, champ_sequence
+				", true),
+		);
+	}
+
+	function addRow() {
+		return array("target_champ"=>null, "source_champ"=>null);
+	}
+
+	function getDefaultSortOrder() {
+		return "U1";
+	}
+}
+
 class ChampGroups extends RefData {
 	function getName() { return "ChampGroups"; }
 	function getTable() { return "{$this->lm2_db_prefix}champ_groups"; }
@@ -1697,7 +1732,7 @@ class ScoringSchemes extends RefData {
 				. " GROUP BY id_points_scheme"
 				. " ORDER BY description", true),
 			new RefDataFieldEdit("minimum_distance", 4), //FIXME: need a numeric field type - DECIMAL(3,2) in this case.
-			new RefDataFieldFK("scoring_type", array('T'=>'Traditional', 'C'=>'Cumulative', 'A'=>'Average', '+'=>'Composite'), false),
+			new RefDataFieldFK("scoring_type", array('T'=>'Traditional', 'C'=>'Cumulative', 'A'=>'Average'), false),
 			new RefDataFieldFK("zeros_count", array('0'=>'No', '1'=>'Yes'), true),
 			new RefDataFieldEdit("car_change_penalty", 4), //FIXME: need a numeric field type - DOUBLE(4,2) in this case.
 			new RefDataFieldEdit("free_car_changes", 1), //FIXME: need a numeric field type - INT(1) in this case.
@@ -1973,6 +2008,7 @@ $refDatas = Array(
 	'sci'=>array('refData'=>new SimCircuits(), 'groups'=>array($lm2_mods_group_refdata)),
 	'scs'=>array('refData'=>new ScoringSchemes(), 'groups'=>array($lm2_mods_group_refdata)),
 	'chm'=>array('refData'=>new Championships()),
+	'chc'=>array('refData'=>new ChampComposit()),
 	'chg'=>array('refData'=>new ChampGroups()),
 //	'rgp'=>array('refData'=>new RegPolls()),
 	'evb'=>array('refData'=>new EventBoards(), 'groups'=>array($lm2_mods_group_refdata)),

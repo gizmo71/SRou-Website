@@ -388,6 +388,18 @@ function template_group() {
 		}
 		mysql_free_result($query);
 
+		$query = db_query("
+			SELECT source_champ AS source, champ_class_desc AS description
+			FROM {$lm2_db_prefix}champ_composit
+			JOIN {$lm2_db_prefix}championships ON id_championship = source_champ
+			WHERE target_champ = {$champ}
+			ORDER BY 1
+			", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$html .= "\n<BR/>Plus points from <A HREF='#ch{$row['source']}'>{$row['description']}</A>";
+		}
+		mysql_free_result($query);
+
 		return $html;
 	}
 

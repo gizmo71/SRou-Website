@@ -299,25 +299,16 @@ class StandingsGenerator {
 		echo " composite...";
 
 		lm2_query("
-			CREATE TEMPORARY TABLE {$this->temp_db_prefix}composite_groups AS
-			SELECT event_group
-			FROM {$this->lm2_db_prefix}championships
-			JOIN {$this->lm2_db_prefix}scoring_schemes ON id_scoring_scheme = scoring_scheme
-			WHERE scoring_type = '+'
-			", __FILE__, __LINE__);
-		lm2_query("
 			CREATE TEMPORARY TABLE {$this->temp_db_prefix}composite_points AS
 			SELECT event_entry AS comp_event_entry
 			, SUM(points) AS comp_points
-			, champ_type AS comp_champ_type
 			, MAX(champ_points_lost) AS comp_champ_points_lost
 			, id AS comp_id
 			, is_protected_c
+			, target_champ
 			FROM {$this->temp_db_prefix}event_points
-			JOIN {$this->lm2_db_prefix}championships
-			  ON id_championship = championship
-			 AND event_group IN (SELECT event_group FROM {$this->temp_db_prefix}composite_groups)
-			GROUP BY champ_type, event_entry, id, is_protected_c
+			JOIN {$this->lm2_db_prefix}champ_composit ON source_champ = championship
+			GROUP BY target_champ, event_entry, id, is_protected_c
 			", __FILE__, __LINE__);
 		lm2_query("
 			INSERT INTO {$this->temp_db_prefix}event_points
@@ -330,10 +321,9 @@ class StandingsGenerator {
 			, is_protected_c
 			, comp_champ_points_lost
 			FROM {$this->temp_db_prefix}positions
-			JOIN {$this->lm2_db_prefix}championships ON id_championship = championship
-			 AND scoring_scheme IN (SELECT id_scoring_scheme FROM {$this->lm2_db_prefix}scoring_schemes WHERE scoring_type = '+')
-			LEFT JOIN {$this->temp_db_prefix}composite_points
-			       ON comp_id = id AND comp_champ_type = champ_type AND id_event_entry = comp_event_entry
+			JOIN {$this->temp_db_prefix}composite_points
+			       ON comp_id = id AND championship = target_champ AND id_event_entry = comp_event_entry
+			ON DUPLICATE KEY UPDATE points = points + comp_points
 			" , __FILE__, __LINE__);
 
 		echo " done</P>\n";
