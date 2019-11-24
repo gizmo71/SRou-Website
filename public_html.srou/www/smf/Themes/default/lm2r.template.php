@@ -239,15 +239,15 @@ function template_group() {
 	}
 
 	function make_scoring_desc($champ) {
-		global $lm2_db_prefix;
+		global $lm2_db_prefix, $smcFunc;
 
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT scoring_scheme, champ_type, max_rank, best, rounds, class, ballast_bonus, minimum_distance, event_group
 			, scoring_type, free_car_changes, car_change_penalty, single_car_penalty, max_tokens, overspend_penalty
 			FROM {$lm2_db_prefix}championships
-			JOIN {$lm2_db_prefix}scoring_schemes ON id_championship = $champ AND id_scoring_scheme = scoring_scheme
-			" , __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+			JOIN {$lm2_db_prefix}scoring_schemes ON id_championship = {int:champ} AND id_scoring_scheme = scoring_scheme
+			" , array('champ'=>$champ));
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$champ_type = $row['champ_type'];
 			$scoring_scheme = $row['scoring_scheme'];
 			$max_rank = $row['max_rank'];
@@ -264,7 +264,7 @@ function template_group() {
 			$minimum_distance = $row['minimum_distance'];
 			$event_group = $row['event_group'];
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		$html = '<B>Scoring Scheme</B>';
 
@@ -307,19 +307,19 @@ function template_group() {
 			$html .= "cumulative based on car ratings:";
 			$showRatings = true;
 		} else if ($scoring_type == 'T' || $scoring_type == 'A') {
-			$query = db_query("
+			$query = $smcFunc['db_query'](null, "
 				SELECT position, points
 				FROM {$lm2_db_prefix}scoring_schemes
 				JOIN {$lm2_db_prefix}points_schemes ON id_points_scheme = points_scheme
-				WHERE id_scoring_scheme = $scoring_scheme
+				WHERE id_scoring_scheme = {int:scheme}
 				ORDER BY position
-				", __FILE__, __LINE__);
+				", array('scheme'=>$scoring_scheme));
 			$sep = "";
-			while ($row = mysql_fetch_assoc($query)) {
+			while ($row = $smcFunc['db_fetch_assoc']($query)) {
 				$html .= "$sep<SPAN TITLE=\"{$row['position']}\">{$row['points']}</SPAN>";
 				$sep = ", ";
 			}
-			mysql_free_result($query);
+			$smcFunc['db_free_result']($query);
 
 			if (!is_null($ballast_bonus)) {
 				$html .= sprintf("<BR/>Points bonus for voluntary driver ballast: %.3f %%/kg\n", $ballast_bonus);
@@ -343,32 +343,32 @@ function template_group() {
 
 //TODO: consider showing eligible cars for non-rated championships...
 			// Note that the car classifications can be set up in such a way as to fool this. But please don't.
-			$query = db_query("
+			$query = $smcFunc['db_query'](null, "
 				SELECT $lm2_class_style_clause AS class_style, class_description, CONCAT(manuf_name, ' ', car_name) AS car_desc, rating
 				FROM {$lm2_db_prefix}cars
 				JOIN {$lm2_db_prefix}car_classification ON id_car_classification = (
 					SELECT id_car_classification
 					FROM {$lm2_db_prefix}car_classification
 					JOIN {$lm2_db_prefix}event_group_tree ON event_group = container
-					WHERE id_car = car AND $event_group = contained
+					WHERE id_car = car AND {int:event_group} = contained
 					ORDER BY depth
 					LIMIT 1
 				)
 				JOIN {$lm2_db_prefix}manufacturers ON id_manuf = manuf
 				JOIN {$lm2_db_prefix}classes ON id_class = car_class
-				JOIN {$lm2_db_prefix}car_ratings ON id_car = rated_car AND rating_scoring_scheme = $scoring_scheme
-				WHERE id_class REGEXP CONCAT('^('," . lm2SqlString($class) . ",')\$')
+				JOIN {$lm2_db_prefix}car_ratings ON id_car = rated_car AND rating_scoring_scheme = {int:scheme}
+				WHERE id_class REGEXP CONCAT('^(', {string:classExp}, ')\$')
 				ORDER BY rating DESC, display_sequence, car_class, car_name
-				", __FILE__, __LINE__);
-			while ($row = mysql_fetch_assoc($query)) {
+				", array('classExp'=>$class, 'event_group'=>$event_group, 'scheme'=>$scoring_scheme));
+			while ($row = $smcFunc['db_fetch_assoc']($query)) {
 				$html .= "<TR><TD{$row['class_style']}>{$row['class_description']}</TD><TD>{$row['car_desc']}</TD><TD ALIGN=\"RIGHT\">{$row['rating']}</TD></TR>\n";
 			}
-			mysql_free_result($query);
+			$smcFunc['db_free_result']($query);
 
 			$html .= "</TABLE>\n";
 		}
 
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT $lm2_class_style_clause AS class_style, id_class, class_description
 			, class_min_ballast, class_max_ballast
 			, IF(ballast_position = 999, '<I>others</I>', CONCAT('P', ballast_position)) AS position
@@ -377,9 +377,9 @@ function template_group() {
 			JOIN {$lm2_db_prefix}ballast_schemes ON class_ballast_scheme = ballast_scheme
 			WHERE id_class REGEXP '^($class)\$'
 			ORDER BY display_sequence, ballast_position 
-			", __FILE__, __LINE__);
+			", array());
 		$id_class = -1;
-		while ($row = mysql_fetch_assoc($query)) {
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			if ($id_class != $row['id_class']) {
 				if ($id_class == -1) {
 					$html .= "<BR/><B>Ballasts (where applicable):</B>";
@@ -389,19 +389,19 @@ function template_group() {
 			}
 			$html .= "<SMALL>, {$row['position']}&nbsp;{$row['ballast_delta']}kg</SMALL>";
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
-		$query = db_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT source_champ AS source, champ_class_desc AS description
 			FROM {$lm2_db_prefix}champ_composit
 			JOIN {$lm2_db_prefix}championships ON id_championship = source_champ
-			WHERE target_champ = {$champ}
+			WHERE target_champ = {int:champ}
 			ORDER BY 1
-			", __FILE__, __LINE__);
-		while ($row = mysql_fetch_assoc($query)) {
+			", array('champ'=>$champ));
+		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$html .= "\n<BR/>Plus points from <A HREF='#ch{$row['source']}'>{$row['description']}</A>";
 		}
-		mysql_free_result($query);
+		$smcFunc['db_free_result']($query);
 
 		return $html;
 	}
@@ -640,7 +640,7 @@ function lm2StandingsAndStatistics() {
 }
 
 function template_stats() {
-	global $context, $boardurl, $lm2_db_prefix, $lm2_guest_member_id, $lm2StatsTopN;
+	global $context, $boardurl, $lm2_db_prefix, $lm2_guest_member_id, $lm2StatsTopN, $smcFunc;
 
 	echo "<table border='0' width='100%'><tr><td valign='top'>";
 
@@ -656,7 +656,7 @@ function template_stats() {
 	echo lm2_table_open("Statistics - " . htmlentities($context['lm2']['group']['stats'], ENT_QUOTES));
 
 	echo "<TABLE>";
-	$query = db_query("
+	$query = $smcFunc['db_query'](null, "
 		SELECT driver_name AS name
 		, CONCAT('/index.php?ind=lm2&driver=', driver_member) AS url
 		, COUNT(DISTINCT event) AS events
@@ -665,15 +665,15 @@ function template_stats() {
 		WHERE driver_member <> $lm2_guest_member_id
 		". (is_null($group) ? "" : "AND event IN (
 			SELECT id_event FROM {$lm2_db_prefix}events WHERE event_group IN (
-				SELECT contained FROM {$lm2_db_prefix}event_group_tree WHERE container = $group))") . "
-		GROUP BY driver_member
+				SELECT contained FROM {$lm2_db_prefix}event_group_tree WHERE container = {int:group}))") . "
+		GROUP BY driver_member, driver_name
 		ORDER BY events DESC
-		LIMIT $lm2StatsTopN
-		", __FILE__, __LINE__);
-	while ($row = mysql_fetch_assoc($query)) {
+		LIMIT {int:topN}
+		", array('group'=>$group, 'topN'=>$lm2StatsTopN));
+	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo "\n<TR><TD><A HREF='{$row['url']}'>{$row['name']}</A></TD><TD ALIGN='RIGHT'>{$row['events']}</TD></TR>";
 	}
-	mysql_free_result($query);
+	$smcFunc['db_free_result']($query);
 	echo "\n</TABLE>\n";
 	
 	echo lm2_table_close();
