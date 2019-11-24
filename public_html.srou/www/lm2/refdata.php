@@ -927,7 +927,7 @@ class Championships extends RefData {
 			new RefDataFieldFK("event_group", eventGroupRefDataFieldFKsql()),
 			new RefDataFieldFK("champ_type", array('D'=>'Drivers', 'T'=>'Teams', 'M'=>'Manufacturers'), false),
 			new RefDataFieldFK("champ_master", "
-				SELECT id_championship AS id, CONCAT(short_desc, '/', champ_type) AS description, is_protected OR champ_type <> 'D' AS hide
+				SELECT id_championship AS id, CONCAT(short_desc, '/', champ_type, '@', champ_sequence) AS description, is_protected OR champ_type <> 'D' AS hide
 				FROM {$GLOBALS['lm2_db_prefix']}championships
 				JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
 				ORDER BY description
@@ -977,6 +977,41 @@ class Championships extends RefData {
 		   . "<BR/>The <tt>class</tt> is a <a href='$reLink'>regular expression</a>; for single class championships, use '<tt>.*</tt>';"
 		   . " click the question mark to the right of the field to see which classes and cars match.<BR/>"
 		   . "<SPAN id='classcheck'></SPAN></P>\n";
+	}
+}
+
+class ChampComposit extends RefData {
+	function getName() { return "Composite"; }
+	function getTable() { return "{$this->lm2_db_prefix}champ_composit"; }
+
+	function getFields() {
+		return Array(
+			new RefDataFieldID("id_champ_composit", true),
+			new RefDataFieldFK("target_champ", "
+				SELECT DISTINCT id_championship AS id, CONCAT(short_desc,' ',champ_class_desc) AS description
+				FROM {$this->lm2_db_prefix}championships, {$this->lm2_db_prefix}event_groups
+				WHERE event_group = id_event_group
+				AND is_protected <> 1
+				AND champ_type = 'D'
+				ORDER BY short_desc, champ_sequence
+				", true),
+			new RefDataFieldFK("source_champ", "
+				SELECT DISTINCT id_championship AS id, CONCAT(short_desc,' ',champ_class_desc) AS description
+				FROM {$this->lm2_db_prefix}championships, {$this->lm2_db_prefix}event_groups
+				WHERE event_group = id_event_group
+				AND is_protected <> 1
+				AND champ_type = 'D'
+				ORDER BY short_desc, champ_sequence
+				", true),
+		);
+	}
+
+	function addRow() {
+		return array("target_champ"=>null, "source_champ"=>null);
+	}
+
+	function getDefaultSortOrder() {
+		return "U1";
 	}
 }
 
@@ -1972,6 +2007,7 @@ $refDatas = Array(
 	'sci'=>array('refData'=>new SimCircuits(), 'groups'=>array($lm2_mods_group_refdata)),
 	'scs'=>array('refData'=>new ScoringSchemes(), 'groups'=>array($lm2_mods_group_refdata)),
 	'chm'=>array('refData'=>new Championships()),
+	'chc'=>array('refData'=>new ChampComposit()),
 	'chg'=>array('refData'=>new ChampGroups()),
 //	'rgp'=>array('refData'=>new RegPolls()),
 	'evb'=>array('refData'=>new EventBoards(), 'groups'=>array($lm2_mods_group_refdata)),
@@ -1980,7 +2016,7 @@ $refDatas = Array(
 	'evt'=>array('refData'=>new Events()),
 	'eve'=>array('refData'=>new EventEntries()),
 	'sdr'=>array('refData'=>new SimDrivers(), 'groups'=>array($lm2_mods_group, $lm2_mods_group_server, $lm2_mods_group_ukgpl)),
-	'wth'=>array('refData'=>new Weather(), 'groups'=>array($lm2_mods_group_server)),
+//	'wth'=>array('refData'=>new Weather(), 'groups'=>array($lm2_mods_group_server)),
 	'mon'=>array('refData'=>new Money(), 'groups'=>array(1)),
 );
 

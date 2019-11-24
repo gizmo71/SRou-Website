@@ -309,9 +309,9 @@ function template_group() {
 		} else if ($scoring_type == 'T' || $scoring_type == 'A') {
 			$query = db_query("
 				SELECT position, points
-				FROM {$lm2_db_prefix}scoring_schemes, {$lm2_db_prefix}points_schemes
+				FROM {$lm2_db_prefix}scoring_schemes
+				JOIN {$lm2_db_prefix}points_schemes ON id_points_scheme = points_scheme
 				WHERE id_scoring_scheme = $scoring_scheme
-				AND id_points_scheme = points_scheme
 				ORDER BY position
 				", __FILE__, __LINE__);
 			$sep = "";
@@ -388,6 +388,18 @@ function template_group() {
 				$html .= "\n<BR/><SMALL><B{$row['class_style']}>{$row['class_description']}</B>: {$row['class_min_ballast']}&nbsp;to&nbsp;{$row['class_max_ballast']}</SMALL>";
 			}
 			$html .= "<SMALL>, {$row['position']}&nbsp;{$row['ballast_delta']}kg</SMALL>";
+		}
+		mysql_free_result($query);
+
+		$query = db_query("
+			SELECT source_champ AS source, champ_class_desc AS description
+			FROM {$lm2_db_prefix}champ_composit
+			JOIN {$lm2_db_prefix}championships ON id_championship = source_champ
+			WHERE target_champ = {$champ}
+			ORDER BY 1
+			", __FILE__, __LINE__);
+		while ($row = mysql_fetch_assoc($query)) {
+			$html .= "\n<BR/>Plus points from <A HREF='#ch{$row['source']}'>{$row['description']}</A>";
 		}
 		mysql_free_result($query);
 
