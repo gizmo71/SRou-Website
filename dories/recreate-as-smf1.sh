@@ -5,8 +5,6 @@ if [ $(git rev-parse --abbrev-ref HEAD) != master ]; then
 	exit 1
 fi
 
-. ./restore-database.sh
-
 PROD_ROOT=/home/srouprod
 
 rm -rf www public_html.ukgpl
