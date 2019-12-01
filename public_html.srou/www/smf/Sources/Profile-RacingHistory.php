@@ -69,11 +69,11 @@ function lm2ShowDriverProfile($driver) {
 	$header = lm2_table_open("Championship Registrations and Licenses") . "<TABLE>\n";
 	$footer = "";
 	$query = $smcFunc['db_query'](null, "
-		SELECT GROUP_CONCAT(DISTINCT group_name)
+		SELECT GROUP_CONCAT(DISTINCT group_name SEPARATOR '!') AS group_name
 		, GROUP_CONCAT(DISTINCT champ_group_type SEPARATOR '!') AS champ_group_type
 		, id_event_group
 		, GROUP_CONCAT(DISTINCT full_desc SEPARATOR '!') AS full_desc
-		, MAX(series_theme)
+		, MAX(series_theme) AS series_theme
 		, GROUP_CONCAT(DISTINCT champ_class_desc SEPARATOR '!') AS champ_class_desc
 		FROM {$GLOBALS['lm2_db_prefix']}champ_groups
 		JOIN {$GLOBALS['lm2_db_prefix']}championships ON id_championship = champ_group_champ
