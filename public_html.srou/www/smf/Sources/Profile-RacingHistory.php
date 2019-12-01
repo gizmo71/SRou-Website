@@ -63,13 +63,18 @@ function lm2ShowDriverProfile($driver) {
 <?php
 		echo lm2_table_close();
 	}
-<?php
+
 	echo lm2_table_close();
 
 	$header = lm2_table_open("Championship Registrations and Licenses") . "<TABLE>\n";
 	$footer = "";
 	$query = $smcFunc['db_query'](null, "
-		SELECT group_name, champ_group_type, id_event_group, full_desc, series_theme, champ_class_desc
+		SELECT GROUP_CONCAT(DISTINCT group_name)
+		, GROUP_CONCAT(DISTINCT champ_group_type SEPARATOR '!') AS champ_group_type
+		, id_event_group
+		, GROUP_CONCAT(DISTINCT full_desc SEPARATOR '!') AS full_desc
+		, MAX(series_theme)
+		, GROUP_CONCAT(DISTINCT champ_class_desc SEPARATOR '!') AS champ_class_desc
 		FROM {$GLOBALS['lm2_db_prefix']}champ_groups
 		JOIN {$GLOBALS['lm2_db_prefix']}championships ON id_championship = champ_group_champ
 		JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
@@ -106,7 +111,7 @@ function lm2ShowDriverProfile($driver) {
 		echo "<TR TITLE='{$row['group_name']}'>
 			<TD>" . lm2MakeEventGroupLink($row['id_event_group'], $row['full_desc'], $row['series_theme']) . "</TD>
 			<TD>{$row['champ_class_desc']}</TD>
-			<TD>$type</TD>
+			<TD>{$type}</TD>
 			</TR>\n";
 	}
 	echo $footer;
@@ -140,10 +145,11 @@ function lm2ShowDriverProfile($driver) {
 	echo $footer;
 
 	echo lm2_table_open("Career Statistics") . "<TABLE>\n";
-	$query = $smcFunc['db_query'](null, "SELECT COUNT(*) AS events_entered
+	$query = $smcFunc['db_query'](null, "
+		SELECT COUNT(*) AS events_entered
 		FROM {$GLOBALS['lm2_db_prefix']}event_entries
-		WHERE member = $driver",
-		__FILE__, __LINE__);
+		WHERE member = {int:driver}
+		", array('driver'=>$driver));
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo "<TR><TD>Events entered</TD>$colsep<TD COLSPAN=3 ALIGN=RIGHT>{$row['events_entered']}</TD>\n";
 	}
@@ -169,8 +175,8 @@ function lm2ShowDriverProfile($driver) {
 		, SUM(IF(race_pos_class IN (1,2,3),1,0)) AS podiums_class
 		, SUM(IF(race_best_lap_pos=1,1,0)) AS fastest
 		, SUM(IF(race_best_lap_pos_class=1,1,0)) AS fastest_class
-		FROM {$GLOBALS['lm2_db_prefix']}event_entries WHERE member = $driver
-		", __FILE__, __LINE__); //FIXME: consider only including non-fun race event_types
+		FROM {$GLOBALS['lm2_db_prefix']}event_entries WHERE member = {int:driver}
+		", array('driver'=>$driver)); //FIXME: consider only including non-fun race event_types
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		echo "<TR><TD>Best qualifying position</TD>$colsep<TD ALIGN=RIGHT>{$row['best_qual_pos']}</TD>"
 			. "$colsep<TD ALIGN=RIGHT>{$row['best_qual_pos_class']}</TD></TR>\n";
@@ -202,15 +208,15 @@ function lm2ShowDriverProfile($driver) {
 	// License endorsements.
 	$query = $smcFunc['db_query'](null, "
 		SELECT SUM($lm2_penalty_points_clause) AS penalty_points
-		, $lm2_circuit_html_clause AS circuit_html
+		, GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause SEPARATOR '!') AS circuit_html
 		, id_event_group
 		, id_event, smf_topic
-		, short_desc
+		, GROUP_CONCAT(DISTINCT short_desc SEPARATOR '!') AS short_desc
 		, event_date
 		, IFNULL(victim_report, 'Y') AS victim_report
-		, penalty_group_desc
-		, report_published AS start_date
-		, DATE_ADD(report_published, INTERVAL penalty_group_months MONTH) AS end_date
+		, GROUP_CONCAT(DISTINCT penalty_group_desc SEPARATOR '!') AS penalty_group_desc
+		, MAX(report_published) AS start_date
+		, MAX(DATE_ADD(report_published, INTERVAL penalty_group_months MONTH)) AS end_date
 		FROM {$GLOBALS['lm2_db_prefix']}event_entries
 		JOIN {$GLOBALS['lm2_db_prefix']}events ON id_event = event
 		JOIN {$GLOBALS['lm2_db_prefix']}penalties ON event_entry = id_event_entry
@@ -219,12 +225,12 @@ function lm2ShowDriverProfile($driver) {
 		JOIN {$GLOBALS['lm2_db_prefix']}circuit_locations ON id_circuit_location = circuit_location
 		JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = event_group
 		JOIN {$GLOBALS['lm2_db_prefix']}penalty_groups USING (penalty_group)
-		WHERE $driver = member
+		WHERE {int:driver} = member
 		AND event_status IN ('O', 'H')
-		GROUP BY penalty_group, id_event, IFNULL(victim_report, 'Y')
+		GROUP BY penalty_group, id_event, IFNULL(victim_report, 'Y'), id_event_group, smf_topic, event_date
 		HAVING penalty_points > 0
 		AND end_date >= " . lm2Php2timestamp() . "
-		", __FILE__, __LINE__);
+		", array('driver'=>$driver));
 	$closer = "";
 	$currentGroupDesc = null;
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {

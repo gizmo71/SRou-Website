@@ -592,13 +592,13 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 	$query = $smcFunc['db_query']('', "
 		SELECT id_event, smf_topic
 		, id_event_group
-		, GROUP_CONCAT(DISTINCT short_desc) AS event_group
+		, GROUP_CONCAT(DISTINCT short_desc SEPARATOR '!') AS event_group
 		, event_date
-		, GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause) AS circuit_html
+		, GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause SEPARATOR '!') AS circuit_html
 		, COUNT(id_event_entry) AS entries
 		, IFNULL(server_starter_override, server_starter) AS server_starter
-		, GROUP_CONCAT(DISTINCT full_desc) AS event_group_full
-		, GROUP_CONCAT(DISTINCT {$GLOBALS['lm2_db_prefix']}sims.sim_name) AS sim_desc
+		, GROUP_CONCAT(DISTINCT full_desc SEPARATOR '!') AS event_group_full
+		, GROUP_CONCAT(DISTINCT {$GLOBALS['lm2_db_prefix']}sims.sim_name SEPARATOR '!') AS sim_desc
 		FROM {$GLOBALS['lm2_db_prefix']}events
 		JOIN {$GLOBALS['lm2_db_prefix']}sims ON sim = id_sim
 		JOIN {$GLOBALS['lm2_db_prefix']}sim_circuits ON id_sim_circuit = sim_circuit
@@ -1279,9 +1279,11 @@ function lm2FindEventModerator($event) {
 
 //TODO: remove all calls to this and just get the full_desc directly...
 function lm2FullEventGroupName($group) {
-	global $lm2_db_prefix;
+	global $lm2_db_prefix, $smcFunc;
 
-	$query = $smcFunc['db_query'](null, "SELECT full_desc FROM {$GLOBALS['lm2_db_prefix']}event_groups WHERE id_event_group = $group", __FILE__, __LINE__);
+	$query = $smcFunc['db_query'](null, "
+		SELECT full_desc FROM {$GLOBALS['lm2_db_prefix']}event_groups WHERE id_event_group = {int:group}
+		", array('group'=>$group));
 	($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find group $group");
 	$smcFunc['db_fetch_assoc']($query) && die("multiple groups matching $group!");
 	$smcFunc['db_free_result']($query);
@@ -1432,21 +1434,21 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 		SELECT class_description
 		, GROUP_CONCAT(DISTINCT $lm2_class_style_clause SEPARATOR ' ') AS class_style
 		, lap_record_type
-		, GROUP_CONCAT(DISTINCT car_name) AS car_name
+		, GROUP_CONCAT(DISTINCT car_name SEPARATOR '!') AS car_name
 		, manuf_url
-		, GROUP_CONCAT(DISTINCT manuf_name) AS manuf_name
+		, GROUP_CONCAT(DISTINCT manuf_name SEPARATOR '!') AS manuf_name
 		, manuf_image
 		, manuf_width
 		, manuf_height
 		, manuf_bgcolor
-		, GROUP_CONCAT(DISTINCT record_lap_time) AS record_lap_time
-		, GROUP_CONCAT(DISTINCT record_mph) AS record_mph
-		, GROUP_CONCAT(DISTINCT driver_name) AS realName
+		, MIN(record_lap_time) AS record_lap_time
+		, MAX(record_mph) AS record_mph
+		, GROUP_CONCAT(DISTINCT driver_name SEPARATOR '!') AS realName
 		, id_event, smf_topic
-		, id_event_group, GROUP_CONCAT(DISTINCT short_desc) AS short_desc, series_theme
+		, id_event_group, GROUP_CONCAT(DISTINCT short_desc SEPARATOR '!') AS short_desc, series_theme
 		, event_date
-		, GROUP_CONCAT(DISTINCT driver_member) AS id_member
-		, GROUP_CONCAT(DISTINCT " . lm2MakeBallastFields("{string:blank}", "{string:br}") . ") AS ballast
+		, GROUP_CONCAT(DISTINCT driver_member SEPARATOR '!') AS id_member
+		, GROUP_CONCAT(DISTINCT " . lm2MakeBallastFields("{string:blank}", "{string:br}") . " SEPARATOR '!') AS ballast
 		" . ($id_circuit ? "" : ", $lm2_circuit_link_clause AS circuit_link, id_event_group") . "
 		, {$GLOBALS['lm2_db_prefix']}sims.sim_name
 		FROM {$GLOBALS['lm2_db_prefix']}event_entries
@@ -1465,7 +1467,7 @@ function lm2ShowLapRecords($id_driver, $id_sim, $id_circuit, $id_event, $id_team
 		JOIN {$GLOBALS['lm2_db_prefix']}manufacturers ON id_manuf = manuf
 		WHERE $lm2_lap_record_clause" . ($id_team ? " AND {int:team} = {$GLOBALS['lm2_db_prefix']}event_entries.team" : "") . "
 		GROUP BY brief_name, lap_record_type, class_description, sim_name, manuf_url, manuf_image, manuf_width, manuf_height, manuf_bgcolor
-		, id_event, smf_topic, id_event_group, series_theme, event_date
+		, id_event, smf_topic, id_event_group, series_theme, event_date, layout_notes, id_circuit, layout_name
 		ORDER BY brief_name, display_sequence, lap_record_type, sim_name, record_lap_time, event_date
 		", array('driver'=>$id_driver, 'team'=>$id_team, 'circuit'=>$id_circuit, 'event'=>$id_event, 'sim'=>$id_sim, 'blank'=>'', 'br'=>'<BR/>'));
 	$sep = $opening;
@@ -1577,21 +1579,21 @@ function lm2ShowTeamMembers($current_team_id = null, $show_previous = true) {
 
 //FIXME: replace this with a MySQL stored function.
 function lm2_team_name_order_by($nameColumn) {
-    $ignorePrefixes = array(
-        "Team ",
-        "Scuderia ",
-        "The ",
-    );
+	$ignorePrefixes = array(
+		"Team ",
+		"Scuderia ",
+	"The ",
+	);
 
-    $pred = '';
-    foreach ($ignorePrefixes AS $ignorePrefix) {
-        $len = strlen($ignorePrefix);
-        $pred .= "IF(LEFT($nameColumn,$len) = '$ignorePrefix', SUBSTRING($nameColumn," . ($len + 1) . "), ";
-    }
-    $pred .= "IFNULL($nameColumn, 'ZZZZZ')";
-    foreach ($ignorePrefixes AS $ignorePrefix) {
-        $pred .= ')';
-    }
+	$pred = '';
+	foreach ($ignorePrefixes AS $ignorePrefix) {
+		$len = strlen($ignorePrefix);
+		$pred .= "IF(LEFT($nameColumn,$len) = '$ignorePrefix', SUBSTRING($nameColumn," . ($len + 1) . "), ";
+	}
+	$pred .= "IFNULL($nameColumn, 'ZZZZZ')";
+	foreach ($ignorePrefixes AS $ignorePrefix) {
+		$pred .= ')';
+	}
 
 	return $pred;
 }
@@ -1602,12 +1604,18 @@ function lm2MakeEventList($field, $id, $title = null) {
 	$driver_name = "IF(driver_member = $lm2_guest_member_id, IFNULL(IF(TRIM(driving_name) = '', NULL, driving_name), lobby_name), driver_name)";
 	$query = $smcFunc['db_query'](null, "SELECT id_event_group, id_event, smf_topic
 		, short_desc, event_date
-		" . ($field == 'id_circuit' ? ", {$GLOBALS['lm2_db_prefix']}event_entries.member, $driver_name AS driving_name, length_metres, race_time_adjusted AS race_time, race_laps, length_metres" : "") . "
+		" . ($field == 'id_circuit' ? "
+			, MIN({$GLOBALS['lm2_db_prefix']}event_entries.member) AS member
+			, GROUP_CONCAT(DISTINCT $driver_name SEPARATOR '!') AS driving_name
+			, MAX(length_metres) AS length_metres
+			, MAX(race_time_adjusted) AS race_time
+			, MAX(race_laps) AS race_laps
+			" : "") . "
 		, MIN(race_pos_class) AS best_race_pos_class
-		" . ($field == 'id_circuit' ? "" : ", $lm2_circuit_link_clause AS circuit_link") . "
+		" . ($field == 'id_circuit' ? "" : ", GROUP_CONCAT(DISTINCT $lm2_circuit_link_clause SEPARATOR '!') AS circuit_link") . "
 		, IF(MIN(race_best_lap_pos) = 1, 'FL', IF(MIN(race_best_lap_pos_class) = 1, 'FL (C)', NULL)) AS fastest_race_lap
 		, IF(MIN(qual_pos) = 1, 'Pole', IF(MIN(qual_pos_class) = 1, 'Pole (C)', NULL)) AS pole
-		, driver_type
+		, GROUP_CONCAT(DISTINCT driver_type SEPARATOR '!') AS driver_type
 		FROM {$GLOBALS['lm2_db_prefix']}event_groups
 		JOIN {$GLOBALS['lm2_db_prefix']}events ON id_event_group = event_group
 		JOIN {$GLOBALS['lm2_db_prefix']}sim_circuits ON id_sim_circuit = sim_circuit
@@ -1669,7 +1677,9 @@ function lm2MakeChampStats($champ_type, $id) {
 	$query = $smcFunc['db_query'](null, "
 		SELECT position
 		, points
-		, id_event_group AS event_group, series_theme, full_desc AS event_group_desc
+		, id_event_group AS event_group
+		, series_theme
+		, full_desc AS event_group_desc
 		, champ_class_desc
 		, MAX(event_date) AS last_event
 		, SUM(event_status = 'U') > 0 AS some_unofficial
@@ -1680,7 +1690,7 @@ function lm2MakeChampStats($champ_type, $id) {
 		JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = {$GLOBALS['lm2_db_prefix']}championships.event_group
 		JOIN {$GLOBALS['lm2_db_prefix']}events ON id_event_group = {$GLOBALS['lm2_db_prefix']}events.event_group
 		WHERE id = {int:id} AND champ_type = {string:champ_type}
-		GROUP BY id_championship
+		GROUP BY id_championship, position, full_desc, points, id_event_group, series_theme, champ_class_desc, scoring_type
 		ORDER BY some_unofficial, scoring_type = 'C' AND 0, last_event
 		", array('id'=>$id, 'champ_type'=>$champ_type));
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
