@@ -125,11 +125,11 @@ class CarRatings extends RefData {
 			's'=>array('name'=>'Scheme', 'nested'=>array()),
 		);
 
-		$query = lm2_query("
+		$query = $smcFunc['db_query'](null, "
 			SELECT id_scoring_scheme AS id, scoring_scheme_name AS description
 			FROM {$this->lm2_db_prefix}scoring_schemes
 			JOIN " . $this->getTable() . " ON id_car_rating = id_scoring_scheme
-			", __FILE__, __LINE__);
+			", array());
 		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"rating_scoring_scheme = " . sqlString($row['id']));
 		}
@@ -155,12 +155,12 @@ class MapBase extends RefData {
 	function mapify($targetTable, $targetField, $joins = "") {
 		global $smcFunc;
 
-		lm2_query("
+		$smcFunc['db_query'](null, "
 			UPDATE IGNORE $targetTable
 			$joins
 			JOIN " . $this->getTable() . " ON hist_" . $this->getBaseEntity() . " = $targetTable.$targetField AND approved
 			SET $targetTable.$targetField = live_" . $this->getBaseEntity() . "
-			", __FILE__, __LINE__);
+			", array());
 		printf(" %d&nbsp;<TT>%s</TT>...", $smcFunc['db_affected_rows'](), $targetTable);
 	}
 
@@ -174,15 +174,16 @@ class MapBase extends RefData {
 
 		// It's really important to verify that we're not merging two members or teams who appear in the same championship!
 		// We only do event points because champ points always follow as a result.
-		$query = lm2_query("
-			SELECT full_desc, id_championship, champ_type, champ_class_desc, $live, GROUP_CONCAT(DISTINCT $hist) AS hist, COUNT(DISTINCT ep.id) AS dep
+		$query = $smcFunc['db_query'](null, "
+			SELECT full_desc, id_championship, champ_type, champ_class_desc, $live
+			     , GROUP_CONCAT(DISTINCT $hist) AS hist, COUNT(DISTINCT ep.id) AS dep
 			FROM {$lm2_db_prefix}event_points AS ep
 			JOIN {$lm2_db_prefix}championships ON championship = id_championship AND champ_type = '" . $this->getChampType() . "'
 			JOIN {$lm2_db_prefix}event_groups ON event_group = id_event_group
 			JOIN " . $this->getTable() . " ON ep.id IN ($hist, $live)
-			GROUP BY id_championship, $live
+			GROUP BY id_championship, $live, full_desc, champ_type, champ_class_desc
 			HAVING dep > 1
-			", __FILE__, __LINE__);
+			", array());
 		while ($row = $smcFunc['db_fetch_assoc']($query)) {
 			echo "<BR/>" . print_r($row, true);
 			++$count;
@@ -299,13 +300,17 @@ function teamIsDeletable($id_team, $row) {
 
 	$entries = 0;
 
-	$query = lm2_query("SELECT COUNT(*) AS entries FROM {$lm2_db_prefix}event_entries WHERE team = $id_team", __FILE__, __LINE__);
+	$query = $smcFunc['db_query'](null, "
+		SELECT COUNT(*) AS entries FROM {$lm2_db_prefix}event_entries WHERE team = {int:team}
+		", array('team'=>$id_team));
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$entries += max($entries, $row['entries']);
 	}
 	$smcFunc['db_free_result']($query);
 
-	$query = lm2_query("SELECT COUNT(*) AS entries FROM {$lm2_db_prefix}team_drivers WHERE team = $id_team", __FILE__, __LINE__);
+	$query = $smcFunc['db_query'](null, "
+		SELECT COUNT(*) AS entries FROM {$lm2_db_prefix}team_drivers WHERE team = {int:team}
+		", array('team'=>$id_team));
 	while ($row = $smcFunc['db_fetch_assoc']($query)) {
 		$entries += max($entries, $row['entries']);
 	}

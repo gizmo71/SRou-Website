@@ -914,6 +914,7 @@ ORDER BY 1, 2
 	// Returns true if any ties were found. Clause should be lowest number for best rank.
 	function break_ties($clause, $mode, $nullValue = 9999999, $dummyBreaker = -9999999) {
 		$mode || die("no mode");
+		global $smcFunc;
 
 		if (!is_null($clause)) {
 			$sql = "
@@ -953,19 +954,17 @@ ORDER BY 1, 2
 		}
 
 		lm2_query("DROP TEMPORARY TABLE IF EXISTS {$this->temp_db_prefix}champ_ties", __FILE__, __LINE__);
-		lm2_query("
+		$smcFunc['db_query'](null, "
 			CREATE TEMPORARY TABLE {$this->temp_db_prefix}champ_ties
 			(INDEX (t_champ, t_pos)) AS
 			SELECT championship AS t_champ, position AS t_pos, COUNT(*) AS tied
 			FROM {$this->temp_db_prefix}championship_points
 			JOIN {$this->lm2_db_prefix}championships ON id_championship = championship
-			WHERE tie_break_mode = '$mode'
+			WHERE tie_break_mode = {string:mode}
 			GROUP BY championship, position
 			HAVING tied > 1
-			", __FILE__, __LINE__);
-		$query = lm2_query("SELECT COUNT(*) AS remaining_ties FROM {$this->temp_db_prefix}champ_ties");
-		$rows = mysql_fetch_assoc($query)['remaining_ties'];
-		mysql_free_result($query);
+			", array('mode'=>$mode));
+		$rows = $smcFunc['db_affected_rows']();
 echo "<!-- $clause - $rows -->\n";
 		return $rows;
 	}
