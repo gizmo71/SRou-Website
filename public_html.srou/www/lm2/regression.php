@@ -41,12 +41,12 @@ class RegressionTester {
 	function check() {
 /*
 		echo "<P STYLE='color: blue'>Hacking data:";
-		db_query("
+		lm2_query("
 			DELETE FROM {$this->lm2_db_prefix}championship_points
 			WHERE id = 1
 			", __FILE__, __LINE__);
 		echo " " . db_affected_rows();
-		db_query("
+		lm2_query("
 			INSERT INTO {$this->lm2_db_prefix}championship_points
 			(championship, id, points, position)
 			VALUES	(666, 666, 42, 69)
@@ -54,12 +54,12 @@ class RegressionTester {
 			,	(39, 1, 175, 180)
 			,	(48, 1, 1234, 1)
 			", __FILE__, __LINE__);
-		echo " " . db_affected_rows();
-		db_query("
+		echo " " . mysql_affected_rows();
+		lm2_query("
 			DELETE FROM {$this->lm2_db_prefix}event_points
 			WHERE id = 1 AND championship = 38
 			", __FILE__, __LINE__);
-		echo " " . db_affected_rows();
+		echo " " . mysql_affected_rows();
 		echo "</P>\n";
 */
 
@@ -81,7 +81,7 @@ class RegressionTester {
 				$field_list .= "$sep r.$field AS {$field}_OLD";
 			}
 
-			db_query("
+			lm2_query("
 				CREATE TEMPORARY TABLE {$this->temp_db_prefix}all_entries
 				(INDEX (" . implode(", ", $fields['keys']) . "))
 				SELECT DISTINCT " . implode(", ", $fields['keys']) . " FROM {$this->regr_db_prefix}$table
@@ -127,7 +127,7 @@ class RegressionTester {
 			echo $closer;
 			mysql_free_result($query);
 
-			db_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}all_entries", __FILE__, __LINE__);
+			lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}all_entries", __FILE__, __LINE__);
 		}
 
 		if ($unmatched > 0) {

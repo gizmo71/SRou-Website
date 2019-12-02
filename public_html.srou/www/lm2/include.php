@@ -63,7 +63,7 @@ function microtime_float() {
    return ((float) $usec + (float) $sec);
 }
 
-//TODO: change everywhere to call smcFunc thingy
+//TODO: remove these wrappers and rewrite all queries to use smcFunc
 $inhibitTimings = false;
 function lm2_query($sql, $file, $line) {
 	global $inhibitTimings, $db_connection;
@@ -81,8 +81,21 @@ function lm2_query($sql, $file, $line) {
 	mysqli_query($db_connection, "SET sql_mode = @oldMode") || die(mysqli_error($db_connection));
 	return $result;
 }
-//function mysql_free_result($q) { global $smcFunc; return $smcFunc['db_free_result']($q); }
-//function mysql_fetch_assoc($q) { global $smcFunc; return $smcFunc['db_fetch_assoc']($q); }
+
+function mysql_fetch_assoc($query) {
+	global $smcFunc;
+	return $smcFunc['db_fetch_assoc']($query);
+}
+
+function mysql_free_result($query) {
+	global $smcFunc;
+	$smcFunc['db_free_result']($query);
+}
+
+function mysql_affected_rows() {
+	global $smcFunc;
+	return $smcFunc['db_affected_rows']();
+}
 
 //FIXME: remove and use LM2 version everywhere.
 function format_timestamp($time, $date_only) { return lm2FormatTimestamp($time, $date_only); }

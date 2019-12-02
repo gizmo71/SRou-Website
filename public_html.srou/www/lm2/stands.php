@@ -201,7 +201,7 @@ class StandingsGenerator {
 			SET position = master_position
 			WHERE champ_master IS NOT NULL
 			", __FILE__, __LINE__);
-		db_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}slaves", __FILE__, __LINE__);
+		lm2_query("DROP TEMPORARY TABLE {$this->temp_db_prefix}slaves", __FILE__, __LINE__);
 
 		echo " RP...";
 
@@ -524,7 +524,7 @@ class StandingsGenerator {
 
 		foreach ($this->tables as $table => $fields) {
 			foreach ($fields['temp_fields'] as $name => $type) {
-				db_query("ALTER TABLE {$this->temp_db_prefix}${table} DROP {$name}" , __FILE__, __LINE__);
+				lm2_query("ALTER TABLE {$this->temp_db_prefix}${table} DROP {$name}" , __FILE__, __LINE__);
 			}
 			
 			lm2_query("DELETE FROM {$this->lm2_db_prefix}{$table} WHERE NOT is_protected_c", __FILE__, __LINE__);
