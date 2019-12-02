@@ -963,7 +963,9 @@ ORDER BY 1, 2
 			GROUP BY championship, position
 			HAVING tied > 1
 			", __FILE__, __LINE__);
-		$rows = mysql_affected_rows();
+		$query = lm2_query("SELECT COUNT(*) AS remaining_ties FROM {$this->temp_db_prefix}champ_ties");
+		$rows = mysql_fetch_assoc($query)['remaining_ties'];
+		mysql_free_result($query);
 echo "<!-- $clause - $rows -->\n";
 		return $rows;
 	}

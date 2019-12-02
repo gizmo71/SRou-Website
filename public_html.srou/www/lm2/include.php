@@ -92,10 +92,7 @@ function mysql_free_result($query) {
 	$smcFunc['db_free_result']($query);
 }
 
-function mysql_affected_rows() {
-	global $smcFunc;
-	return $smcFunc['db_affected_rows']();
-}
+// Be warned that affected_rows no longer seems to work. :-(
 
 //FIXME: remove and use LM2 version everywhere.
 function format_timestamp($time, $date_only) { return lm2FormatTimestamp($time, $date_only); }
