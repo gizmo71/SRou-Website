@@ -311,4 +311,5 @@ minified.css
 /public_html.srou/www/smf/Themes/default/css/
 /public_html.srou/www/smf/Themes/default/scripts/
 
-**/css/minified_*.css
+/**/css/minified_*.css
+/**/scripts/minified_*.js
