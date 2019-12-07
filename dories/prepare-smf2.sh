@@ -40,7 +40,9 @@ chmod 0755 .
 
 git checkout smf2
 
-mkdir -pv Themes/*/scripts ../../../public_html.ukgpl/smf-theme/scripts
+for themedir in $(find Themes/* -type d -maxdepth 0) ../../../public_html.ukgpl/smf-theme; do
+	mkdir -pv $themedir/scripts
+done
 
 #php -f ./upgrade.php -- --debug --no-maintenance
 
