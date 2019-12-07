@@ -40,7 +40,7 @@ chmod 0755 .
 
 git checkout smf2
 
-for themedir in $(find ../public_html.srou/www/smf/Themes/* -type d -maxdepth 0) ../../../public_html.ukgpl/smf-theme; do
+for themedir in $(find Themes/* -type d -maxdepth 0) ../../../public_html.ukgpl/smf-theme; do
 	mkdir -pv $themedir/scripts
 done
 
