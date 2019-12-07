@@ -25,9 +25,7 @@ CREATE TABLE _map_board_themes SELECT ID_BOARD AS board, ID_THEME AS theme FROM 
 UPDATE smf_members SET birthdate = '0001-01-01' WHERE birthdate LIKE '%-00' OR birthdate LIKE '%-00-%';
 EOF
 
-cd public_html.srou/www
-
-cd smf
+cd public_html.srou/www/smf
 
 wget -O - https://download.simplemachines.org/index.php/smf_2-1-rc2_upgrade.tar.bz2 | bzip2 -d | tar xvf -
 
@@ -41,6 +39,8 @@ touch db_last_error.php
 chmod 0755 .
 
 git checkout smf2
+
+mkdir -pv Themes/*/scripts ../../../public_html.ukgpl/smf-theme/scripts
 
 #php -f ./upgrade.php -- --debug --no-maintenance
 
