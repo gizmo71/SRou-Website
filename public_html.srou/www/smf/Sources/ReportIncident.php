@@ -13,7 +13,6 @@ function ReportIncident() {
 	global $context, $boardurl, $smcFunc, $lm2_circuit_html_clause;
 
 	loadTemplate('ReportIncident');
-	$context['ReportIncident']['messages'] = array();
 
 	if (!empty($_REQUEST['report'])) {
 		empty($_REQUEST['event']) || die("cannot specify both event and report");
@@ -31,6 +30,7 @@ function ReportIncident() {
 	} else {
 		fatal_error("Incident report with no report or event; " . print_r($_REQUEST, true));
 	}
+	$context['ReportIncident']['messages'] = array();
 
 	$query = $smcFunc['db_query'](null, "
 		SELECT $lm2_circuit_html_clause AS circuit_html
@@ -50,7 +50,7 @@ function ReportIncident() {
 		LEFT JOIN {db_prefix}topics ON incident_topic = id_topic
 		WHERE id_event = {int:event}
 		", array('unofficial_status'=>'U', 'event'=>$context['ReportIncident']['event']));
-	($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find event $event!");
+	($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find event {$context['ReportIncident']['event']}!");
 	$context['ReportIncident']['when'] = lm2FormatTimestamp(lm2Timestamp2php($row['event_date']), false);
 	$context['ReportIncident']['event_group_brief'] = htmlentities($row['short_desc'], ENT_QUOTES);
 	$context['ReportIncident']['event_group_full'] = htmlentities($row['full_desc'], ENT_QUOTES);
@@ -58,10 +58,10 @@ function ReportIncident() {
 	$context['ReportIncident']['replay_clip_style'] = $row['sim_replay_clips'];
 	$context['ReportIncident']['is_unofficial'] = $row['is_unofficial'];
 	$context['ReportIncident']['incident_topic'] = $row['incident_topic'];
-	$smcFunc['db_fetch_assoc']($query) && die("multiple events matching $event!");
+	$smcFunc['db_fetch_assoc']($query) && die("multiple events matching {$context['ReportIncident']['event']}!");
 	$smcFunc['db_free_result']($query);
 
-	($context['ReportIncident']['mod_id'] = lm2FindEventModerator($event)) || die("can't find a moderator!");
+	($context['ReportIncident']['mod_id'] = lm2FindEventModerator($context['ReportIncident']['event'])) || die("can't find a moderator!");
 
 	if (!$row['is_unofficial']) {
 		$context['ReportIncident']['messages'][] = "Warning! The moderator's report for this event has already been published.";
@@ -115,7 +115,7 @@ function isValidAndSubmitted() {
 
 	$valid = true;
 
-	$context['ReportIncident']['replay'] = empty($_SESSION['lm2_replay']) ? null : $_SESSION['lm2_replay'];
+	$context['ReportIncident']['replay'] = empty($_SESSION['lm2_replay']) ? array() : $_SESSION['lm2_replay'];
 	if (!empty($_FILES['replay'])) {
 		is_array($_FILES['replay']['error']) || fatal_error("Replay attachment not array");
 		foreach ($_FILES['replay']['tmp_name'] as $n => $dummy) {
@@ -138,7 +138,7 @@ function isValidAndSubmitted() {
 
 	$context['ReportIncident']['time'] = trim($_REQUEST['time']);
 	$context['ReportIncident']['body'] = trim($_REQUEST['body']);
-	$context['ReportIncident']['unrep'] = trim($_REQUEST['unrep']);
+	$context['ReportIncident']['unrep'] = trim(lm2ArrayValue($_REQUEST, 'unrep'));
 	if ($context['ReportIncident']['report'] == 0) $context['ReportIncident']['summary'] = trim($_REQUEST['summary']);
 
 	if (empty($context['ReportIncident']['summary'])) {
@@ -168,15 +168,15 @@ function submitReport() {
 		. ", {$context['ReportIncident']['when']} ({$context['ReportIncident']['circuit']})"), array("\r" => '', "\n" => '', "\t" => ''));
 
 	if ($context['ReportIncident']['report'] == 0) {
-		$smcFunc['db_insert']('ignore', "{$GLOBALS['lm2_db_prefix']}reports",
-			array('report_summary'=>'string',
-				'report_event'=>'int'),
-			array($context['ReportIncident']['summary'],
-				'event'=>$context['ReportIncident']['event']));
-		$context['ReportIncident']['report'] = $smcFunc['db_insert_id']("{$GLOBALS['lm2_db_prefix']}reports", "id_report");
+		$context['ReportIncident']['report'] = $smcFunc['db_insert']('ignore', // If 'insert', new row ID won't be found.
+			"{$GLOBALS['lm2_db_prefix']}reports",
+			array('report_summary'=>'string', 'report_event'=>'int'),
+			array($context['ReportIncident']['summary'], 'event'=>$context['ReportIncident']['event']),
+			array('id_report'=>'int'),
+			1);
 	}
 
-	$driver_list .= "\n\nThe incident involved the following drivers:[list]";
+	$driver_list = "\n\nThe incident involved the following drivers:[list]";
 	$drivers = array();
 	foreach ($context['ReportIncident']['drivers'] AS $driver) {
 		if ($driver['reporting']) {
@@ -243,7 +243,7 @@ function submitReport() {
 
 	$recipients = array('to'=>array($context['ReportIncident']['mod_id']), 'bcc'=>array());
 	$messageTop = "[I]Incident report submitted using LM2i[/I]"
-		. "$messageTop\n\nServer replay time: [B]{$context['ReportIncident']['time']}[/B]"
+		. "\n\nServer replay time: [B]{$context['ReportIncident']['time']}[/B]"
 		. "\n\n{$context['ReportIncident']['summary']}"
 		. $driver_list
 		. "\n\n";
