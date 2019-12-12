@@ -1385,7 +1385,7 @@ function lm2MakeEventGroupLink($group, $text = null, $theme = null, $anchor = nu
 		$text = lm2FullEventGroupName($group);
 		$title = "";
 	} else if ($group) {
-		$title = ' TITLE="FIXME:lm2FullEventGroupName($group)"';
+		$title = ' TITLE="' . lm2FullEventGroupName($group) . '"';
 	} else {
 		$title = '';
 	}
