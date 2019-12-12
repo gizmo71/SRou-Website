@@ -247,7 +247,7 @@ class RefData {
 	function addRow() { return null; }
 
 	function getFilters() {
-		return array(''=>array(name=>'None', predicate=>'1'));
+		return array(''=>array('name'=>'None', 'predicate'=>'1'));
 	}
 
 	function getDefaultSortOrder() {
@@ -283,7 +283,7 @@ class Cars extends RefData {
 	function addRow() {
 		global $filterId;
 		$defaultManuf = substr($filterId, 0, 1) == 'm' ? substr($filterId, 1) : -1;
-		return array(manuf=>$defaultManuf);
+		return array('manuf'=>$defaultManuf);
 	}
 
 	function getFilters() {
@@ -295,7 +295,7 @@ class Cars extends RefData {
 			ORDER BY manuf_name
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['m']['nested']["m{$row['id_manuf']}"] = array(name=>$row['manuf_name'], predicate=>"manuf = " . sqlString($row['id_manuf']));
+			$filters['m']['nested']["m{$row['id_manuf']}"] = array('name'=>$row['manuf_name'], 'predicate'=>"manuf = " . sqlString($row['id_manuf']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -439,7 +439,7 @@ class SimCars extends RefData {
 
 		$query = lm2_query($GLOBALS['carRefDataFieldFKSQL'], __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"car = " . sqlString($row['id']));
+			$filters['c']['nested']["c{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"car = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -477,9 +477,9 @@ class Classification extends RefData {
 	function addRow() {
 		global $filterId;
 		return array(
-			event_group=>substr($filterId, 0, 1) == 'g' ? substr($filterId, 1) : -1,
-			car=>substr($filterId, 0, 1) == 'c' ? substr($filterId, 1) : -1,
-			car_class=>substr($filterId, 0, 1) == 'l' ? substr($filterId, 1) : '-'
+			'event_group'=>substr($filterId, 0, 1) == 'g' ? substr($filterId, 1) : -1,
+			'car'=>substr($filterId, 0, 1) == 'c' ? substr($filterId, 1) : -1,
+			'car_class'=>substr($filterId, 0, 1) == 'l' ? substr($filterId, 1) : '-'
 		);
 	}
 
@@ -501,7 +501,7 @@ class Classification extends RefData {
 			ORDER BY display_sequence
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'], predicate=>"car_class = " . sqlString($row['id']));
+			$filters['l']['nested']["l{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"car_class = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -511,13 +511,13 @@ class Classification extends RefData {
 			WHERE id_event_group IN (SELECT event_group FROM {$this->lm2_db_prefix}car_classification) OR NOT is_protected
 			ORDER BY description", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['g']['nested']["g{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf("event_group = %d", $row['id']));
+			$filters['g']['nested']["g{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>sprintf("event_group = %d", $row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query($GLOBALS['carRefDataFieldFKSQL'], __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"car = " . sqlString($row['id']));
+			$filters['c']['nested']["c{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"car = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -644,7 +644,7 @@ class SimCircuits extends RefData {
 	}
 
 	function addRow() {
-		return array(sim=>-1, circuit=>-1);
+		return array('sim'=>-1, 'circuit'=>-1);
 	}
 
 	function getFilters() {
@@ -669,8 +669,10 @@ class SimCircuits extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'],
-				predicate=>sprintf("circuit IN (SELECT id_circuit FROM {$this->lm2_db_prefix}circuits WHERE circuit_location = %s)", sqlString($row['id'])));
+			$filters['l']['nested']["l{$row['id']}"] = array('name'=>$row['description'],
+				'predicate'=>sprintf("circuit IN
+					(SELECT id_circuit FROM {$this->lm2_db_prefix}circuits WHERE circuit_location = %s)
+					", sqlString($row['id'])));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -748,7 +750,7 @@ class Circuits extends CircuitRefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['l']['nested']["l{$row['id']}"] = array(name=>$row['description'], predicate=>"circuit_location = " . sqlString($row['id']));
+			$filters['l']['nested']["l{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"circuit_location = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -795,8 +797,8 @@ class Locations extends CircuitRefData {
 
 	function getFilters() {
 		$filters = array(
-			'nwx'=>array(name=>'No Weather', predicate=>'wu_station IS NULL'),
-			'f'=>array(name=>'Fantasy', predicate=>'is_fantasy'),
+			'nwx'=>array('name'=>'No Weather', 'predicate'=>'wu_station IS NULL'),
+			'f'=>array('name'=>'Fantasy', 'predicate'=>'is_fantasy'),
 		);
 
 		$query = lm2_query("
@@ -805,11 +807,12 @@ class Locations extends CircuitRefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"iso3166_code = " . sqlString($row['id']));
+			$filters['c']['nested']["c{$row['id']}"] = array(
+				'name'=>$row['description'], 'predicate'=>"iso3166_code = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
-		$filters[''] = array(name=>'None', predicate=>'1');
+		$filters[''] = array('name'=>'None', 'predicate'=>'1');
 		return $filters;
 	}
 
@@ -856,7 +859,7 @@ class RefDataFieldFKPollChoice extends RefDataFieldFK {
 	function RefDataFieldFKPollChoice($name) {
 		$this->name = $name;
 		$this->width = "10em";
-		array_push($this->map, array(id=>null, description=>""));
+		array_push($this->map, array('id'=>null, 'description'=>""));
 	}
 
 	function useJS() {
@@ -872,20 +875,22 @@ class RefDataFieldFKPollChoice extends RefDataFieldFK {
 		if (is_null($map)) {
 			$map = $this->map;
 			if (!is_null($champ)) {
-				$query = lm2_query("
+				global $smcFunc;
+				$query = $smcFunc['db_query'](null, "
 					SELECT DISTINCT id_choice AS id, label AS description, 1 AS is_html
 					FROM {$GLOBALS['lm2_db_prefix']}championships
 					JOIN {$GLOBALS['lm2_db_prefix']}event_group_tree ON contained = event_group
 					JOIN {$GLOBALS['lm2_db_prefix']}event_groups ON id_event_group = container
 					JOIN {$GLOBALS['db_prefix']}topics ON reg_topic = id_topic
-					JOIN {$GLOBALS['db_prefix']}poll_choices ON {$GLOBALS['db_prefix']}poll_choices.id_poll = {$GLOBALS['db_prefix']}topics.id_poll
-					WHERE id_championship = $champ
+					JOIN {$GLOBALS['db_prefix']}poll_choices
+						ON {$GLOBALS['db_prefix']}poll_choices.id_poll = {$GLOBALS['db_prefix']}topics.id_poll
+					WHERE id_championship = {int:champ}
 					ORDER BY description
-					", __FILE__, __LINE__);
-				while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
+					", array('champ'=>$champ));
+				while ($row = $smcFunc['db_fetch_assoc']($query)) {
 					array_push($map, $row);
 				}
-				$GLOBALS['smcFunc']['db_free_result']($query);
+				$smcFunc['db_free_result']($query);
 			}
 
 			$champMaps[$champ] = $map;
@@ -1030,9 +1035,9 @@ class ChampGroups extends RefData {
 				AND champ_type = 'D'
 				ORDER BY short_desc, champ_sequence
 				", true),
-			new RefDataFieldFK("champ_group_membergroup", "SELECT id_group AS id, groupName AS description
+			new RefDataFieldFK("champ_group_membergroup", "SELECT id_group AS id, group_name AS description
 				FROM {$GLOBALS['db_prefix']}membergroups
-				ORDER BY minPosts, description
+				ORDER BY min_posts, description
 				", false),
 			new RefDataFieldEdit("champ_group_type", 1),
 			new RefDataFieldFKPollChoice("champ_group_poll_choice"),
@@ -1040,7 +1045,7 @@ class ChampGroups extends RefData {
 	}
 
 	function addRow() {
-		return array(champ_group_type=>'F', champ_group_membergroup=>null);
+		return array('champ_group_type'=>'F', 'champ_group_membergroup'=>null);
 	}
 
 	function show_notes() {
@@ -1109,7 +1114,7 @@ class RefDataFieldFKIncidentTopic extends RefDataFieldFK {
 		$map = parent::getMap($row);
 
 		if (!$this->trimmed) {
-			array_walk($map, trim_incident_subject);
+			array_walk($map, 'trim_incident_subject');
 			$this->trimmed = true;
 		}
 
@@ -1161,7 +1166,7 @@ class Events extends RefData {
 	function addRow() {
 		global $filterId;
 		$defaultGroup = substr($filterId, 0, 1) == 'g' ? substr($filterId, 1) : -1;
-		return array(event_group=>$defaultGroup, sim_circuit=>-1, event_status=>'U', event_type=>'C', sim=>-1);
+		return array('event_group'=>$defaultGroup, 'sim_circuit'=>-1, 'event_status'=>'U', 'event_type'=>'C', 'sim'=>-1);
 	}
 
 	function getFilters() {
@@ -1187,7 +1192,8 @@ class Events extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['s']['nested']["s{$row['id']}"] = array(name=>$row['description'], predicate=>"$pred AND sim = " . sqlString($row['id']));
+			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'],
+				'predicate'=>"$pred AND sim = " . sqlString($row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1198,7 +1204,7 @@ class Events extends RefData {
 			WHERE NOT is_protected
 			ORDER BY description", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['g']['nested']["g{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf("event_group = %d", $row['id']));
+			$filters['g']['nested']["g{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>sprintf("event_group = %d", $row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1209,7 +1215,7 @@ class Events extends RefData {
 			JOIN {$this->lm2_db_prefix}events ON cg.id_event_group = event_group
 			ORDER BY description", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['p']['nested']["p{$row['id']}"] = array(name=>$row['description'], predicate=>sprintf(
+			$filters['p']['nested']["p{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>sprintf(
 				"(event_group = %d OR event_group IN (SELECT id_event_group FROM {$this->lm2_db_prefix}event_groups WHERE parent = %d))", $row['id'], $row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
@@ -1222,8 +1228,8 @@ class Events extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['t']['nested']["lt{$row['id']}"] = array(name=>$row['description'],
-				predicate=>sprintf("sim_circuit IN (SELECT id_sim_circuit FROM {$this->lm2_db_prefix}sim_circuits WHERE circuit = %d)", $row['id']));
+			$filters['t']['nested']["lt{$row['id']}"] = array('name'=>$row['description'],
+				'predicate'=>sprintf("sim_circuit IN (SELECT id_sim_circuit FROM {$this->lm2_db_prefix}sim_circuits WHERE circuit = %d)", $row['id']));
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1356,13 +1362,13 @@ class EventEntries extends RefData {
 				? array('Live'=>' AND sim_driver_member <= 10000000', 'Historic'=>' AND sim_driver_member > 10000000')
 				: array(''=>'');
 			foreach ($subdivs as $id=>$pred) {
-				$filters['w']['nested']["w{$row['id']}$id"] = array(name=>"{$row['description']} $id", predicate=>"
+				$filters['w']['nested']["w{$row['id']}$id"] = array('name'=>"{$row['description']} $id", 'predicate'=>"
 					$notMig AND is_protected_c = {$row['id']} AND member <> sim_driver_member$pred");
 			}
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
-		$filters['t']['nested']['tANY'] = array(name=>'Any', predicate=>"
+		$filters['t']['nested']['tANY'] = array('name'=>'Any', 'predicate'=>"
 			$notProtNotMig AND IF(member = $lm2_guest_member_id, 1, 0) <> IF(driver_type IS NULL, 0, 1)");
 		$query = lm2_query("
 			SELECT DISTINCT id_sim AS id, sim_name AS description
@@ -1371,7 +1377,7 @@ class EventEntries extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['t']['nested']["t{$row['id']}"] = array(name=>$row['description'], predicate=>"
+			$filters['t']['nested']["t{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"
 				{$filters['t']['nested']['tANY']['predicate']} AND event IN (SELECT id_event FROM {$this->lm2_db_prefix}events WHERE sim = {$row['id']})");
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
@@ -1387,7 +1393,7 @@ class EventEntries extends RefData {
 			ORDER BY event_date DESC
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['e']['nested']["e{$row['id']}"] = array(name=>$row['description'], predicate=>"event = {$row['id']}");
+			$filters['e']['nested']["e{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"event = {$row['id']}");
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1398,7 +1404,7 @@ class EventEntries extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['d']['nested']["d{$row['id']}"] = array(name=>$row['description'], predicate=>"member = {$row['id']} AND NOT is_protected_c");
+			$filters['d']['nested']["d{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"member = {$row['id']} AND NOT is_protected_c");
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1411,7 +1417,7 @@ class EventEntries extends RefData {
 				ORDER BY IF(member = $lm2_guest_member_id, 1, 0), description
 				", __FILE__, __LINE__);
 			while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-				$filters['s']['nested']["s{$row['id']}"] = array(name=>$row['description'], predicate=>"sim_driver = {$row['id']}");
+				$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim_driver = {$row['id']}");
 			}
 			$GLOBALS['smcFunc']['db_free_result']($query);
 		}
@@ -1424,7 +1430,7 @@ class EventEntries extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['c']['nested']["c{$row['id']}"] = array(name=>$row['description'], predicate=>"sim_car IN (SELECT id_sim_car FROM {$this->lm2_db_prefix}sim_cars WHERE car = {$row['id']})");
+			$filters['c']['nested']["c{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim_car IN (SELECT id_sim_car FROM {$this->lm2_db_prefix}sim_cars WHERE car = {$row['id']})");
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1472,7 +1478,7 @@ class EventBoards extends RefData {
 			new RefDataFieldFK("smf_board", "
 				SELECT id_board AS id, name AS description
 				FROM {$this->db_prefix}boards
-				ORDER BY boardOrder"),
+				ORDER BY board_order"),
 		);
 	}
 
@@ -1486,7 +1492,7 @@ class EventBoards extends RefData {
 
 	function getFilters() {
 		$filters = array(
-			'none'=>array(name=>'None', predicate=>'1'),
+			'none'=>array('name'=>'None', 'predicate'=>'1'),
 		);
 		return $filters;
 	}
@@ -1534,7 +1540,7 @@ class EventGroups extends RefData {
 			new RefDataFieldFK("server_starter", moderatorRefDataFieldFKSQL($lm2_mods_group_server, $lm2_mods_group_ukgpl), true, "5em"),
 			new RefDataFieldFK("is_protected", $isProtectedValueMap, false),
 			new RefDataFieldFK("reg_topic", "
-				SELECT {$this->db_prefix}topics.id_topic AS id, subject AS description, postertime < $sixMonthsAgo AS hide, 1 AS is_html
+				SELECT {$this->db_prefix}topics.id_topic AS id, subject AS description, poster_time < $sixMonthsAgo AS hide, 1 AS is_html
 				FROM {$this->db_prefix}messages, {$this->db_prefix}topics, {$this->db_prefix}polls
 				WHERE {$this->db_prefix}topics.id_poll = {$this->db_prefix}polls.id_poll
 				AND id_first_msg = id_msg
@@ -1672,11 +1678,11 @@ class EventGroups extends RefData {
 
 	function getFilters() {
 		$filters = array(
-			''=>array(name=>'Unprotected', predicate=>'NOT is_protected'),
-			'hid'=>array(name=>'Hidden', predicate=>'is_protected = 2'),
-			'none'=>array(name=>'None', predicate=>'1'),
-			'mkp'=>array(name=>'MkPortal', predicate=>'mkp_pid IS NOT NULL AND series_details IS NULL'),
-			'notheme'=>array(name=>'No Theme', predicate=>'series_theme IS NULL'),
+			''=>array('name'=>'Unprotected', 'predicate'=>'NOT is_protected'),
+			'hid'=>array('name'=>'Hidden', 'predicate'=>'is_protected = 2'),
+			'none'=>array('name'=>'None', 'predicate'=>'1'),
+			'mkp'=>array('name'=>'MkPortal', 'predicate'=>'mkp_pid IS NOT NULL AND series_details IS NULL'),
+			'notheme'=>array('name'=>'No Theme', 'predicate'=>'series_theme IS NULL'),
 			'p'=>array('name'=>'Parent', 'nested'=>array()),
 		);
 
@@ -1685,9 +1691,9 @@ class EventGroups extends RefData {
 			FROM {$this->lm2_db_prefix}event_groups
 			WHERE id_event_group IN (SELECT parent FROM {$this->lm2_db_prefix}event_groups)
 			ORDER BY description", __FILE__, __LINE__);
-		$filters['p']['nested']["pNULL"] = array('name'=>"Root", predicate=>"parent IS NULL");
+		$filters['p']['nested']["pNULL"] = array('name'=>"Root", 'predicate'=>"parent IS NULL");
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['p']['nested']["p{$row['id']}"] = array('name'=>$row['description'], predicate=>"parent = {$row['id']}");
+			$filters['p']['nested']["p{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"parent = {$row['id']}");
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1709,7 +1715,7 @@ class PenaltyGroups extends RefData {
 	}
 
 	function addRow() {
-		return array('penalty_group_desc'=>"UKGPL Sx Dy", penalty_group_months=>"9", penalty_group_mode=>'S');
+		return array('penalty_group_desc'=>"UKGPL Sx Dy", 'penalty_group_months'=>"9", 'penalty_group_mode'=>'S');
 	}
 
 	function getDefaultSortOrder() {
@@ -1816,7 +1822,7 @@ class SimDrivers extends RefData {
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['d']['nested']["d{$row['id']}"] = array(name=>$row['description'], predicate=>"member = {$row['id']}");
+			$filters['d']['nested']["d{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"member = {$row['id']}");
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
@@ -1982,12 +1988,12 @@ class Money extends RefData {
 //
 //	function addRow() {
 //		global $guest_member_id;
-//		return array(test_desc=>null, member=>$guest_member_id, sim=>-1, 'class'=>'-');
+//		return array(test_desc=>null, 'member'=>$guest_member_id, 'sim'=>-1, 'class'=>'-');
 //	}
 //
 //	function getFilters() {
 //		$filters = parent::getFilters();
-//		$filters['g'] = array(name=>'Guests', predicate=>'member = 2');
+//		$filters['g'] = array('name'=>'Guests', 'predicate'=>'member = 2');
 //		return $filters;
 //	}
 //}

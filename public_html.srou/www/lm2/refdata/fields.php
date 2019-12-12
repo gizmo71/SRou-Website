@@ -243,11 +243,11 @@ class RefDataFieldFK extends RefDataField {
 
 		if (is_null($cacheEntry)) {
 			if ($this->allowNull) {
-				array_push($this->map, array(id=>null, description=>""));
+				array_push($this->map, array('id'=>null, 'description'=>""));
 			}
 			if (is_array($this->sql)) {
 				foreach ($this->sql as $id=>$description) {
-					array_push($this->map, array(id=>$id, description=>$description));
+					array_push($this->map, array('id'=>$id, 'description'=>$description));
 					$this->valueMap[$id] = $description;
 				}
 			} else  {
@@ -259,7 +259,7 @@ class RefDataFieldFK extends RefDataField {
 				$smcFunc['db_free_result']($query);
 			}
 
-			$cacheEntry = array(name=>$this->name, map=>$this->map, vm=>$this->valueMap);
+			$cacheEntry = array('name'=>$this->name, 'map'=>$this->map, 'vm'=>$this->valueMap);
 			$cacheMap[$cacheKey] = $cacheEntry;
 		}
 
