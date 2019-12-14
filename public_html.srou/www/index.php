@@ -6,7 +6,7 @@ global $options;
 $options['collapse_header'] = 1;
 require_once("smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
-echo "<link rel='stylesheet' href='$boardurl/Themes/srou/css/home.css' />\n";
+?><style>#top_section, #footer { display: none; }</style><?php
 
 if (lm2ArrayValue($_REQUEST, 'ind') == 'lm2') {
 	if ($driver = lm2ArrayValue($_REQUEST, 'driver')) {

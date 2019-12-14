@@ -23,7 +23,7 @@ global $options;
 $options['collapse_header'] = 1;
 require_once("../public_html.srou/www/smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
-echo "<link rel='stylesheet' href='$boardurl/Themes/srou/css/home.css' />\n";
+?><style>#top_section, #footer { display: none; }</style><?php
 
 $events = lm2RecentUpcoming(null);
 
