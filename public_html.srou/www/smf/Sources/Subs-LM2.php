@@ -18,6 +18,7 @@ function lm2AddButtons(&$buttons) {
 
 	global $scripturl;
 
+//TODO: move to theme settings so that UKGPL can use it too
 	if ($settings['name'] != 'UKGPL') {
 //TODO: style button with ID button_srou_start_here bold if not 'old' user
 		if (isset($board_info['id']) && $board_info['id'] == 40) $context['current_action'] = 'srou_start_here';
@@ -39,29 +40,23 @@ function lm2AddButtons(&$buttons) {
 	if (isset($settings['srou_downloads_topic'])) {
 		$buttons['srou']['sub_buttons'][] = array(
 			'title' => 'Downloads',
-			'href' => $scripturl . '?topic=' . $settings['srou_downloads_topic'] . "#main_content_section",
+			'href' => lm2TopicOrExternalLink($settings['srou_downloads_topic']),
 			'show' => true,
 			'active_button' => false);
 	}
 
 	if (isset($settings['srou_rules_topic'])) {
-		$settings['srou_rules_url'] = $scripturl . "?topic=" . $settings['srou_rules_topic'] . "#main_content_section";
-	}
-	if (isset($settings['srou_rules_url'])) {
 		$buttons['srou']['sub_buttons'][] = array(
 			'title' => 'Rules',
-			'href' => $settings['srou_rules_url'],
+			'href' => lm2TopicOrExternalLink($settings['srou_rules_topic']),
 			'show' => true,
 			'active_button' => false);
 	}
 
 	if (isset($settings['srou_links_topic'])) {
-		$settings['srou_links_url'] = $scripturl . "?topic=" . $settings['srou_links_topic'];
-	}
-	if (isset($settings['srou_links_url'])) {
 		$buttons['srou']['sub_buttons'][] = array(
 			'title' => 'Links',
-			'href' => $settings['srou_links_url'],
+			'href' => lm2TopicOrExternalLink($settings['srou_links_topic']),
 			'show' => true,
 			'active_button' => false);
 	}
@@ -112,6 +107,11 @@ function lm2AddButtons(&$buttons) {
 		'active_button' => false);
 
 //echo "<!-- FOO FOO ", print_r($GLOBALS, true), " -->";
+}
+
+function lm2TopicOrExternalLink($idOrLink) {
+	global $scripturl;
+	return is_integer($idOrLink) ? $scripturl . "?topic={$idOrLink}#main_content_section" : $idOrLink;
 }
 
 function lm2AddPermissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions) {
