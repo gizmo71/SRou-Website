@@ -32,7 +32,7 @@ wget -O - https://download.simplemachines.org/index.php/smf_2-1-rc2_upgrade.tar.
 rm -rf Packages
 mkdir Packages
 touch Packages/installed.list
-cp -v ~/smf-mods/srou-smf-*.zip Packages/
+cp -v ~/smf-mods/srou-smf-*.tar.gz Packages/
 
 touch db_last_error.php
 
