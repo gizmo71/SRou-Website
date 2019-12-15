@@ -7,7 +7,7 @@ header("Content-Type: text/html; charset={$context['character_set']}");
   <style>
 .navbar { background: #dddddd; border: solid 1px }
   </style>
-  <link rel="stylesheet" type="text/css" href="/smf/Themes/default/css/lm2.css?time=<?php echo rand(); ?>"/>
+  <link rel="stylesheet" type="text/css" href="/smf/Themes/default/css/lm2.css"/>
 <?php
 require_once('include.php');
 
