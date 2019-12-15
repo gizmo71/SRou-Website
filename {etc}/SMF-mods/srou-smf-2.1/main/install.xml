@@ -19,7 +19,7 @@
 
 	<!-- This information needs to be the same as that in the package-info.xml. -->
 	<id>gizmo71:srou_smf_main</id>
-	<version>2.104</version>
+	<version>2.105</version>
 
 	<!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
@@ -41,7 +41,7 @@
 	<file name="$boarddir/Themes/default/index.template.php">
 		<operation>
 			<search position="replace"><![CDATA[<a id="top" href="', $scripturl, '">]]></search>
-			<add><![CDATA[<a id="top" href="', $settings['srou_home'], '">]]></add>
+			<add><![CDATA[<a id="top" href="', $settings['srou_home'] ?? '#', '">]]></add>
 		</operation>
 	</file>
 
