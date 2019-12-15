@@ -23,3 +23,7 @@
 .lm2EventYCP { color: red }
 
 .dropped { color: #BBBBBB }
+
+bodyQA {
+	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='100px'><text transform='translate(20, 100) rotate(-45)' fill='rgb(255,25,25)' font-size='20' opacity='0.2'>QA test site</text></svg>");
+}

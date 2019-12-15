@@ -3,11 +3,11 @@ require("../smf/SSI.php");
 header("Content-Type: text/html; charset={$context['character_set']}");
 ?>
 <HTML>
-<HEAD>
-<STYLE>
+  <head>
+  <style>
 .navbar { background: #dddddd; border: solid 1px }
-body { background: #fee; }
-</STYLE>
+  </style>
+  <link rel="stylesheet" type="text/css" href="/smf/Themes/default/css/lm2.css?time=<?php echo rand(); ?>"/>
 <?php
 require_once('include.php');
 
