@@ -1,0 +1,10 @@
+on:
+  push:
+    branches:
+    - smf2
+
+jobs:
+  phpLint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: "michaelw90/php-lint@master"
