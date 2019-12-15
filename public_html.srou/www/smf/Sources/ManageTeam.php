@@ -15,7 +15,7 @@ function ManageTeam() {
 
 	$query = $smcFunc['db_query'](null, "
 		SELECT *
-		FROM {$GLOBALS['lm2_db_prefix]}teams
+		FROM {$GLOBALS['lm2_db_prefix']}teams
 		WHERE id_team = {int:team}
 		", array('team'=>$_REQUEST['team']));
 	($row = $smcFunc['db_fetch_assoc']($query)) || die("can't find team!");
