@@ -7,4 +7,4 @@ jobs:
   phpLint:
     runs-on: ubuntu-latest
     steps:
-      - uses: "michaelw90/php-lint@master"
+      - uses: "awanesia/PHP-Lint@master"
