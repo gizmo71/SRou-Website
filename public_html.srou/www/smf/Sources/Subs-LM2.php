@@ -29,13 +29,15 @@ function lm2AddButtons(&$buttons) {
 		)) + $buttons;
 	}
 
-	$buttons['srou'] = array(
-		'title' => $settings['name'], // Theme name
-		'href' => $settings['srou_home'],
-		'show' => true,
-		'active_button' => false,
-		'sub_buttons' => array()
-	);
+	if (isset($settings['srou_home'])) {
+		$buttons['srou'] = array(
+			'title' => $settings['name'], // Theme name
+			'href' => $settings['srou_home'],
+			'show' => true,
+			'active_button' => false,
+			'sub_buttons' => array()
+		);
+	}
 
 	if (isset($settings['srou_downloads_topic'])) {
 		$buttons['srou']['sub_buttons'][] = array(
