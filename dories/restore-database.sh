@@ -45,8 +45,8 @@ if [ ${SROU_HOST_WWW} = wwwqa.simracing.org.uk ]; then
 (
 	echo "UPDATE smf_settings SET value = '1' WHERE smf_settings.variable = 'enableErrorLogging';"
 	echo "UPDATE smf_settings SET value = CONCAT('SMF1 on the Dories in $SROU_ROOT', CHAR(10), value) WHERE variable = 'news';"
-	echo "UPDATE smf_members SET realName = REPLACE(REVERSE(realName), ';930#&', '&#039;'), hideEmail = 0, emailAddress =
-		CASE id_member WHEN 2 THEN 'micra.geo@yahoo.com' WHEN 3 THEN 'dgymer23@ford.com' ELSE 'smf2test@simracing.org.uk' END;"
+#	echo "UPDATE smf_members SET realName = REPLACE(REVERSE(realName), ';930#&', '&#039;'), hideEmail = 0, emailAddress =
+#		CASE id_member WHEN 2 THEN 'micra.geo@yahoo.com' WHEN 3 THEN 'dgymer23@ford.com' ELSE 'smf2test@simracing.org.uk' END;"
 	for table in championship_points event_points event_groups event_group_tree events event_entries championships penalties; do
 		echo "CREATE TABLE gizmo71_regr.lm2_${table} LIKE gizmo71_lm2.lm2_${table};"
 		echo "INSERT gizmo71_regr.lm2_${table} SELECT * FROM gizmo71_lm2.lm2_${table};"
