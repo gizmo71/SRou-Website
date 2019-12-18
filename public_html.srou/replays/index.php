@@ -6,6 +6,7 @@ $ID_MEMBER = 32767; //XXX: remove this and restore the above once the site is fu
 <HTML>
  <HEAD>
   <TITLE>SimRacing.org.uk Server Replays</TITLE>
+  <link rel="stylesheet" type="text/css" href="/smf/Themes/srou/qa.css"/>
  </HEAD>
 <BODY>
 

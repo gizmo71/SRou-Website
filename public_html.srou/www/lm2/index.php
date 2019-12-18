@@ -7,6 +7,7 @@ header("Content-Type: text/html; charset={$context['character_set']}");
 <STYLE>
 .navbar { background: #dddddd; border: solid 1px }
 </STYLE>
+<link rel="stylesheet" type="text/css" href="/smf/Themes/srou/qa.css"/>
 <?php
 require_once('include.php');
 
