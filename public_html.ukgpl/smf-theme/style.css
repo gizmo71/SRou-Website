@@ -1,3 +1,5 @@
+@import url(../srou/qa.css);
+
 /* Normal, standard links. */
 a:link
 {
@@ -478,5 +480,3 @@ a img
 .lm2EventYCP { color: red }
 
 .dropped { color: #909090 }
-
-@import url(https://www.simracing.org.uk/smf/Themes/srou/qa.css);

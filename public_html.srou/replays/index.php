@@ -6,7 +6,7 @@ header('Content-Type: text/html; charset=utf-8');
 <HTML>
  <HEAD>
   <TITLE>SimRacing.org.uk Server Replays</TITLE>
-  <link rel="stylesheet" type="text/css" href="/smf/Themes/srou/qa.css"/>
+  <link rel="stylesheet" type="text/css" href="<?php echo $boardurl; ?>/Themes/srou/qa.css"/>
  </HEAD>
 <BODY>
 
