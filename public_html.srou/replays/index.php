@@ -1,7 +1,7 @@
 <?php
 require("../www/smf/SSI.php");
 header('Content-Type: text/html; charset=utf-8');
-$ID_MEMBER = 32767; //XXX: remove this and restore the above once the site is fully transitioned.
+//$ID_MEMBER = 32767; //XXX: remove this and restore the above once the site is fully transitioned.
 ?>
 <HTML>
  <HEAD>
