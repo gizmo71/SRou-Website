@@ -39,12 +39,12 @@ if (!is_null($event_status)) {
 		$is_comment = $_REQUEST['is_comment'] == '1' ? '1' : '0';
 		$description = sqlString($description);
 		if ($incident == "ADD") {
-			lm2_query("
+			$smcFunc['db_query'](null, "
 				INSERT INTO {$lm2_db_prefix}incidents
 				(event, replay_time, description, is_comment)
-				VALUES ($event, $replay_time, $description, $is_comment)
-				", __FILE__, __LINE__);
-			$added_incident = $incident = mysqli_insert_id($db_connection);
+				VALUES ({int:event}, {int:replay_time}, {string:description}, {int:is_comment})
+				", array('event'=>$event, 'replay_time'=>$replay_time, 'description'=>$description, 'is_comment'=>$is_comment));
+			$added_incident = $incident = $smcFunc['db_insert_id']("{$lm2_db_prefix}incidents", 'id_incident');
 		} else {
 			lm2_query("
 				UPDATE {$lm2_db_prefix}incidents
