@@ -3,10 +3,10 @@ require("../www/smf/SSI.php");
 header('Content-Type: text/html; charset=utf-8');
 ?>
 <HTML>
- <HEAD>
+ <head>
   <link rel="stylesheet" type="text/css" href="<?php echo $boardurl; ?>/Themes/default/css/lm2.css"/>
-  <TITLE>SimRacing.org.uk Server Replays</TITLE>
- </HEAD>
+  <title>SimRacing.org.uk Server Replays</title>
+ </head>
 <BODY>
 
 <H1>Server Replays</H1>

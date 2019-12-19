@@ -4,10 +4,10 @@ header("Content-Type: text/html; charset={$context['character_set']}");
 ?>
 <HTML>
   <head>
-  <style>
+    <style>
 .navbar { background: #dddddd; border: solid 1px }
-  </style>
-  <link rel="stylesheet" type="text/css" href="/smf/Themes/default/css/lm2.css"/>
+    </style>
+    <link rel="stylesheet" type="text/css" href="/smf/Themes/default/css/lm2.css"/>
 <?php
 require_once('include.php');
 
@@ -36,8 +36,8 @@ $actions = array(
 
 mysqli_query($db_connection, "ROLLBACK"); // Just in case somebody left one open...
 ?>
-  <TITLE>LM2i</TITLE>
-</HEAD>
+    <title>LM2i</title>
+  </head>
 <BODY>
 
 <?php
