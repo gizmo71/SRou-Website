@@ -19,8 +19,8 @@ function changeGroup(select, member, old_group, event_group) {
 	select.form.old_group.value = old_group;
 	select.form.new_group.value = new_group;
 	select.form.action += '#' + event_group;
-    pleaseWait.style.display = 'block';
-    mainBody.style.display = 'none';
+	pleaseWait.style.display = 'block';
+	mainBody.style.display = 'none';
 	select.form.submit();
 }
 </SCRIPT>
@@ -40,7 +40,7 @@ $query = $smcFunc['db_query'](null, "
 	JOIN {$db_prefix}topics t ON reg_topic = id_topic
 	WHERE t.id_poll IS NOT NULL
 	AND champ_group_poll_choice IS NOT NULL
-	GROUP BY short_desc
+	GROUP BY short_desc, id_event_group, t.id_poll, reg_topic
 	");
 while ($row = $smcFunc['db_fetch_assoc']($query)) {
 	do_event_group_poll($row['id_event_group'], $row['short_desc'], $row['id_poll'], $row['reg_topic']);
