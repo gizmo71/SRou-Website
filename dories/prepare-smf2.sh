@@ -12,11 +12,11 @@ delete from smf_log_floodcontrol;
 delete from smf_log_httpBL;
 delete from smf_log_online;
 delete from smf_log_search_subjects;
-INSERT INTO smf_log_search_subjects (word, ID_TOPIC) VALUES ('fake', '0');
+INSERT IGNORE INTO smf_log_search_subjects (word, ID_TOPIC) VALUES ('fake', '0');
 delete from smf_log_search_results;
 delete from smf_log_topics;
 delete from smf_sessions;
-CREATE TABLE _map_board_themes SELECT ID_BOARD AS board, ID_THEME AS theme FROM smf_boards;
+CREATE OR REPLACE TABLE _map_board_themes SELECT ID_BOARD AS board, ID_THEME AS theme FROM smf_boards;
 UPDATE smf_members SET birthdate = '0001-01-01' WHERE birthdate LIKE '%-00' OR birthdate LIKE '%-00-%';
 EOF
 
