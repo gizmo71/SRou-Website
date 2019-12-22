@@ -2,12 +2,7 @@
 
 . ./common.sh
 
-# Remove the first one when doing this for real!
 cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
-update smf_settings set value = REPLACE(value, 'SMF1 on the ', 'SMF2 on the ') where variable = 'news';
---update smf_settings set value = CONCAT('{"1":"', value, '"}') where variable = 'attachmentUploadDir';
---update smf_boards set name = CONCAT('2_', name);
---update smf_messages set subject = CONCAT('2_', subject);
 delete from smf_themes where id_member > 0;
 delete from smf_themes where variable = 'header_logo_url' and id_theme in (4, 5, 6, 33, 34, 3);
 delete from smf_log_banned;
