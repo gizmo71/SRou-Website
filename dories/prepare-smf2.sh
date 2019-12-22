@@ -27,7 +27,7 @@ if false; then
 else
 	(cd ~/SMF2.1 && tar cf - --exclude *) | tar xvf -
 	mv -v other/upgrade* .
-	rm -rfv agreement.txt DCO.txt *.ico other
+	rm -rfv DCO.txt *.ico other
 fi
 
 rm -rf Packages
