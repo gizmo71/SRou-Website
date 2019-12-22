@@ -25,10 +25,9 @@ cd public_html.srou/www/smf
 if false; then
 	wget -O - https://download.simplemachines.org/index.php/smf_2-1-rc2_upgrade.tar.bz2 | bzip2 -d | tar xvf -
 else
-	(cd ~/SMF2.1 && tar c -f - --exclude ".*" .) | tar xvf -
+	(cd ~/SMF2.1 && tar cf - --exclude *) | tar xvf -
 	mv -v other/upgrade* .
 	rm -rfv agreement.txt DCO.txt *.ico other
-	
 fi
 
 rm -rf Packages
