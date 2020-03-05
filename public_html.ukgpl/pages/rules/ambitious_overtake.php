@@ -42,6 +42,10 @@ driver would have made the corner.</p>
     made a clean pass but subsequently crashed trying to make the corner.
     The overtaken driver then gets caught up in the carnage. Penalty for
     overtaking driver.</li>
+  <li>The overtaking driver HAD achieved 50% or greater overlap at turn-in but 
+    would NOT have made the the corner. The overtaken driver did NOT contest 
+	the place, he either left room or kept to his normal racing line. 
+    Contact is made. Penalty for the overtaking driver.</li>
 </ol>
 
 <P>Marginal Ambitious Overtake:  Warning
