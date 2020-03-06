@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * The settings file contains all of the basic settings that need to be present when a database/cache is not available.
+ *
+ * Simple Machines Forum (SMF)
+ *
+ * @package SMF
+ * @author Simple Machines https://www.simplemachines.org
+ * @copyright 2020 Simple Machines and individual contributors
+ * @license https://www.simplemachines.org/about/smf/license.php BSD
+ *
+ * @version 2.1 RC2
+ */
+
 # First, some LM2/SRou settings... 
 putenv("TZ=Europe/London");
 # Move at least some of these into the Subs-LM2 module.
@@ -31,30 +44,6 @@ $colsep = "<TD>&nbsp;&nbsp;</TD>";
 
 $db_show_debug = false;
 
-/**********************************************************************************
-* Settings.php                                                                    *
-***********************************************************************************
-* SMF: Simple Machines Forum                                                      *
-* Open-Source Project Inspired by Zef Hemel (zef@zefhemel.com)                    *
-* =============================================================================== *
-* Software Version:           SMF 1.1                                             *
-* Software by:                Simple Machines (http://www.simplemachines.org)     *
-* Copyright 2006 by:          Simple Machines LLC (http://www.simplemachines.org) *
-*           2001-2006 by:     Lewis Media (http://www.lewismedia.com)             *
-* Support, News, Updates at:  http://www.simplemachines.org                       *
-***********************************************************************************
-* This program is free software; you may redistribute it and/or modify it under   *
-* the terms of the provided license as published by Simple Machines LLC.          *
-*                                                                                 *
-* This program is distributed in the hope that it is and will be useful, but      *
-* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
-* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
-*                                                                                 *
-* See the "license.txt" file for details of the Simple Machines license.          *
-* The latest version can always be found at http://www.simplemachines.org.        *
-**********************************************************************************/
-
-
 ########## Maintenance ##########
 # Note: If $maintenance is set to 2, the forum will be unusable!  Change it to 0 to fix it.
 $maintenance = 0;		# Set to 1 to enable Maintenance Mode, 2 to make the forum untouchable. (you'll have to make it 0 again manually!)
@@ -74,8 +63,8 @@ $db_name = "{$_SERVER['SROU_DB_PREFIX']}smf";
 $db_user = $db_name;
 $db_passwd = trim(file_get_contents("{$_SERVER['SROU_ROOT']}/cfg/smf-db.password"));
 $db_prefix = 'smf_';
-$db_persist = 0;
-$db_error_send = 1;
+$db_persist = false;
+$db_error_send = true;
 $db_character_set = 'utf8';
 $db_type = 'mysql';
 
@@ -86,23 +75,40 @@ $sourcedir = "{$boarddir}/Sources";
 $cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
 $packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
 $tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
-
-# Make sure the paths are correct... at least try to fix them.
-if (!file_exists($boarddir) && file_exists(dirname(__FILE__) . '/agreement.txt'))
-	$boarddir = dirname(__FILE__);
-if (!file_exists($sourcedir) && file_exists($boarddir . '/Sources'))
-	$sourcedir = $boarddir . '/Sources';
-
-$upgradeData = '';
-$image_proxy_secret = 'b05c67e6ba4c319a997d';
-$image_proxy_maxsize = 5190;
-$image_proxy_enabled = 1;
-
-########## Error-Catching ##########
-# Note: You shouldn't touch these settings.
-$db_last_error = 1296596322;
-
+$db_port = 0;
+$ssi_db_user = '';
+$ssi_db_passwd = '';
+$db_mb4 = null;
 $cache_accelerator = '';
 $cache_enable = 0;
 $cache_memcached = '';
+
+# Make sure the paths are correct... at least try to fix them.
+if (!is_dir(realpath($boarddir)) && file_exists(dirname(__FILE__) . '/agreement.txt'))
+	$boarddir = dirname(__FILE__);
+if (!is_dir(realpath($sourcedir)) && is_dir($boarddir . '/Sources'))
+	$sourcedir = $boarddir . '/Sources';
+if (!is_dir(realpath($tasksdir)) && is_dir($sourcedir . '/tasks'))
+	$tasksdir = $sourcedir . '/tasks';
+if (!is_dir(realpath($packagesdir)) && is_dir($boarddir . '/Packages'))
+	$packagesdir = $boarddir . '/Packages';
+if (!is_dir(realpath($cachedir)) && is_dir($boarddir . '/cache'))
+	$cachedir = $boarddir . '/cache';
+
+$image_proxy_secret = 'b05c67e6ba4c319a997d';
+$image_proxy_maxsize = 5190;
+$image_proxy_enabled = true;
+
+########## Error-Catching ##########
+# Note: You shouldn't touch these settings.
+if (file_exists((isset($cachedir) ? $cachedir : dirname(__FILE__)) . '/db_last_error.php'))
+	include((isset($cachedir) ? $cachedir : dirname(__FILE__)) . '/db_last_error.php');
+
+if (!isset($db_last_error))
+{
+	// File does not exist so lets try to create it
+	file_put_contents((isset($cachedir) ? $cachedir : dirname(__FILE__)) . '/db_last_error.php', '<' . '?' . "php\n" . '$db_last_error = 0;' . "\n" . '?' . '>');
+	$db_last_error = 0;
+}
+
 ?>
