@@ -75,6 +75,7 @@ $sourcedir = "{$boarddir}/Sources";
 $cachedir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/cache";
 $packagesdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Packages";
 $tasksdir = "{$_SERVER['SROU_ROOT']}/public_html.srou/www/smf/Sources/tasks";
+$auth_secret = trim(file_get_contents("{$_SERVER['SROU_ROOT']}/cfg/auth.secret"));
 $db_port = 0;
 $ssi_db_user = '';
 $ssi_db_passwd = '';
@@ -95,7 +96,7 @@ if (!is_dir(realpath($packagesdir)) && is_dir($boarddir . '/Packages'))
 if (!is_dir(realpath($cachedir)) && is_dir($boarddir . '/cache'))
 	$cachedir = $boarddir . '/cache';
 
-$image_proxy_secret = 'b05c67e6ba4c319a997d';
+$image_proxy_secret = trim(file_get_contents("{$_SERVER['SROU_ROOT']}/cfg/imageproxy.secret"));
 $image_proxy_maxsize = 5190;
 $image_proxy_enabled = true;
 
