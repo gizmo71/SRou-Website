@@ -592,13 +592,13 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 	$smcFunc['db_free_result']($query);
 
 	$query = $smcFunc['db_query']('', "
-		SELECT id_event, smf_topic
+		SELECT MIN(id_event) AS id_event, smf_topic
 		, id_event_group
 		, GROUP_CONCAT(DISTINCT short_desc SEPARATOR '!') AS event_group
-		, event_date
+		, AVG(event_date) AS event_date
 		, GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause SEPARATOR '!') AS circuit_html
 		, COUNT(id_event_entry) AS entries
-		, IFNULL(server_starter_override, server_starter) AS server_starter
+		, MIN(IFNULL(server_starter_override, server_starter)) AS server_starter
 		, GROUP_CONCAT(DISTINCT full_desc SEPARATOR '!') AS event_group_full
 		, GROUP_CONCAT(DISTINCT {$GLOBALS['lm2_db_prefix']}sims.sim_name SEPARATOR '!') AS sim_desc
 		FROM {$GLOBALS['lm2_db_prefix']}events
@@ -611,7 +611,7 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		WHERE event_date BETWEEN DATE_ADD({string:now}, INTERVAL -15 DAY) AND DATE_ADD({string:now}, INTERVAL 15 DAY)
 		AND id_circuit <> -1
 		AND {$GLOBALS['lm2_db_prefix']}events.sim " . ($ukgpl ? "=" : "<>") . " 8
-		GROUP BY id_event, smf_topic, id_event_group, event_date, server_starter_override, server_starter
+		GROUP BY smf_topic, id_event_group
 		, IFNULL(smf_topic, CONCAT(id_sim_circuit, '/', id_event_group))
 		ORDER BY event_date ASC
 		", array('now'=>lm2Php2timestamp()));
