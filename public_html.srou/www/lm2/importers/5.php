@@ -61,7 +61,7 @@ if (!$slot['Driver'] && !$slot['Lobby Username']) {
 			$entry['RacePos'] = $slot['sesid'][Sessions::RACE]['SimPos'];
 		}
 
-		if (count($slot['sesid'][Sessions::QUALIFY]['Laps'])) {
+		if ($qFilename && count($slot['sesid'][Sessions::QUALIFY]['Laps'])) {
 			$entry['qualLaps'] = count($slot['sesid'][Sessions::QUALIFY]['Laps']);
 			$entry['qualBestLapTime'] = bcdiv($slot['sesid'][Sessions::QUALIFY]['Result']['BestLap'], 1000, 3);
 			$entry['qualBestLapNo'] = $slot['sesid'][Sessions::QUALIFY]['BestLapNo'];
