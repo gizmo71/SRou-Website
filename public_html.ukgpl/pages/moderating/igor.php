@@ -2,7 +2,7 @@
 
 <H1 ALIGN="CENTER">IGOR</H1>
 
-<p>These instructions show how to set up a 66mod race at Monaco on 3.UKGPL. The passwords have been omitted for obvious reasons. Other servers used by UKGPL can be started in the same way but the IP Address and possibly the port number will be different.</p>
+<p>These instructions show how to set up a 66mod race at Monaco on UKGPL__4. The passwords have been omitted for obvious reasons. Other servers used by UKGPL can be started in the same way but the IP Address and possibly the port number will be different.</p>
 
 <p>1. Open up IGOR and press the &quot;Host&quot; button on the toolbar:</p>
 <blockquote>
@@ -35,7 +35,6 @@
 
 <p>4. When the main window pops up go to the &quot;Host&quot; tab. Enter appropriate comments in the &quot;Host comments&quot;, &quot;Connection type&quot; and &quot;Server location&quot; fields. Select the following options:</p>
 <p>Note:  Please ensure the &quot;Full-Screen&quot; option is NOT selected as it can cause server problems.</p>
-<p>For T7_2 do NOT check the "Replay memory override" option.  The server core.ini is already set to record long replays.</p>
 <blockquote>
   <blockquote>
     <blockquote>
@@ -113,7 +112,7 @@
 <p>Notes:</p>
 
 <ol>
-  <li>After having inputted all the data, the settings can be saved in a .ihs file. This file can then be loaded and modified as necessary in order to start other races.</li>
+  <li>After having inputted all the data, the settings can be saved in a .ihs file. This file can then be loaded and modified as necessary in order to start other races.  An example file for UKGPL__4 is <a href="/files/UKGPL4_Server_Test.zip">here</a>.</li>
   <li>If it is necessary to shut down the server manually you will need to join the race with the BOSS password. Join as you would normally as a driver but type the driver's password then a slash and then the BOSS password. For example if the driver's password is john and the BOSS password is surtees then you would type john/surtees. Once you have joined the race type !shutdown in chat to halt the server.</li>
   <li>Don't shut the server down manually under normal circumstances. You must let the server shut down automatically to ensure the race results and replay are saved correctly.</li>
 </ol>
