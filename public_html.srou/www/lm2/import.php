@@ -10,12 +10,7 @@ if (!is_null($id_race1 = lm2ArrayValue($_REQUEST, 'id_race1'))) {
 	echo "<P>Using $id_race1 to set starting positions for $id_event</P>\n";
 	lm2_query("
 		UPDATE {$lm2_db_prefix}event_entries r1, {$lm2_db_prefix}event_entries r2
-		SET r2.start_pos = IF(r1.race_pos < 9, 9 - r1.race_pos, r1.race_pos)
-		WHERE r1.event = $id_race1 AND r2.event = $id_event AND r1.sim_driver = r2.sim_driver
-		", __FILE__, __LINE__);
-	lm2_query("
-		UPDATE {$lm2_db_prefix}event_entries r1, {$lm2_db_prefix}event_entries r2
-		SET r2.driver_type = r1.driver_type
+		SET r2.start_pos = r1.race_pos, r2.driver_type = r1.driver_type
 		WHERE r1.event = $id_race1 AND r2.event = $id_event AND r1.sim_driver = r2.sim_driver
 		", __FILE__, __LINE__);
 	echo "<P>Reverse the top <i>n</i> positions <a href='?action=refdata&refData=eve&rdFilt=e$id_event&sortOrder='>here</a>.</P>\n";
