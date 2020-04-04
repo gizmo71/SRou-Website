@@ -36,11 +36,11 @@
   </blockquote>
 </blockquote>
 
-<p>4. Once connected, the available channels will appear in the Client window.  On UKGPL__4 the default channel is "Open Chat". There is a chat channel for each of the teams. These are not password protected so it is possible to eavesdrop on other teams as it is in real F1.</p>
+<p>4. Once connected, the available channels will appear in the Client window.  On UKGPL__4 the default channel is "Open Chat Ch1". There are two open chat channels and two chat channels for each of the teams (just in case two races are running concurrently). These are not password protected so it is possible to eavesdrop on other teams as it is in real F1.</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/teamspeak/teamspeakMainWindowConnected.jpg" width="650" height="504"></p>
+    <p><img border="0" src="/images/teamspeak/teamspeakMainWindowConnected.jpg" width="650" height="604"></p>
     </blockquote>
   </blockquote>
 </blockquote>
@@ -49,7 +49,7 @@
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/teamspeak/teamspeakOptionsDropdown.jpg" width="650" height="479"></p>
+    <p><img border="0" src="/images/teamspeak/teamspeakOptionsDropdown1.jpg" width="650" height="604"></p>
     </blockquote>
   </blockquote>
 </blockquote>
