@@ -22,7 +22,7 @@ fi
 
 SSH_DATADUMP="ssh -l gizmo plaice.aquarium.davegymer.org"
 for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
-	sleep 2 # Give replication a chance to work
+	sleep 15 # Give replication a chance to work
 	sort =(${=SSH_DATADUMP} "ls -1 /var/backup/mysql/srou-booby/mysql/gizmo71_${db}-${type}_*.sql.gz") | while read sql; do
 		echo "** Processing $(basename $sql)..."
 		DB_HOST="--host ${SROU_DB_HOST}"
@@ -36,7 +36,7 @@ for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
 			mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
 		(
 			echo "FLUSH LOGS;"
-			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 1 MINUTE);"
+			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 2 MINUTE);"
 		) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
 	done
 done; done

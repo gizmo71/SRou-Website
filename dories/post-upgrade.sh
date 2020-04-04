@@ -13,7 +13,7 @@ REPLACE INTO smf_themes (id_member, id_theme, variable, value) VALUES
 	(0, 33, 'header_logo_url', '/smf/Themes/ukir/ukir.jpg'),
 	(0, 34, 'header_logo_url', '/smf/Themes/ukpng/ukpng.jpg'),
 	(0, 6, 'header_logo_url', '//${SROU_HOST_UKGPL}/images/ukgpl.jpg');
-UPDATE smf_boards JOIN _map_board_themes ON id_board = board SET id_theme = theme;
+UPDATE smf_boards JOIN gizmo71_ukgpl._map_board_themes ON id_board = board SET id_theme = theme;
 SET @themes = '1,3,4,5,6,33,34';
 REPLACE INTO smf_settings (variable, value) VALUES
 	('theme_guests', '4'),
