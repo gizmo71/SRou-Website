@@ -16,32 +16,11 @@ INSERT IGNORE INTO smf_log_search_subjects (word, ID_TOPIC) VALUES ('fake', '0')
 delete from smf_log_search_results;
 delete from smf_log_topics;
 delete from smf_sessions;
-CREATE OR REPLACE TABLE _map_board_themes SELECT ID_BOARD AS board, ID_THEME AS theme FROM smf_boards;
+CREATE OR REPLACE TABLE gizmo71_ukgpl._map_board_themes SELECT ID_BOARD AS board, ID_THEME AS theme, ID_CAT AS category FROM smf_boards;
 UPDATE smf_members SET birthdate = '0001-01-01' WHERE birthdate LIKE '%-00' OR birthdate LIKE '%-00-%';
 EOF
 
-cd public_html.srou/www/smf
-
-if false; then
-	wget -O - https://download.simplemachines.org/index.php/smf_2-1-rc2_upgrade.tar.bz2 | bzip2 -d | tar xvf -
-elif false; then
-	# https://www.simplemachines.org/community/index.php?topic=558451.0:
-	wget -O /tmp/smf2.1_nightly_upgrade.zip http://0exclusive.de/smf/smf2.1_nightly_upgrade.zip
-	unzip /tmp/smf2.1_nightly_upgrade.zip
-else
-	(cd ~/SMF2.1 && tar cf - --exclude *) | tar xvf -
-	mv -v other/upgrade* .
-	rm -rfv DCO.txt *.ico other
-fi
-
-rm -rf Packages
-mkdir Packages
-touch Packages/installed.list
-cp -v ~/smf-mods/srou-smf-*.tar.gz Packages/
-
-touch db_last_error.php
-
-chmod 0755 .
+dories/overwrite-smf.sh
 
 git checkout smf2
 
