@@ -22,6 +22,8 @@ EOF
 
 dories/overwrite-smf.sh
 
+cd public_html.srou/www/smf
+
 git checkout smf2
 
 for themedir in $(find Themes/* -type d -maxdepth 0) ../../../public_html.ukgpl/smf-theme; do
