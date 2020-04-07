@@ -5,6 +5,7 @@
 cat <<EOF | mysql ${=SHARED_OPTIONS} ${=SMF_LOGIN} ${SROU_DB_PREFIX}smf
 delete from smf_themes where id_member > 0;
 delete from smf_themes where variable = 'header_logo_url' and id_theme in (4, 5, 6, 33, 34, 3);
+delete from smf_settings where variable IN ('0', '1');
 delete from smf_log_banned;
 delete from smf_log_actions;
 delete from smf_log_errors;
