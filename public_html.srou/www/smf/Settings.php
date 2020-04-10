@@ -58,7 +58,7 @@ $db_show_debug = false;
 
 ########## Maintenance ##########
 # Note: If $maintenance is set to 2, the forum will be unusable!  Change it to 0 to fix it.
-$maintenance = 0;		# Set to 1 to enable Maintenance Mode, 2 to make the forum untouchable. (you'll have to make it 0 again manually!)
+$maintenance = 2;		# Set to 1 to enable Maintenance Mode, 2 to make the forum untouchable. (you'll have to make it 0 again manually!)
 $mtitle = 'Maintenance Mode';		# Title for the Maintenance Mode message.
 $mmessage = 'Migration in progress.';		# Description of why the forum is in maintenance mode.  
 
