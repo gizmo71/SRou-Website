@@ -42,10 +42,6 @@ function doImportJson($qFilename, $rFilename) {
 	if ($qFilename) processJson($qFilename, Sessions::QUALIFY, $cars);
 
 	foreach ($cars AS &$slot) {
-if (!$slot['Driver'] && !$slot['Lobby Username']) {
-	echo "Skipping empty slot {$slot['#']}<br/>\n";
-	continue;
-}
 		$entry =& lookup_entry($slot, true, false);
 
 		$entry['DriverKG'] = $slot['DriverKG'];
@@ -85,6 +81,7 @@ function processJson($filename, $session, &$cars) {
 	if ($location) $location == $newLocation || die("Locations $location and $newLocation don't match");
 	else $location = $newLocation;
 
+	$skippedSlots = array();
 	foreach ($json['Cars'] as &$car) {
 		$slot = array(
 			'#'=>$car['CarId'],
@@ -94,6 +91,10 @@ function processJson($filename, $session, &$cars) {
 			'_skin'=>$car['Skin'],
 			'DriverKG'=>$car['BallastKG']
 		);
+		if (!$slot['Driver'] && !$slot['Lobby Username']) {
+			array_push($skippedSlots, $car['CarId']);
+			continue;
+		}
 		if (array_key_exists($car['CarId'], $cars)) {
 			$oldSlot =& $cars[$car['CarId']];
 			array_intersect($slot, $oldSlot) == $slot || die("Mismatch between " . print_r($oldSlot, true) . " and " . print_r($slot, true));
@@ -105,6 +106,11 @@ function processJson($filename, $session, &$cars) {
 
 	$simPos = 0;
 	foreach ($json['Result'] as &$result) {
+		$isSkipped = array_search($result['CarId'], $skippedSlots) !== FALSE;
+		$skip = !$result['DriverName'] && !$result['DriverGuid'];
+		$isSkipped == $skip || die("Unexpected skip mismatch; Result " . print_r($result, true) . ", skip $skip slot $isSkipped");
+		if ($skip) continue;
+
 		$slot =& $cars[$result['CarId']];
 		$slotData = slotDataFromResultOrLap($result);
 		array_intersect($slotData, $slot) == $slotData || die("Mismatch between " . print_r($slot, true) . " and result's " . print_r($slotData, true));
@@ -113,6 +119,9 @@ function processJson($filename, $session, &$cars) {
 
 	// Note - assumes laps are in order!
 	foreach ($json['Laps'] as &$lap) {
+		$isSkipped = array_search($lap['CarId'], $skippedSlots) !== FALSE;
+		$isSkipped && die("Found skipped car's Lap " . print_r($lap, true) . "</br>in " . print_r($skippedSlots, true));
+
 		$slot =& $cars[$lap['CarId']];
 		$slotData = slotDataFromResultOrLap($lap);
 		array_intersect($slotData, $slot) == $slotData || die("Mismatch between " . print_r($slot, true) . " and lap's " . print_r($slotData, true));
