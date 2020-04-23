@@ -79,8 +79,8 @@ function processJson($filename, $session, &$cars) {
 
 	((new ReflectionClass('Sessions'))->getConstants()[$json['Type']] == $session) || die("Unexpected type {$json['Type']} for session ID $session");
 
-    $newLocation = $json['TrackName'];
-    if ($json['TrackConfig']) $newLocation .= ":" . $json['TrackConfig'];
+	$newLocation = $json['TrackName'];
+	if ($json['TrackConfig']) $newLocation .= ":" . $json['TrackConfig'];
 
 	if ($location) $location == $newLocation || die("Locations $location and $newLocation don't match");
 	else $location = $newLocation;
