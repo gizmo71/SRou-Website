@@ -267,10 +267,11 @@ ts3v_display.init(ts3v_url_1, 14187, 100);
 			echo "<BR/>(pre-event $practiceWording will use the <A HREF='$boardurl/index.php?topic=2929'>usual practice password</A>$preRaceWording)";
 			if ($settings['theme_id'] == 6) {
 				echo "\n<BR/>UKGPL chatroom on IGOR or WinVROC (see announcement post in this topic), password '<TT><BIG>savage</BIG></TT>'";
+				$teamSpeakTopic = 19861;
 			} else {
-				echo "</P>\n<P><A HREF='$boardurl/index.php?topic=5646'>TeamSpeak server details</A>.</P>\n";
+				$teamSpeakTopic = 5646;
 			}
-			echo "</P>\n";
+			echo "</P>\n<P><A HREF='$boardurl/index.php?topic=$teamSpeakTopic'>TeamSpeak server details</A>.</P>\n";
 		}
 		if ($row['server_starter']) {
 			echo "<P><A HREF='$boardurl/index.php?action=profile;u={$row['server_starter']['id_member']}'>{$row['server_starter']['realName']}</A> assigned to start server</P>";
