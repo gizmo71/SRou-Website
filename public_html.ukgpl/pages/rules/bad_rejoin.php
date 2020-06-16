@@ -2,7 +2,7 @@
 
 <H3>Bad Rejoin</H3>
 
-<p>Any car that has four wheels off the track, intentionally or unintentionally must rejoin and obviously do so safely. Cars are also in a rejoin situation whenever they have stopped racing for whatever reason - a spin, stopping to avoid other cars etc.</p>
+<p>Any car that has three or four wheels off the track, intentionally or unintentionally must rejoin and obviously do so safely. Cars are also in a rejoin situation whenever they have stopped racing for whatever reason - a spin, stopping to avoid other cars etc.</p>
 
 <p>This seems to happen regularly at all levels. A rejoin can only be considered bad if an incident (or potential incident which caused another driver to take avoiding action) took place. The primary objective of
 the moderator is to establish how inconsiderate the rejoining driver was.
