@@ -6,41 +6,42 @@
 
 <P>This is the home page of UKGPL, a United Kingdom based online racing league for fans of Grand Prix Legends.</P>
 
-<H1><IMG WIDTH="800" HEIGHT="379" SRC="/images/Watkins1968.jpg"></H1>
+<H1><IMG WIDTH="804" HEIGHT="492" SRC="/images/55GP_Grenzlandring.jpg"></H1>
 
-<H1>Registration for Season 37 is OPEN!<br></H1>
-<H2>This season we will be offering something for everyone. From the older 1955 GP machines through the 1965, 1966, 1967 and 1968 open wheel single seaters to the 1967 Sports Cars. We will run a variety of race lengths with shorter sprint races and longer Grand Prix distance events.</H2>
-
-<P align="justify">
-The league is still going strong despite the advent of dozens of new sims. Grand Prix Legends models some of the best cars from the fifties, sixties and early seventies and does it exceptionally well. Despite having been around since 1998, Grand Prix Legends still attracts a loyal following and UKGPL offers the opportunity to race open wheel cars from the original 1967 season and cars from the 1955, 1965, 1966, 1968 and 1969 seasons. The 67 Sports Cars, 66 Can-Ams and 71 Can-Ams provide an additional challenge.</p>
+<H1>Registration for Season 36 is OPEN!<br></H1>
+<H2>This season we will be running some of our favourite open wheel cars from 1955, 1966, 1967 and 1969.</H2>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. One division will involve 50 minute Sprint races whilst the other will involve 90 minute Grand Prix distance races. UKGPL will also run championships for the 1955 GP, 1967 Sports Cars and a mixed championship featuring rounds for the 1965 F1, 1966 F1, 1967 F2 and 1968 F1 Cars. Our aim is simply to have some fun racing the 50s and 60s machines.</p>
+The league is still going strong despite the advent of dozens of new sims.
+Although many other games cater to online racing they often try to model every era. Grand Prix Legends simply models the best cars of the late sixties and does it exceptionally well. GPL still attracts a loyal following and UKGPL offers the opportunity to race in cars from the 1967 season and in addition offers mods that simulate the 1955, 1965, 1966 and 1969 seasons. The GT, 67 F2 cars, the 66 Can-Ams, 71 Can-Ams, 55 Grand Prix and now the Sports Cars Extra mod prove that the community still has some life in it yet!</p>
 
 <P align="justify">
-We are now an international league having drivers from many countries. Our 67F1 championship will again be a joint venture with GPL Brazil. We used the GPL Brazil format and scoring system last season, so this time we will be using the UKGPL token system for the Sprint races and chassis allocation for the Grand Prix distance events.
+UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. UKGPL will also run championships for the 1955 GP, 1966 F1, 1967 F1 and 1969 F1 Cars. Our aim is simply to have some fun racing the 50s and 60s machines.</p>
+
+<P align="justify">
+We are now an international league having drivers from many countries. In fact, this season our 67F1 championship will be a joint venture with GPL Brazil. 
+To foster a spirit of collaboration, we have adopted new rules which combine the characteristics of both leagues so both the UKGPL and GPL Brazil drivers should be comfortable with the new format.
 There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
 
 <P align="justify">
-In order to allow drivers to plan their sim racing activities, we have adopted a regular calendar for UKGPL races. We will run two seasons per calendar year. The "Spring" season of ten rounds will start on the second Sunday of the year and the "Autumn" season will start in July so that a season of ten rounds can be completed before the end of the calendar year. The "Joe Shaw Memorial" races will be held in the week after the Easter holidays.</p>	
+In order to allow drivers to plan their sim racing activities, we are moving to a regular calendar for UKGPL races. We will run two seasons per calendar year. The "Spring" season of ten rounds will start on the second Sunday of the year and the "Autumn" season will start in July so that a season of ten rounds can be completed before the end of the calendar year. The "Joe Shaw Memorial" races will be held in the week after the Easter holidays.</p>	
 
 <P align="justify">
 <H1>The provisional dates for future events are:</H1>
-<H2>Season 38: Start 10th January 2021 - Finish 8th June 2021</H2>
-<H2>Joe Shaw Memorial Races: 11th April 2021 and 13th April 2021</H2>
-<H2>Season 39: Start 4th July 2021 - Finish 14th December 2021</H2>
-<P align="center">Summer Break: Start 28th July 2021 - Finish 29th August 2021</p>
+<H2>Joe Shaw Memorial Races: 19th April 2020 and 21st April 2020</H2>
+<H2>Season 37: Start 6th July 2020 - Finish 16th December 2020</H2>
+<P align="center">Summer Break: Start 13th August 2020 - Finish 13th September 2020</p>
 </p>
 <P align="justify"><p>
 
 <P align="justify">
-<H1>To sign-up for Season 37, click on these links:</H1>	
+<H1>To sign-up for Season 36, click on these links:</H1>	
 <p>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=20452.0">1955 Grand Prix</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=20472.0">Mixed Open Wheel</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=20502.0">1967 Formula 1 - Sprint</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=20492.0">1967 Formula 1 - Grand Prix</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=20462.0">1967 Sports Cars</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=17932.0">1955 Grand Prix</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=17922.0">1966 Formula 1</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=17952.0">1967 Formula 1 - Senior</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=17962.0">1967 Formula 1 - Junior</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=17942.0">1969 Extra Formula 1</A><br>
 </P>
 
 <P align="justify">
