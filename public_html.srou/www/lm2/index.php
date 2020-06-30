@@ -32,6 +32,8 @@ $actions = array(
 		'page'=>'increp'),
 	'migration'=>array('groups'=>array(1, $lm2_mods_group_ukgpl),
 		'title'=>'Migration',   	   'page'=>'migration'),
+	'fixups' =>array('groups'=>array(1),
+		'title'=>'Replication Fixups',         'page'=>'fixups'),
 );
 
 mysql_query("ROLLBACK"); // Just in case somebody left one open...
