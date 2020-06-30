@@ -12,6 +12,7 @@ $tables = array(
 	"{$db_prefix}members" => array(
 		identity => array('ID_MEMBER'),
 		maxNums => array('ID_MSG_LAST_VISIT', 'totalTimeLoggedIn', 'lastLogin', 'posts')
+//TODO: surely "posts" should be included as part of the "recount" page? Does it not work?
 	),
 );
 
