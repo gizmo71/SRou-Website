@@ -72,9 +72,9 @@ class SemiKV
 					$format = $row["format"];
 				else
 					$format = NULL;
-				if ($format == $reqFormat and array_key_exists("version", $row))
+				if ($format == $reqFormat and array_key_exists("semikv_version", $row))
 				{
-					$version = $row["version"];
+					$version = $row["semikv_version"];
 					break;
 				} else
 				{
