@@ -81,7 +81,8 @@ function doImport() {
 function parse_semikv($report) {
 	global $fatal_errors, $location;
 
-	$tables = (new SemiKV(explode("\n", $report)))->parse();
+	$semikv = new SemiKV(explode("\n", $report));
+	$tables = $semikv->parse();
 	$tables || die("rpydump not in semikv format\n<PRE>" . htmlentities($report, ENT_QUOTES) . "</PRE>");
 
 	($eventInfo = $tables['Event Info'][0]) || die("No Event Info table");
@@ -111,7 +112,7 @@ function parse_semikv($report) {
 		check_and_copy($entry['RacePos'], $e['pos'], "RacePos$lochint");
 		check_and_copy($entry['raceLaps'], $e['laps'], "raceLaps$lochint");
 
-		$dummy = parseSemikvTime($e['clock']);
+		$dummy = $semikv->timeAsSeconds($e['clock']);
 		if ($entry['raceTime']) {
 			if (!$offsetFromHtml) {
 				$offsetFromHtml = $dummy - $entry['raceTime'];
@@ -140,7 +141,7 @@ function parse_semikv($report) {
 		$entry = &lookup_entry($slot, true, true);
 		$lochint = " for " . htmlentities(print_r($e, true));
 		check_and_copy($entry['Driver'], $e['drivername'], "Driver$lochint");
-		$dummy = parseSemikvTime($e['laptime']);
+		$dummy = $semikv->timeAsSeconds($e['laptime']);
 		check_and_copy($entry['raceBestLapTime'], $dummy, "raceBestLapTime$lochint");
 		check_and_copy($entry['raceBestLapNo'], $e['lap'], "raceBestLapNo$lochint");
 	}
@@ -155,7 +156,7 @@ function parse_semikv($report) {
 		$lochint = " for " . htmlentities(print_r($e, true));
 		check_and_copy($entry['Driver'], $e['drivername'], "Driver$lochint");
 //TODO: from "table=Session 1 (PRACTICE) Car 16 laptimes" if available: check_and_copy($entry['qualLaps'], $e[''], "qualLaps$lochint");
-		$dummy = parseSemikvTime($e['laptime']);
+		$dummy = $semikv->timeAsSeconds($e['laptime']);
 		check_and_copy($entry['qualBestLapTime'], $dummy, "qualBestLapTime$lochint");
 	}
 
@@ -164,15 +165,6 @@ function parse_semikv($report) {
 
 function htmlCarAsHex($htmlCarCode) {
 	return $htmlCarCode ? bin2hex($htmlCarCode) : null;
-}
-
-function parseSemikvTime($t) {
-	if (!$t || !($t = trim($t))) {
-		return null;
-	}
-
-	preg_match("%^(?:(\\d+):)?(\\d+):(\\d{2}\\.\\d{3})$%is", $t, $matches) || die("bad time (" . htmlentities($t, ENT_QUOTES) . ")");
-	return ($matches[1] * 60.0 + $matches[2]) * 60.0 + $matches[3];
 }
 
 function parse_gpl_html($htmlExport) {

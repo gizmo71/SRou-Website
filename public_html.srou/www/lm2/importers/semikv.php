@@ -149,4 +149,16 @@ class SemiKV
 		}
 		return $tables;
 	}
+
+
+	public function timeAsSeconds($t) {
+		if (!$t/* || !($t = trim($t))*/) {
+			return null;
+		}
+
+		if (!preg_match("%^(?:(?:(\\d+):)?(\\d+):)?(\\d+\\.\\d{3})$%is", $t, $matches)) {
+			throw new InvalidArgumentException("bad time '$t')");
+		}
+		return ($matches[1] * 60.0 + $matches[2]) * 60.0 + $matches[3];
+	}
 }
