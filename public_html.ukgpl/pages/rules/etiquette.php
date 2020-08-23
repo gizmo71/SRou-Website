@@ -100,8 +100,7 @@ their position. The incident may still be investigated after the race.</P>
 <LI><P>
 Any Shift-R must be followed by a Stop and Go
 (&quot;<B>S&amp;G</B>&quot;) in the pits. Any Stop and Go <I>must</I> be taken within 2 laps of
-the Shift-R. A &quot;<B>S&amp;G</B>&quot; is effectively a Timed Pit Stop of zero seconds. The rules for making 
-Timed Pit Stops are <A HREF="pitstops#whentoperform">here</A>. The section describing how to perform a stop is the most relevant for a Shift-R &quot;<B>S&amp;G</B>&quot;.</P>
+the Shift-R. The guidance on how to perform a Stop &amp; Go is <a href="pitstops#stopAndGo">here</a>.</P>
 
 <LI><P>Drivers should take every precaution to make sure they rejoin the
 race without interfering with any other drivers. This means waiting

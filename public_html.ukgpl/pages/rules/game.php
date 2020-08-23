@@ -23,12 +23,12 @@
 	<BLOCKQUOTE/><H3>GPL Shift</H3>   In order to use a H-Shifter with GPL (for example the Logitech G25 or G27 shifter) the executables must be modified using  
 	<A HREF="http://www.gplshift.dk/GPLshift/index.htm"> GPL Shift</A>.  Whilst the use of GPL Shift is permitted, recommendations on how it should be configured are 
 	<A HREF="hshifter">here</A>.</BLOCKQUOTE>
-	<BLOCKQUOTE/><H3>Pit Stop Patch</H3>   The <A HREF="http://srmz.net/index.php?showtopic=10007"> Pit Stop Patch</A>, developed by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A>, 
-	allows refuelling during a race. Refuelling is not instantaneous and care is needed in order for a driver to come to rest exactly in their pit box. Consequently refuelling 
+	<BLOCKQUOTE/><H3>Pit Stop Patch</H3>   The Pit Stop Patch (<A HREF="http://srmz.net/index.php?showtopic=10007">v1.0</A> and <A HREF="http://srmz.net/index.php?showtopic=13367&hl=%2Bpit+%2Bstop+%2Bpatch">v2.0</A>), developed by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A>, 
+	allows refuelling during a race. There is also a custom patch (<A HREF="/files/77C Pit Stop v2.02.zip">v2.02</A>) which has been specially produced for UKGPL. Refuelling is not instantaneous and care is needed in order for a driver to come to rest exactly in their pit box. Consequently refuelling 
 	takes time and tends to offset any advantage gained in faster lap times due to a lighter fuel load. Whether or not a tangible advantage can be gained over a race distance will depend on 
 	many factors; car, track, race distance, lap refuelled etc.  Sometimes using the patch will be quicker and sometimes it will be slower. Given that the Pit Stop Patch 
 	adds an interesting tactical element to the races (and a safety net in case a driver fails to add enough fuel to cover the race distance) without guaranteeing an 
-	advantage, the use of the patch is allowed in UKGPL League Races.
+	advantage, the use of the patch is allowed in UKGPL League Races. Detailed information on the use of all the Pit Stop Patches is <A HREF="/pages/rules/pitstops.php">here</A>. A guide with screenshots on the use of the UKGPL custom patch is <A HREF="/pages/rules/fuel_and_tyre_stop.php">here</A>.
 	</BLOCKQUOTE>
 	<BLOCKQUOTE/><H3>Tyre Pressure Bug Fix Patch</H3>   The <A HREF="http://gplmotorworks.gplworld.de/Data/GPL%20Tire%20Pressure%20Bug%20Fix%20Patch%20v2.0.zip"> Tyre Pressure Patch</A>, 
 	developed by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A>, fixes a bug where the wrong optimum pressure is used when calculating tyre temperatures.  With the patch enabled there is a 
