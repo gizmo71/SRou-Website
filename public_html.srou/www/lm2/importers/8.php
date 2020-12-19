@@ -1,21 +1,22 @@
 <?php
 // GPL importer
 
+include("semikv.php");
+
 function showFileChoosers() {
 	global $lm2_db_prefix;
 ?>
     <TR><TD COLSPAN="4"><I>Please report any problems via <A HREF="/smf/index.php?board=49.0">UKGPL2</A>.</I></TD></TR>
 <?php
-	show_mod_selector();
+	show_mod_selector(); // "mod" input field
 ?>
     <TR><TD>HTML Export</TD><TD><INPUT size="120" name="export" type="file" /></TD></TR>
-    <TR><TD>GPLRA Report</TD><TD><INPUT size="120" name="report" type="file" /></TD></TR>
+    <TR><TD><a href="http://pub.i-line.cz/rpy/">rpydump</a> semikv Report</TD><TD><INPUT size="120" name="semikv" type="file" /></TD></TR>
     <TR><TD COLSPAN="4" ALIGN="RIGHT">Please use both files wherever possible.</TD></TR>
 <?php
 }
 
 function doImport() {
-	global $fatal_errors;
 	global $race_start_time;
 
 	// Run the list of mods off the database somehow. Classes?
@@ -55,8 +56,8 @@ function doImport() {
 
 	$location .= '/';
 
-	if ($gplraReport = maybeReadFile('report')) {
-		$winnerTime = parse_gplra($gplraReport);
+	if ($semikvReport = maybeReadFile('semikv')) {
+		$winnerTime = parse_semikv($semikvReport);
 	} else {
 		$location .= '-';
 	}
@@ -73,181 +74,97 @@ function doImport() {
 		} else {
 			$entry['Car']['VehicleType'] = $mod;
 			lookup_driver($entry, $entry['Driver'], $entry['LobbyName']);
-//echo "<PRE>$key = " . print_r($entry, true) . "</PRE>\n";
 		}
 	}
-
-//	array_push($fatal_errors, "not written yet!");
-//foreach (array_unique($fatal_errors) AS $fatal_error) echo "$fatal_error<BR/>\n";
-//die("stop! it's not ready yet! location was $location, track length $track_length");
 }
 
-function parse_gplra($gplraReport) {
-	global $fatal_errors;
+function parse_semikv($report) {
+	global $fatal_errors, $location;
 
-	(preg_match_all("%(?:This replay file does not contain practice data\\.\\s+|"
-		. "Track: .*?\\s+(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) \\S{3} \\d{2} \\d{2}:\\d{2}:\\d{2} \\d{4}\\s+"
-		. "PRACTICE TIMES\\s+"
-		. "Pos\\s+No\\s+Driver\\s+Team\\s+Nat\\s+Time\\s+Diff\\s+Laps\\s+"
-		. "(\\d.*?\\S\\s+?)" // The actual practice results rows.
-		. "All times are official\\s+Generated with GPL Replay Analyser)\\s+"
-		. "Track: (.*?)\\s+((?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) \\S{3} \\d{2} \\d{2}:\\d{2}:\\d{2} \\d{4})\\s+"
-		. "RACE RESULTS \\(After (\\d+) laps\\)\\s+"
-		. "Pos\\s+No\\s+Driver\\s+Team\\s+Nat\\s+Laps\\s+Race Time\\s+Diff\\s+(?:Problem\\s+)?"
-		. "(\\d.*?\\S\\s+?)" // The actual race results rows.
-		. "Race results are unofficial\s+\\(Replay might have been saved before end of race\\)\\s+"
-		. "RACE FASTEST LAPS\\s+"
-		. "Pos\\s+Driver\\s+Time\\s+Lap\\s+"
-		. "(\\d.*?\\S\\s+?)" // The actual fastest lap rows.
-		. "LEADERS"
-		. "%is", $gplraReport, $matches, PREG_SET_ORDER) == 1)
-		|| die("bad GPLRA format (overall)\n<PRE>" . htmlentities($gplraReport, ENT_QUOTES) . "</PRE>");
+	$semikv = new SemiKV(explode("\n", $report));
+	$tables = $semikv->parse();
+	$tables || die("rpydump not in semikv format\n<PRE>" . htmlentities($report, ENT_QUOTES) . "</PRE>");
 
-	// Overwrite the date and time if reading the GPLRA as it's more accurate.
-	global $race_start_time;
-	($ftime = strptime($matches[0][3], "%a %b %d %H:%M:%S %Y")) || die("unrecognised date {$matches[0][3]}");
-	$race_start_time = mktime(
-		$ftime['tm_hour'], $ftime['tm_min'], $ftime['tm_sec'],
-		$ftime['tm_mon'] + 1, $ftime['tm_mday'], $ftime['tm_year'] + 1900);
-	//echo "<PRE>acquired time from GPLRA: $race_start_time = " . strftime("%c", $race_start_time) . "</PRE>\n";
+	($eventInfo = $tables['Event Info'][0]) || die("No Event Info table");
+	$location .= $eventInfo['track'];
 
-	$qualText = $matches[0][1];
-	$laps = $matches[0][4];
-	$raceText = $matches[0][5];
-	$flapsText = $matches[0][6];
-	global $location;
-	$location .= $matches[0][2];
-echo "<PRE>track $location</PRE>";
-
-	$gplraTimeRE = "(?:(?:(?:\\d+h)?\\d+m)?\\d+\\.\\d{3}s)";
-	$gplraRE_driver = "(?:\\s\\S|\\S.).{29}";
-	$gplraRE_car = "[A-Za-z].{7,8}"; // Sportscar mod uses one more character and may include a slash
-
-	// Race results.
-
-	$races = preg_match_all("%"
-		. "\\s*(\\d+)\\s+" // Pos
-		. "(\\d+) " // No
-		. "($gplraRE_driver) " // Driver
-		. "($gplraRE_car) " // Car (Team)
-		. "(\\S{3})\\s+" // Nationality
-		. "(\\d+)\\s+" // Laps
-		. "($gplraTimeRE|DidNotStart)\\s+" // Time
-		. "(?:$gplraTimeRE|\\d+ lap\\(s\\))?" // Diff
-		. "([A-Za-z](?:\\s*[A-Za-z])*)?\\s+" // Problem
-		. "%", $raceText, $matches, PREG_SET_ORDER);
-	($races > 0 && $races <= 20) || die("bad race report ($races entries)\n" . htmlentities($raceText, ENT_QUOTES));
+	foreach ($tables['Entry List'] as $e) {
+		$slot = array(
+			'#'=>$e['startnum'],
+			'Driver'=>$e['driver1_name'],
+			'Vehicle'=>$e['chassis'],
+			'VehicleNumber'=>$e['year'],
+			'Team'=>$e['team'],
+		);
+		$entry = &lookup_entry($slot, null, true);
+		$entry['Car']['UpgradeCode'] = htmlCarAsHex($entry['Car']['VehicleFile']);
+		$entry['Car']['VehicleFile'] = $e['engine'];
+		$entry['LobbyName'] = $entry['LobbyName'] ? "{$entry['LobbyName']} ({$e['driver1_nat']})" : $e['driver1_nat'];
+	}
 
 	$winnerTime = null;
-	for ($match = 0; $match < $races; ++$match) {
-		$lochint = " for " . htmlentities($matches[$match][0]);
+	$offsetFromHtml = null;
+	foreach ($tables['Race Results'] as $e) {
+		$slot = array('#'=>$e['startnum']);
+		$entry = &lookup_entry($slot, true, true);
+		$lochint = " for " . htmlentities(print_r($e, true));
+		check_and_copy($entry['Driver'], $e['drivername'], "Driver$lochint");
+		check_and_copy($entry['RacePos'], $e['pos'], "RacePos$lochint");
+		check_and_copy($entry['raceLaps'], $e['laps'], "raceLaps$lochint");
 
-		$slot = array('Driver'=>trim($matches[$match][3]), 'Vehicle'=>trim($matches[$match][4]));
-		$slot['#'] = parseGPLRASlotNum($matches[$match][2], $lochint);
-		$entry = &lookup_entry($slot, false, true);
-
-//echo "<PRE>HTML {$entry['RacePos']}#{$entry['raceLaps']}/{$entry['raceTime']}@{$entry['reason']}";
-		check_and_copy($entry['RacePos'], $matches[$match][1], "RacePos$lochint");
-		check_and_copy($entry['raceLaps'], $matches[$match][6], "raceLaps$lochint");
-		$dummy = parseGPLRATime($matches[$match][7]);
-		check_and_copy($entry['raceTime'], $dummy, "raceTime$lochint");
-		$dummy = translateRetirementReason($matches[$match][8]);
-		check_and_copy($entry['reason'], $dummy, "reason$lochint");
-//echo " GPLRA {$entry['RacePos']}#{$entry['raceLaps']}/{$entry['raceTime']}@{$entry['reason']}  {$matches[$match][3]}</PRE>\n";
-
-		if ($entry['raceLaps'] == 0 && $matches[$match][7] == 'DidNotStart') {
-			$entry['raceLaps'] = null;
+		$dummy = $semikv->timeAsSeconds($e['clock']);
+		if ($entry['raceTime']) {
+			if (!$offsetFromHtml) {
+				$offsetFromHtml = $dummy - $entry['raceTime'];
+			}
+			$dummy -= $offsetFromHtml;
 		}
+		check_and_copy($entry['raceTime'], $dummy, "raceTime$lochint");
+
+		if ($e['remark'] == 'DNF') {
+			$dummy = $entry['reason'] ?: 0;
+		} else if (!$e['remark']) {
+			$dummy = null;
+		} else {
+			die("Unexpected remark {$e['remark']}");
+		}
+		check_and_copy($entry['reason'], $dummy, "reason$lochint");
 
 		if ($entry['RacePos'] == 1) {
 			$winnerTime = $entry['raceTime'];
 		}
 	}
+	echo "<p><i>Offset from HTML {$offsetFromHtml}s</i></p>";
 
-	// Race fastest laps
-
-	$flaps = preg_match_all("%"
-		. "(\\d+)\\s+" // Pos
-		. "($gplraRE_driver)\\s+" // Driver
-		. "($gplraTimeRE|No time)\\s+" // Time
-		. "(\\d+)?\\s+" // Lap
-		. "%", $flapsText, $matches, PREG_SET_ORDER);
-	($flaps > 0 && $flaps <= 20) || die("bad fastest laps report\n" . htmlentities($flapsText, ENT_QUOTES));
-
-	for ($match = 0; $match < $flaps; ++$match) {
-		$lochint = " for " . htmlentities($matches[$match][0]);
-
-		// No slot number so we have to match on driver name. Pff.
-		if ($bestLapTime = parseGPLRATime($matches[$match][3])) {
-			global $entries;
-			foreach ($entries AS $key=>&$entry) {
-				if ($entry['Driver'] == trim($matches[$match][2]) && $entry['raceLaps'] > 0) {
-					check_and_copy($entry['raceBestLapTime'], $bestLapTime, "raceBestLapTime$lochint");
-					check_and_copy($entry['raceBestLapNo'], $matches[$match][4], "raceBestLapNo$lochint");
-				}
-			}
-		}
+	foreach ($tables['Race Fastest Laps'] as $e) {
+		$slot = array('#'=>$e['startnum']);
+		$entry = &lookup_entry($slot, true, true);
+		$lochint = " for " . htmlentities(print_r($e, true));
+		check_and_copy($entry['Driver'], $e['drivername'], "Driver$lochint");
+		$dummy = $semikv->timeAsSeconds($e['laptime']);
+		check_and_copy($entry['raceBestLapTime'], $dummy, "raceBestLapTime$lochint");
+		check_and_copy($entry['raceBestLapNo'], $e['lap'], "raceBestLapNo$lochint");
 	}
 
-	// Qualifying Practice
-
-	$grids = preg_match_all("%"
-		. "\\s*(\\d+)\\s+" // Pos
-		. "(\\d+)\\s+" // No
-		. "($gplraRE_driver)  " // Driver
-		. "($gplraRE_car) " // Car (Team)
-		. "(\\S{3})\\s+" // Nationality
-		. "($gplraTimeRE| No time)\\s+" // Time
-		. "(?:$gplraTimeRE| No time)?\\s+" // Difference
-		. "(\\d+)\\s+" // Laps
-		. "%", $qualText, $matches, PREG_SET_ORDER);
-	($grids <= 20) || die("bad grid report\n" . htmlentities($qualText, ENT_QUOTES));
-
-	for ($match = 0; $match < $grids; ++$match) {
-		$lochint = " for " . htmlentities($matches[$match][0]);
-
-		$slot = array('Driver'=>trim($matches[$match][3]), 'Vehicle'=>trim($matches[$match][4]));
-		$slot['#'] = parseGPLRASlotNum($matches[$match][2], $lochint);
-		$entry = &lookup_entry($slot, false, true);
-
-//echo "<PRE>HTML {$entry['qualLaps']}/{$entry['qualBestLapTime']}";
-		check_and_copy($entry['qualLaps'], $matches[$match][7], "qualLaps$lochint");
-		$dummy = parseGPLRATime($matches[$match][6]);
+	if (!$tables['Practice Results']) {
+		echo "<p><b>Warning</b>: no qualifying practice results</p>\n";
+		$tables['Practice Results'] = array();
+	}
+	foreach ($tables['Practice Results'] as $e) {
+		$slot = array('#'=>$e['startnum']);
+		$entry = &lookup_entry($slot, true, true);
+		$lochint = " for " . htmlentities(print_r($e, true));
+		check_and_copy($entry['Driver'], $e['drivername'], "Driver$lochint");
+//TODO: from "table=Session 1 (PRACTICE) Car 16 laptimes" if available: check_and_copy($entry['qualLaps'], $e[''], "qualLaps$lochint");
+		$dummy = $semikv->timeAsSeconds($e['laptime']);
 		check_and_copy($entry['qualBestLapTime'], $dummy, "qualBestLapTime$lochint");
-//echo " GPLRA {$entry['qualLaps']}/{$entry['qualBestLapTime']}  {$matches[$match][3]}</PRE>\n";
 	}
 
 	return $winnerTime;
 }
 
-// 10x shows up as 0x, pff
-function parseGPLRASlotNum($n, $lochint) {
-	is_numeric($n) || die("bad car number '$n'$lochint");
-	$m = preg_replace('%^0(\d)$%', '10$1', $n);
-	//echo("#$n -> #$m $lochint<br/>");
-	return $m;
-}
-
-function parseGPLRATime($t) {
-	if (!$t || ($t = trim($t)) == "No time" || $t == "DidNotStart" || substr($t, -8) == " laps(s)") {
-		return null;
-	}
-
-	$time = 0.0;
-	$seconds = 1.0;
-
-	$seps = array('s', 'm', 'h', '?');
-	foreach ($seps as $i=>$sep) {
-		(substr($t, -1) == $sep) || die("invalid time $t, didn't end with $sep");
-		($n = stripos($t, $seps[$i + 1])) === false && ($n = -1);
-		$time += substr($t, $n + 1) * $seconds;
-		$seconds *= 60.0;
-		if ($n == -1)
-		    break;
-		$t = substr($t, 0, $n + 1);
-	}
-
-	return $time;
+function htmlCarAsHex($htmlCarCode) {
+	return $htmlCarCode ? bin2hex($htmlCarCode) : null;
 }
 
 function parse_gpl_html($htmlExport) {

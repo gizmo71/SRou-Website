@@ -156,6 +156,7 @@ minified.css
 /public_html.srou/www/smf/Sources/Admin.php
 /public_html.srou/www/smf/Sources/Help.php
 /public_html.srou/www/smf/Sources/*.lnk
+/public_html.srou/www/smf/Sources/Agreement.php
 /public_html.srou/www/smf/Sources/Attachments.php
 /public_html.srou/www/smf/Sources/CacheAPI-apc.php
 /public_html.srou/www/smf/Sources/CacheAPI-apcu.php
@@ -195,6 +196,7 @@ minified.css
 /public_html.srou/www/smf/Sources/ModerationCenter.php
 /public_html.srou/www/smf/Sources/PostModeration.php
 /public_html.srou/www/smf/Sources/Profile-Actions.php
+/public_html.srou/www/smf/Sources/Profile-Export.php
 /public_html.srou/www/smf/Sources/Profile-Modify.php
 /public_html.srou/www/smf/Sources/Profile-View.php
 /public_html.srou/www/smf/Sources/ReCaptcha/
@@ -224,13 +226,16 @@ minified.css
 /public_html.srou/www/smf/Sources/Subs-Recent.php
 /public_html.srou/www/smf/Sources/Subs-ReportedContent.php
 /public_html.srou/www/smf/Sources/Subs-Themes.php
+/public_html.srou/www/smf/Sources/Subs-Timezones.php
 /public_html.srou/www/smf/Sources/Subscriptions-PayPal.php
 /public_html.srou/www/smf/Sources/Topic.php
 /public_html.srou/www/smf/Sources/Xml.php
 /public_html.srou/www/smf/Sources/minify/
 /public_html.srou/www/smf/Sources/tasks/
 /public_html.srou/www/smf/Sources/random_compat/
+/public_html.srou/www/smf/Sources/Cache/
 
+/public_html.srou/www/smf/Themes/default/Agreement.template.php
 /public_html.srou/www/smf/Themes/classic
 /public_html.srou/www/smf/Themes/babylon
 /public_html.srou/www/smf/Themes/index.php

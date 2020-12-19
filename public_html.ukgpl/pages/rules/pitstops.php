@@ -1,60 +1,85 @@
 <?php include("pages/rules/index.php"); ?>
 
-<H1 ALIGN="CENTER">Timed Pit Stops</H1>
+<H1 ALIGN="CENTER">Pit Stops</H1>
 
-<H2>Stop times</H2>
+<H2>Refuelling Stops</H2>
 
-<P>The stop times for each chassis and location (normally the pit lane
-itself) will be confirmed by the divisional moderator before each
-race.</P>
+<P>The Pit Stop Patch written by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A> can be used to refuel the car during the race. There are several versions of the patch. The Divisional Moderator will specify the version to be used at the start of the season.</P>
 
-<H2 id="whentoperform">When To Perform A Stop</H2>
+<H3>Pit Stop Patch version 1 - Refuelling Only</H3>
 
+<P>Detailed instructions on how to use the patch are <A HREF="http://srmz.net/index.php?showtopic=10007">here</A>. However, the essential steps involved in a stop to refuel are:
 <UL>
-
-<LI>A timed pit stop must be taken between 1/4 and 1/2 race distance (the
-second quarter of the race). The moderators will normally allow the maximum
-leeway where the number of laps does not neatly divide by four.
-<BR/><BR/>
-If two timed stops must be taken, the second must be taken between 1/4
-and 3/4 race distance, and not on the lap immediately following the first
-stop.</LI>
-<BR/>
-<LI>Regardless of where the start/finish line is with respect to the pit
-lane, taking a stop is regarded as being done at the <I>end</I> of a
-lap.</LI>
-
-<BLOCKQUOTE>For example: the race is 27 laps; stops must be taken no earlier
-than the end of lap 6 (27 divided by 4 and rounded down) and not later than
-the end of lap 14 (27 divided by two and rounded up).</BLOCKQUOTE>
-
-<BLOCKQUOTE>It's generally easiest to reckon in terms of laps to go; in the
-above example, the pits would be open once the lap board read 22 (27 minus 6
-plus 1) to go, and the final lap on which a pit stop could be made would be
-when the board read 14 (27 minus 14 plus 1) to go.</BLOCKQUOTE>
-<BR/>
-<LI>For divisions allowing fuel stops, a fuel stop cannot be
-combined with the compulsory timed stop(s).</LI>
-<BR/>
-<LI>If you are forced to Shift-R in the pit lane during your
-compulsory stop (eg. if you crash) you should SnG within 2 laps as
-usual for a 'fault' Shift-R.</LI>
-
+<LI>The driver should enter the pits carefully and slowly approach their pit stall.</LI>
+<LI>The car should be brought to a stop exactly at the point where the pit board disappears.</LI>
+<LI>Pressing the "space" bar starts the refuelling.</LI>
+<LI>The accelerator is disabled during refuelling and the pit board reappears.</LI>
+<LI>The pit board disappears when the refuelling is complete and the accelerator is re-enabled.</LI>
 </UL>
+</P>
 
-<H2>How to perform a stop</H2>
+<P>The original Pit Stop Patch (v1.0) can be downloaded from <A HREF="http://srmz.net/index.php?showtopic=10007">here</A>.</P>
+
+<H3 id="pitstoppatchv2">Pit Stop Patch version 2 - Refuelling and Tyre Wear</H3>
+
+<P>The Pit Stop patch (v2.0) incorporates tyre wear which is commensurate with the Sports Cars Extra mod. The tyre wear has been reduced in the UKGPL custom patch (v2.02) and it is tailored to our league races. In both versions, the tyre wear varies depending on the type of race. In “Grand Prix” mode, the tyre wear is less than it is in a “Long” race. The tyre wear in the UKGPL custom patch (v2.02) is such that:
+<UL>
+<LI>In a 67F1 90min GP race, provided they are not abused, the tyres will just last the race distance.</LI>
+<LI>In a 67F1 50min Long race, the tyres will last about 60% race distance. So one pit stop for tyres is required (Trying to drive 40% of the race distance on worn tyres is not recommended).</LI>
+</UL>
+</P>
+
+<P>Detailed instructions on how to use the patch are <A HREF="http://srmz.net/index.php?showtopic=13367&hl=%2Bpit+%2Bstop+%2Bpatch">here</A>. However, the essential steps involved in a stop to refuel and replenish the tyres are:
+<UL>
+<LI>The driver should enter the pits carefully and slowly approach their pit stall.</LI>
+<LI>The car should be brought to a stop exactly at the point where the pit board disappears.</LI>
+<LI>Pressing the "P" key initiates the refuelling.</LI>
+<LI>Pressing the "T" key initiates the tyre change.</LI>
+<LI>Refuelling and tyre changing is carried out sequentially not concurrently.</LI>
+<LI>The accelerator is disabled during refuelling and tyre changing and the pit board reappears.</LI>
+<LI>The pit board disappears when the refuelling and tyre changing is complete and the accelerator is re-enabled.</LI>
+</UL>
+</P>
+
+<P>The UKGPL Custom patch (v2.02) can be downloaded from <A HREF="/files/77C Pit Stop v2.02.zip">here</A>. The standard version 2 patch (v2.0) can be downloaded from <A HREF="http://srmz.net/index.php?showtopic=13367&hl=%2Bpit+%2Bstop+%2Bpatch">here</A>.</P>
+
+<HR WIDTH="50%">
+
+<H2>Handicap Pit Stops</H2>
+
+<P>Handicap Pit Stops are used to implement in-race time delays by manually setting the time it takes to refuel the car. The UKGPL custom Pit Stop Patch (v2.02) must be used.</p>
+
+<P>The Divisional Moderator may decide to implement a handicap scheme whereby drivers with faster cars are required to take longer fuel stops. Alternatively, faster drivers may be required to take longer fuel stops.</P>
+
+<P>The stop times for each chassis and/or driver will be confirmed by the divisional moderator before each race. The UKGPL Custom Pit Stop Patch (i.e. v2.02) should be configured to the correct handicap time before the race.</P>
+
+<P>The handicap time must be set using the "Pitstop Handicap Manager" before starting GEM+. The steps to be taken for a 67F1 race are:</P>
+<UL>
+<LI>Delete the "gplc67.exe" from the GPL installation directory (normally "C:\Sierra\GPL").</LI>
+<LI>Open the "Pitstop Handicap Manager" (i.e. run the "Pitstop Handicap Manager.exe").</LI>
+<LI>Use the slider to set the required handicap time.</LI>
+<LI>Press the "Save to Patch" button.</LI>
+<LI>Start GEM+ to rebuild the executable with the required handicap time.</LI>
+<LI>Ensure both options "77C Pit Stop v2.02" and "78X KeyPress v.08" are enabled in GEM+.</LI>
+<LI>Although not essential, it is advisable to check the pit stop time by performing a fuel stop off-line before starting a league race.</LI>
+</UL>
+</P>
+
+<P>Performing a Handicap Pit Stop involves exactly the same steps that are taken to perform a refuelling stop using the <A HREF="#pitstoppatchv2">Pit Stop Patch v2.</A></P>
+
+<P>The UKGPL Custom patch (v2.02) can be downloaded from <A HREF="/files/77C Pit Stop v2.02.zip">here</A>. 
+
+<HR WIDTH="50%">
+
+<H2 id="stopAndGo">Stop &amp; Go</H2>
+
+<P>Stop &amp; Gos are used to implement in-race penalties. The Pit Stop Patch is not used.</p>
+
+<P> The Divisional Moderator may decide to impose an in-race penalty for an infringement. Typically, a driver may be required to perform a "Stop and Go" in the Pit Stalls (not necessarily in the driver's actual stall) for taking a reset (i.e. a Shift-R).</P>
+
+<P>The steps involved in making a Stop &amp; Go are:</P>
 
 <UL>
-
-<LI>A corner or two before the pit entrance, where practical, issue a "Pit&nbsp;In" message.</LI>
-
-<BLOCKQUOTE><SMALL>If another driver is close behind the pitting
-driver, the latter should consider moving offline and/or raising an
-arm as a further warning to the other driver.</SMALL></BLOCKQUOTE>
-<BR/>
-<LI>If the driver misses the pit entrance or fails to stop within the
-pit area, they must go around and try on the next lap.</LI>
-<BR/>
 <LI>On entering the pits, the driver should stop in the pit stall area,
 not on the entry/exit lane. Normally the pit stall area is marked by lines
 but at some circuits there are several sets of lines (Mexico) whereas at
@@ -63,75 +88,11 @@ In general cars must stop within half a car's width of the stalls regardless
 of the presence of stall markings. The moderator may decide to penalize
 a driver who gains an unfair advantage by not stopping in the appropriate
 area.</LI>
-<BR/>
-<LI>Drivers are not required to stop at their own pit stall; they must
-however stop within the stall area and in a position which does not hinder
+<LI>Drivers are not required to stop at their own pit stall, but they should try to 
+stop within the stall area and in a position which does not hinder
 other drivers who might be trying to enter or exit the pits.</LI>
-<BR/>
-<LI>If another driver is already in the pits, if possible the pitting driver
-should stop <I>behind</I> them in case they move off or creep forward whilst
-the second driver is trying to find a stall to stop in; if the pitting
-driver must stop ahead of another driver, the pitting driver must leave
-enough room for the stopped driver to creep forward a few car lengths.</LI>
-<BR/>
-<LI>Drivers are advised to keep the car in first gear, with the clutch
-disengaged and the engine revs held at a medium level for the duration
-of the stop. This minimizes the risk of GPL retiring a driver, and is
-especially important for drivers taking long stops of 30 seconds or
-more.</LI>
-
-<BLOCKQUOTE><SMALL>GPL will retire a car which is stationary for 30
-seconds, so drivers doing stops of that time or greater should move
-forward approximately four turns of the front wheels, using medium to
-high revs (effectively a mini-start), midway through the
-stop.</SMALL></BLOCKQUOTE>
-<BR/>
-<LI>Shortly before exiting the pits, the driver should warn other drivers that they are about to leave by issuing a "Pit&nbsp;Out" message.</LI>
-<BR/>
+<LI>If another driver is already in the pits, the pitting driver
+should (if possible) stop <I>behind</I> them.</LI>
 <LI>On exiting the pits, drivers should (where practical) stay off the racing line until back up to racing speed.</LI>
-<BLOCKQUOTE><SMALL>Drivers are reminded that they can see only one car behind in their mirrors when racing online.</SMALL></BLOCKQUOTE>
-
 </UL>
 
-<HR WIDTH="50%">
-
-<H2>GPLWait utility</H2>
-
-Paul Harrington has written a very useful utility called <B>GPLWait</B> which allows you to set up two keys,
-one of which types a "Pit&nbsp;In" message for you, and the other which does the following:<UL>
-	<LI>Presses F10 (switching the view and providing visual feedback that pit stop timing has begun.</LI>
-	<LI>Typing a "Pit&nbsp;Out&nbsp;Warning" messages 5 seconds before the end of the stop.</LI>
-	<LI>Typing a "Pit&nbsp;Out" message at the end of the stop and pressing F10 again, switching the view back to the original setting and providing a visual cue to exit the pits.</LI>
-</UL>All the messages, the keys used, and the length of the stop are configurable. Use of GPLWait isn't mandatory, but it does make timed stops a lot easier.
-
-<H3>Installation</H3>
-
-<P>Download <A HREF="/files/GPLWait-v3.1.zip">GPLWait</A>; unzip the contents of the zip file somewhere, then just run <TT>GPLWait.exe</TT>.</P>
-
-<HR WIDTH="50%">
-
-<H2>Typical Penalties</H2>
-
-<H3>Failure to make Mandatory Pit Stop</H3>
-
-<p>A mandatory pit stop is one that is decreed before the start of a race rather
-than as a consequence of an incident in the race (i.e. a S&amp;G due to a
-shift-R is not a mandatory pit stop). Typical mandatory pit stops are
-those designed to even-out the chassis. A driver who fails to make a
-mandatory pit stop will be excluded from the results.</p>
-
-<H3>Short Mandatory Pit Stop</H3>
-
-<p>If a driver makes a short mandatory Pit Stop, the moderator will apply a time penalty equal to 3 times the number of
-seconds short.</p>
-
-<H3>Incorrect Pit Stop</H3>
-
-<p>If a driver makes a pit stop (either mandatory or a S&amp;G due to a Shift-R)
-but fails to bring the car to rest in
-the stalls. The moderator may decide an unfair advantage has been gained
-and consequently a time penalty may be applied equal to 3 times the number of
-seconds gained.  Where the number of seconds gained cannot be determined with 
-any confidence, the moderator may decide to impose a standard 5 second 
-penalty.  This is cumulative so a driver making a late pitstop and failing to stop
-close enough to the pit wall may incur two 5 second penalties during the one stop.</p>

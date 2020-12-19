@@ -380,7 +380,7 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 			'Team' => lm2ArrayValue($slot, 'Team'),
 			'VehicleNumber' => lm2ArrayValue($slot, 'VehicleNumber'),
 			'VehicleFile' => lm2ArrayValue($slot, 'VehicleFile'),
-			'VehicleType' => lm2ArrayValue($slot, 'VehicleType'),
+			'VehicleType' => lm2ArrayValue($slot, 'VehicleType'), // Typcially used for the mod
 			'UpgradeCode' => lm2ArrayValue($slot, 'UpgradeCode'),
 		),
 		// Stuff used internally:
@@ -394,8 +394,11 @@ function &lookup_entry(&$slot, $isRace, $isGPL = false) {
 				check_and_copy($old_entry['Driver'], $entry['Driver'], 'Driver');
 				check_and_copy($old_entry['LobbyName'], $entry['LobbyName'], 'LobbyName');
 				check_and_copy($old_entry['Car']['Vehicle'], $entry['Car']['Vehicle'], 'Vehicle');
+				check_and_copy($old_entry['Car']['Team'], $entry['Car']['Team'], 'Team');
+				check_and_copy($old_entry['Car']['VehicleNumber'], $entry['Car']['VehicleNumber'], 'VehicleNumber');
 				check_and_copy($old_entry['Car']['VehicleFile'], $entry['Car']['VehicleFile'], 'VehicleFile');
 				check_and_copy($old_entry['Car']['VehicleType'], $entry['Car']['VehicleType'], 'VehicleType');
+				check_and_copy($old_entry['Car']['UpgradeCode'], $entry['Car']['UpgradeCode'], 'UpgradeCode');
 				return $old_entry;
 			}
 		} else if ($old_entry['Driver'] == $driver && $old_entry['LobbyName'] == $lobby) {

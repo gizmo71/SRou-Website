@@ -3,7 +3,7 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-http_response_code(500);
+//http_response_code(500);
 //ob_end_flush();
 require_once("/srv/public_html.srou/www/smf/SSI.php");
 http_response_code(503);

@@ -100,12 +100,11 @@ off track through corners. Examples with typical penalties are <a href="railridi
 during a race. If a driver exceeds the number of allowed
 shift-Rs they will be disqualified.</p>
 
-<H3 ID="nostopgo">Failing to take Stop & Go after Shift-R</H3>
+<H3 ID="nostopgo">Failing to take Stop &amp; Go after Shift-R</H3>
 
 <p ID="nostopgo">In general, every time a driver has to make a shift-R as a
 result of their own actions or as a result of mechanical failure then they must
-perform a Stop and Go (S&amp;G).  This is to be performed in the pits, not on the open track. The rules about how 
-to perform a S&amp;G (in effect a Pit Stop of zero seconds) are <a href="pitstops">here</a>. The moderator 
+perform a Stop and Go (S&amp;G).  This is to be performed in the pits, not on the open track. The guidance on how to perform a Stop &amp; Go are <a href="pitstops#stopAndGo">here</a>. The moderator 
 will invariably apply a time penalty (normally 30 seconds) each time a driver fails to make a S&amp;G after a 
 shift-R. Examples where the time penalty may be rescinded
 are detailed <a href="no_stop_and_go">here</a>.</p>
@@ -123,12 +122,16 @@ on the basis that the driver did not have sufficient opportunity to perform the 
 
 <H3>Incorrect Stop &amp; Go</H3>
 
-<p>A S&amp;G should be considered to be a Pit Stop of zero seconds and hence the rules about how to perform a Pit Stop also applies to a
-S&amp;G.  The rules about how to perform a Pit Stop are <a href="pitstops">here</a>. If a driver makes a S&amp;G but fails to bring the car 
+<p>The guidance on how to perform a Stop &amp; Go is <a href="pitstops#stopAndGo">here</a>. If a driver makes a S&amp;G but fails to bring the car 
 to rest in the stalls. The moderator may decide an unfair advantage has been gained and consequently a time penalty may be applied equal 
 to 3 times the number of seconds gained.  Where the number of seconds gained cannot be determined with any confidence, the moderator may 
 decide to impose a standard 5 second  penalty.  This is cumulative so a driver making a late S&amp;G and failing to stop close enough to 
-the pit wall may incur two 5 second penalties during the one stop.</p>
+the pit wall may incur two 5 second penalties for the one stop.</p>
+
+<H3>Incorrect Pit Stops</H3>
+
+<p>The guidance on how to perform a Pit Stop is <a href="pitstops">here</a>. Typical penalties for incorrect Pit Stops are <a href="pitstopsPenalties">here</a>.</p>
+
 
 <H3>Ignoring Blue Flags</H3>
 
@@ -237,9 +240,9 @@ that invoked the suspension. When the suspension has expired, another yellow car
 point will invoke another suspended race ban (again suspended for 3 races).</p>
 
 <p>The moderators do have some discretion as to applying Bans or Suspended Bans and factors
-that can be taken into account are a driver’s willingness to improve or demonstrated
+that can be taken into account are a driver&apos;s willingness to improve or demonstrated
 improvement and accumulations in fully moderated divisions. Initially alternatives,
-eg starting form the back of the grid, a drive through or a X sec pitstop are also
+eg starting form the back of the grid, a drive through or a number of Stop &amp; Gos are also
 options which can be considered.</p>
 
 <p>Ultimately, if the application of the racing ban system does not produce any improvement,

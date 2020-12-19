@@ -79,11 +79,11 @@ this will help their case.  The other moderators will then hold a
 "stewards enquiry" and decide on any penalties that may be
 applicable.</P>
 
-<BLOCKQUOTE>If a driver hits another driver and cause an
-accident, it is suggested that they do not attempt to wait for them,
-as this is likely to cause more problems for drivers who are passing
-the scene of the accident as two or more cars all try to rejoin "in
-order".</BLOCKQUOTE>
+<LI><P>If a driver takes a place unfairly by causing an incident, they 
+may decide to give the place back. This must be done in a manner which 
+does not hinder the rest of the field. The perpetrator should find a 
+safe place to move off the racing line in order for the victim to regain 
+their position. The incident may still be investigated after the race.</P>
 
 </UL>
 
@@ -100,8 +100,7 @@ order".</BLOCKQUOTE>
 <LI><P>
 Any Shift-R must be followed by a Stop and Go
 (&quot;<B>S&amp;G</B>&quot;) in the pits. Any Stop and Go <I>must</I> be taken within 2 laps of
-the Shift-R. A &quot;<B>S&amp;G</B>&quot; is effectively a Timed Pit Stop of zero seconds. The rules for making 
-Timed Pit Stops are <A HREF="pitstops#whentoperform">here</A>. The section describing how to perform a stop is the most relevant for a Shift-R &quot;<B>S&amp;G</B>&quot;.</P>
+the Shift-R. The guidance on how to perform a Stop &amp; Go is <a href="pitstops#stopAndGo">here</a>.</P>
 
 <LI><P>Drivers should take every precaution to make sure they rejoin the
 race without interfering with any other drivers. This means waiting
@@ -269,18 +268,18 @@ marshall).</P>
 
 <UL>
 
-<LI>A race will be red flagged by the moderator <B>only</B> if at least
-half the drivers are disconnected from the server during lap one due to
-network problems. This may mean the race will have to be rescheduled due to
-time factors. Start line crashes will not be red flagged, no matter how many
-cars are involved.</LI>
+<LI>A race may be red flagged on lap one at the moderator's discretion. This could be due to network 
+issues or a mass pile-up, it will be very difficult for the moderator to ascertain at the 
+time. A reduced qualifying period would be needed for the restarted race. If there is not 
+enough time to re-run the race it would have to be rescheduled. The restarted race will 
+not be red flagged on lap one under any circumstances.</LI>
 
-<LI>In the event of a mass disconnection or other server problem the
-moderator may, at their discretion:<UL>
-  <LI> reconstruct the result based on the replay, if available;
-  <LI> declare the race to be red flagged at the end of the preceding
-    lap and take the final results from that lap; or
-  <LI> declare the race null and void and arrange for it to be run again.
+<LI>In the event of a mass disconnection or other server problem occurring after lap one. The
+moderator may:<UL>
+  <LI> Reconstruct the result based on the replay.
+  <LI> Declare the race to be red flagged at the end of the preceding
+    lap and take the final results from that lap.
+  <LI> Declare the race null and void and arrange for it to be run again.
 </UL></LI>
 
 </UL>
