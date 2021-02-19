@@ -595,7 +595,7 @@ class Classes extends RefData {
 			new RefDataFieldID("id_class", '$row["entries"] == 0'),
 			new RefDataFieldEdit("id_class", 10),
 			new RefDataFieldEdit("class_description", 15),
-			new RefDataFieldEdit("display_sequence", 2),
+			new RefDataFieldEdit("display_sequence", 4),
 			new RefDataFieldEdit("class_bgcolor", 6),
 			new RefDataFieldFK("class_ballast_scheme", "
 				SELECT ballast_scheme AS id, GROUP_CONCAT(ballast_delta ORDER BY ballast_position, ',') AS description
