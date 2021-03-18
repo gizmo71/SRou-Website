@@ -38,6 +38,7 @@ function cmpFiles($a, $b) {
 foreach (array(
 	array(dir=>'ukgtr', url=>'7', title=>'UKGTR'),
 	array(dir=>'ukgtl', url=>'13', title=>'UKGTL'),
+	array(dir=>'legacyNoGrip', url=>'1451', title=>'Legacy NoGrip'),
 	//array(dir=>'ukrf', url=>'16', title=>'UKrF'),
 	array(dir=>'ukpng', url=>'213', title=>'UKP&amp;G'),
 	array(dir=>'ukac', url=>'484', title=>'UKAC'),
