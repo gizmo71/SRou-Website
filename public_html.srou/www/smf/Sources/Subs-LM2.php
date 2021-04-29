@@ -845,8 +845,10 @@ function lm2AddPenalties($incident, $is_comment) {
 			printf(" &mdash; %s", htmlentities($row['description'], ENT_QUOTES));
 		}
 
-		if ($row['points_lost']) {
-			echo " &mdash; {$row['points_lost']} championship points";
+		if ($row['points_lost'] > 0) {
+			echo " &mdash; {$row['points_lost']} championship point(s)";
+		} else if ($row['points_lost'] < 0) {
+			echo " &mdash; " . -$row['points_lost'] . " bonus point(s)";
 		}
 
 		if ($row['hist_autoban']) {

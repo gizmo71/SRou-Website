@@ -129,7 +129,7 @@ function template_group() {
 		echo "<TR>
 			<TH>Rank</TH>
 			<TH" . ($ycp ? "" : " COLSPAN='2'") . ">{$lm2_champ_types[$champ_type]}</TH>\n
-			" . ($ycp ? "<TH TITLE='Penalty Points (or championship points lost for UKGPL prior to Season 6)'>PP</TH>" : "") . "
+			" . ($ycp ? "<TH TITLE='Penalty Points/Championship points lost or gained'>&plusmn;</TH>" : "") . "
 			<TH>Total</TH>
 			<TH>Vehicle</TH>
 			$event_headers
@@ -231,7 +231,8 @@ function template_group() {
 	}
 
 	function format_penalty_points($penalty_points, $points_lost) {
-		$style = is_null($penalty_points) ? ($points_lost ? " CLASS='lm2EventYCP'" : "") : sprintf(" CLASS='%s'", ($penalty_points > 2.0 ? "lm2manyYCP" : "lm2fewYCP"));
+		$style = is_null($penalty_points) ? ($points_lost > 0 ? " CLASS='lm2EventYCP'" : " STYLE='color: green'") : sprintf(" CLASS='%s'", ($penalty_points > 2.0 ? "lm2manyYCP" : "lm2fewYCP"));
+		if ($points_lost) $points_lost = $points_lost < 0 ? ("+" . -$points_lost) : "-{$points_lost}";
 		return "<TD ALIGN='RIGHT'$style>{$penalty_points} $points_lost</TD>";
 	}
 
@@ -413,7 +414,9 @@ function template_group() {
 		if ($rows) {
 			foreach ($rows as $row) {
 				$scores[$row['event']] = $row['points'];
-				$htmlClasses[$row['event']] = $row['position'] . ($row['is_dropped'] == 1 ? " dropped" : "") . (is_null($row['pp']) ? "" : " lm2EventYCP");
+				$htmlClasses[$row['event']] = $row['position']
+					. ($row['is_dropped'] == 1 ? " dropped" : "")
+					. ($row['pp'] > 0 ? " lm2EventYCP" : "");
 			}
 		}
 
