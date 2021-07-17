@@ -46,13 +46,16 @@ driver to drive straight back onto the track.</p>
   <li> The rejoining driver was NOT in full control but nevertheless attempted to
   drive straight back onto the racing line without any consideration for other drivers
   and contact was made.</li>
+  <li> Reversing on-track when other cars are visible in mirrors and contact is made.</li>
 </ol>
 
-<P>Inconsiderate Bad Rejoin:  Penalty 1 Places
+<P>Inconsiderate Bad Rejoin:  Penalty 1 Place
 <ol>
   <li> The rejoining driver was in full control but nevertheless drove straight
   back onto the track without leaving enough room for other cars. Contact
   was NOT made but other drivers had to take avoiding action.</li>
+  <li> Reversing on-track when other cars are not visible in mirrors and contact is made.</li>
+  <li> Reversing on-track when other cars are visible in mirrors, contact is not made but other cars have to take avoiding action.</li>
 </ol>
 
 <P>Incompetent Bad Rejoin: Warning
@@ -60,6 +63,7 @@ driver to drive straight back onto the track.</p>
   <li> The rejoining driver was NOT in full control but drove straight back onto
   the track without leaving enough room for other cars. Contact was NOT
   made but other drivers had to take avoiding action.</li>
+  <li> Reversing on-track when other cars are not visible in mirrors, contact is not made but other cars have to take avoiding action.</li>
 </ol>
 
 <P>Unavoidable Bad Rejoin: Racing Incident

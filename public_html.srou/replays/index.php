@@ -37,11 +37,12 @@ function cmpFiles($a, $b) {
 foreach (array(
 	//array('dir'=>'ukgtr', 'url'=>'7', 'title'=>'UKGTR'),
 	array('dir'=>'ukgtl', 'url'=>'13', 'title'=>'UKGTL'),
+	array('dir'=>'legacyNoGrip', 'url'=>'1451', 'title'=>'Legacy NoGrip'),
 	//array('dir'=>'ukrf', 'url'=>'16', 'title'=>'UKrF'),
 	//array('dir'=>'ukpng', 'url'=>'213', 'title'=>'UKP&amp;G'),
 	array('dir'=>'ukac', 'url'=>'484', 'title'=>'UKAC'),
 	array('dir'=>'rre', 'url'=>'498', 'title'=>'RRE'),
-	//array(dir=>'race', 'url'=>'63', 'title'=>"Race'07"),
+	//array('dir'=>'race', 'url'=>'63', 'title'=>"Race'07"),
 ) as $dirA) {
 	$dir = $dirA['dir'];
 	echo "<H2><A id='$dir' HREF=\"http://{$_SERVER['SROU_HOST_WWW']}/index.php?ind=lm2&group={$dirA['url']}\">{$dirA['title']}</A></H2>"
