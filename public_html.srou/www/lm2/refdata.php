@@ -1791,7 +1791,7 @@ class SimDrivers extends RefData {
 
 		$filters = array(
 			'u'=>array('name'=>'Unmapped', 'predicate'=>"member = 0"),
-			'g'=>array('name'=>'Guest', 'nested'=>array()),
+			'g'=>array('name'=>'{Unknown}', 'nested'=>array()),
 			's'=>array('name'=>'Sims', 'nested'=>array()),
 			'd'=>array('name'=>'Driver', 'nested'=>array()),
 			'l'=>array('name'=>'UKGPL Historic', 'predicate'=>"member > 10000000"),
@@ -1804,16 +1804,17 @@ class SimDrivers extends RefData {
 			", __FILE__, __LINE__);
 		$filters['g']['nested']["gAny"] = array('name'=>"{Any sim}", 'predicate'=>"member = $guest_member_id");
 		while ($row = mysql_fetch_assoc($query)) {
-			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
-			$filters['g']['nested']["g{$row['id']}"] = 
-				array('name'=>$row['description'], 'predicate'=>"member = $guest_member_id AND sim = " . sqlString($row['id']));
+			$entry = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
+			$filters['s']['nested']["s{$row['id']}"] = $entry;
+			$entry['predicate'] .= " AND member = $guest_member_id";
+			$filters['g']['nested']["g{$row['id']}"] = $entry;
 		}
 		mysql_free_result($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT driver_member AS id, CONCAT(driver_name,IF(driver_member > 10000000,' (UKGPL historic)','')) AS description
 			FROM {$this->lm2_db_prefix}drivers
-			WHERE driver_member IN (SELECT member FROM {$this->lm2_db_prefix}sim_drivers)
+			WHERE driver_member IN (SELECT member FROM {$this->lm2_db_prefix}sim_drivers WHERE member <> $guest_member_id)
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = mysql_fetch_assoc($query)) {
