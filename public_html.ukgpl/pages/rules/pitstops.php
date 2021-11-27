@@ -29,7 +29,9 @@
 </UL>
 </P>
 
-<P>Detailed instructions on how to use the patch are <A HREF="http://srmz.net/index.php?showtopic=13367&hl=%2Bpit+%2Bstop+%2Bpatch">here</A>. However, the essential steps involved in a stop to refuel and replenish the tyres are:
+<P>Detailed instructions on how to use the standard patch are <A HREF="http://srmz.net/index.php?showtopic=13367&hl=%2Bpit+%2Bstop+%2Bpatch">here</A>. 
+Specific instructions on how to use the UKGPL custom patch are <A HREF='/pages/rules/fuel_and_tyre_stop.php'>here</A>. 
+However, the essential steps involved in a stop to refuel and replenish the tyres are:
 <UL>
 <LI>The driver should enter the pits carefully and slowly approach their pit stall.</LI>
 <LI>The car should be brought to a stop exactly at the point where the pit board disappears.</LI>

@@ -6,31 +6,46 @@
 
 <P>This is the home page of UKGPL, a United Kingdom based online racing league for fans of Grand Prix Legends.</P>
 
-<H1><IMG WIDTH="800" HEIGHT="351" SRC="/images/F2_Goodwood.jpg"></H1>
+<H1><IMG WIDTH="800" HEIGHT="430" SRC="/images/CanAm71_WatkinsGlen.jpg"></H1>
 
-<H1>Season 38 has concluded, many congratulations to our champions!<br></H1>
+<H1>Registration for Season 39 is OPEN!<br></H1>
+<H2>This season we will be running the 1955 GP machines, the 1967 F2, 1967 F1, 1968 F1 and 1969 F1 open wheel single seaters and the 1971 Can-Am Cars.</H2>
 
-<P align="center">
-<table style="min-width:800px;">
-<tr><th><font size="5">Championship</font></th><th><font size="5">Champion Driver</font></th><th><font size="5">Team Champions</font></th></tr>
-<tr><th>1967 F1 (Works)</th><th>K.Miele</th><th>Team Baarf</th></tr>
-<tr><th>1967 F1 (Privateers)</th><th>Phil Thornton</th><th>Equipe BGB</th></tr>
-<tr><th>1955 GP (Works)</th><th>JonnyO</th><th>Team Coyote</th></tr>
-<tr><th>1955 GP (Privateers)</th><th>David Rainier</th><th>Equipe BGB</th></tr>
-<tr><th>Mixed Open Wheel (Open)</th><th>Tristan Bot</th><th>Equipe BGB</th></tr>
-<tr><th>Mixed Open Wheel (Privateers)</th><th>Pete Bennett</th><th>Antipasti Racing</th></tr>
-<tr><th>1967 F1 Grand Prix (Open)</th><th>Fulvio Policardi</th><th>Equipe BGB</th></tr>
-<tr><th>1967 F1 Grand Prix (Privateers)</th><th>Philippe Girard</th><th>Equipe BGB</th></tr>
-<tr><th> Lola versus Ferrari Cup (Open)</th><th>Tristan Bot</th><th>Equipe BGB</th></tr>
-<tr><th> Lola versus Ferrari Cup (Privateers)</th><th>Doni Yourth</th><th>Equipe BGB</th></tr>
-<tr><th>1965 F1 Grand Prix (Professionals)</th><th>Tristan Bot</th><th>Equipe BGB</th></tr>
-<tr><th>1965 F1 Grand Prix (Amateurs)</th><th>Pete Bennett</th><th>Equipe BGB</th></tr>
-</table>
+<P align="justify">
+The league is still going strong despite the advent of dozens of new sims. Grand Prix Legends models some of the best cars from the fifties, sixties and early seventies and does it exceptionally well. Despite having been around since 1998, Grand Prix Legends still attracts a loyal following and UKGPL offers the opportunity to race open wheel cars from the original 1967 season and cars from the 1955, 1965, 1966, 1968 and 1969 seasons. The 67 Sports Cars, 66 Can-Ams and 71 Can-Ams provide an additional challenge.</p>
+
+<P align="justify">
+UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. UKGPL will also run championships for the 1955 GP, 1967 F2, 1968 F1, 1969 F1 and 1971 Can-Am cars. Our aim is simply to have some fun racing the 50s, 60s and 70s machines.</p>
+
+<P align="justify">
+We are now an international league having drivers from many countries. Our 67F1 championship will again be a joint venture with GPL Brazil. We used the GPL Brazil chassis bonus system last season, so this time we will be using the UKGPL token format and scoring system for the "Works" and "Privateer" races.
 </P>
 
-<H1>Season 39 is coming soon.<br></H1>
 <P align="justify">
-Season 39 is scheduled to start on Friday 4th September. We will be running a number of championships on Sundays, Tuesdays and Fridays using a variety of mods and race formats. Each championship will be run over a series of 8 rounds to ensure we finish before Christmas 2021. Keep checking this page for announcements as the details are finialised. In the interim we will be running lots of fun races to give the drivers an opportunity to develop their skills and maybe try a few new cars in a fun environment before engaging in competitive races.
+There is something to suit everyone, both newcomers to online racing and those more experienced, so join our forum introduce yourself and enjoy the racing.</P>
+
+<P align="justify">
+In order to allow drivers to plan their sim racing activities, we have adopted a regular calendar for UKGPL races. We will run two seasons per calendar year. The "Spring" season of ten rounds will start on the second Sunday of the year. The "Autumn" season will start in September and will feature a season of eight rounds can be completed before the end of the calendar year. The "Joe Shaw Memorial" races will be held in the week after the Easter holidays.</p>	
+
+<P align="justify">
+<H1>The provisional dates for future events are:</H1>
+<H2>Season 40: Start 9th January 2022 - Finish 7th June 2022</H2>
+<H2>Joe Shaw Memorial Races: 24th April 2022 and 26th April 2022</H2>
+<H2>Season 41: Start 2nd September 2022 - Finish 20th December 2022</H2>
+<P align="center">Summer Break: Start 8th June 2022 - Finish 1st September 2022</p>
+</p>
+<P align="justify"><p>
+
+<P align="justify">
+<H1>To sign-up for Season 39, click on these links:</H1>	
+<p>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26661.0">1971 Can-Am</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26651.0">1969 Formula 1</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26631.0">1968 Formula 1</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26611.0">1967 Formula 1 - (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26621.0">1967 Formula 1 - (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26641.0">1967 Formula 2</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=26601.0">1955 Grand Prix</A><br>
 </P>
 
 <P align="justify">
