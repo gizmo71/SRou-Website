@@ -361,7 +361,8 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		, $lm2_circuit_html_clause AS circuit_html
 		, short_desc AS event_group
 		, event_date
-		, SUM(id_event_entry) AS entries
+		, DATE(event_date) < DATE(" . lm2Php2timestamp() . ") AS in_past
+		, COUNT(DISTINCT event) = COUNT(DISTINCT id_event) AS all_imported
 		, IFNULL(server_starter_override, server_starter) AS server_starter
 		, full_desc AS event_group_full
 		, {$lm2_db_prefix}sims.sim_name AS sim_desc
@@ -386,10 +387,12 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 			$link_html = substr($link_html, 0, $max_link_len - 1) . '&#133;';
 		}
 		$link = lm2MakeEventLink($row['id_event'], $row['smf_topic']);
-		if (!$row['entries']) {
+		if (!$row['all_imported']) {
 			$cssClass = null;
 			if (in_array($lm2_mods_group, $user_info['groups'])) {
-				if ($row['server_starter'] == $ID_MEMBER) {
+				if ($row['in_past']) {
+					$cssClass = 'lm2manyYCP';
+				} else if ($row['server_starter'] == $ID_MEMBER) {
 					$cssClass = 'lm2eventAmStarter';
 				} else if (is_null($row['server_starter'])) {
 					$cssClass = 'lm2eventNoStarter';
@@ -404,7 +407,7 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		}
 		$content .= "<SPAN TITLE='{$row['sim_desc']} - {$row['event_date']} - {$row['event_group_full']}'>$link<NOBR>$link_html</NOBR></A></SPAN>";
 
-		$events[$row['entries'] ? "recent" : "coming"][] = $content;
+		$events[($row['in_past'] || $row['all_imported']) ? 'recent' : 'coming'][] = $content;
 	}
 	mysql_free_result($query);
 
