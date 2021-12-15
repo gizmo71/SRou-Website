@@ -37,7 +37,7 @@ for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
 			mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
 		(
 			echo "FLUSH LOGS;"
-			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 2 MINUTE);"
+			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 30 MINUTE);"
 		) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
 	done
 done; done
