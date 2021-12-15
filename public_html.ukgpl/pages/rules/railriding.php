@@ -9,7 +9,7 @@ problem. The only way to confirm railriding is to carry out a
 comprehensive race review. This is documented as <a href="/index.php/moderating/moderatingarace#modmethod1"> Method 1</a> on the pages
 describing how to moderate a race.</p>
 
-<p>Corner cutting can be identified as placing all four wheels off the track surface.</p>
+<p>Corner cutting can be identified as placing three or four wheels outside the track boundary.</p>
 
 <h4>Typical Scenarios:</h4>
 
