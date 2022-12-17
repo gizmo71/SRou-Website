@@ -531,8 +531,10 @@ class Classification extends RefData {
 	function show_notes() {
 		global $lm2_view_prefix;
 		$query = lm2_query("
-			SELECT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
-			, GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name)) AS car
+			SELECT car_class_c, car_class
+			, CONCAT(eg_c.id_event_group, '=', eg_c.short_desc) AS c
+			, CONCAT(eg_e.id_event_group, '=', eg_e.short_desc) AS e
+			, GROUP_CONCAT(DISTINCT CONCAT(id_car, '=', manuf_name, ' ', car_name)) AS car
 			FROM {$this->lm2_db_prefix}event_entries
 			JOIN {$this->lm2_db_prefix}events ON id_event = event
 			JOIN {$this->lm2_db_prefix}event_groups eg_e ON id_event_group = event_group
