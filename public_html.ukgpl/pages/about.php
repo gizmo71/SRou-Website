@@ -42,9 +42,9 @@ In order to allow drivers to plan their sim racing activities, we have adopted a
 
 <P align="justify">
 <H1>The provisional dates for future events are:</H1>
-<H2>Season 42: Start 8th January 2023 - Finish 6th June 2023</H2>
+<H2>Season 42: Start 15th January 2023 - Finish 16th June 2023</H2>
 <H2>Joe Shaw Memorial Races: 16th April 2023 and 18th April 2023</H2>
-<P align="center">Summer Break: Start 7th June 2023 - Finish 31st August 2023</p>
+<P align="center">Summer Break: Start 17th June 2023 - Finish 10th September 2023</p>
 </p>
 <P align="justify"><p>
 
