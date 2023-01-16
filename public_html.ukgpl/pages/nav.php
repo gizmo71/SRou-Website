@@ -5,7 +5,7 @@
 <BR/><A HREF='/index.php/moderating/roles'>Moderating</A>
 </P>
 
-<P><A HREF='https://antipastiracing.org.uk/UKGPL_Replays/index.php'>Replays</A></P>
+<P><A HREF='https://antipastiracing.org.uk/antipastiracing/UKGPL_Replays/index.php'>Replays</A></P>
 
 <!-- P><A HREF='/ukgpl/statz/index.html'>Statistics</A></P -->
 
