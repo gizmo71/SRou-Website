@@ -4,8 +4,8 @@
 
 cd public_html.srou/www/smf
 
-if false; then
-	wget -O - https://download.simplemachines.org/index.php/smf_2-1-rc2_upgrade.tar.bz2 | bzip2 -d | tar xvf -
+if true; then
+	wget -O - https://download.simplemachines.org/index.php/smf_2-1-3_upgrade.tar.bz2 | bzip2 -d | tar xvf -
 elif false; then
 	# https://www.simplemachines.org/community/index.php?topic=558451.0:
 	wget -O /tmp/smf2.1_nightly_upgrade.zip http://0exclusive.de/smf/smf2.1_nightly_upgrade.zip
