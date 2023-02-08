@@ -15,27 +15,24 @@ driver would have made the corner.</p>
 
 <h4>Typical Scenarios:</h4>
 
-<P>Impossibly Ambitious Overtake: Penalty 3 Places
+<P>Impossibly Ambitious Overtake: Penalty 3 Places</p>
 <ol>
   <li> The overtaking driver had not achieved any degree of overlap at turn-in.
     The overtaking driver would NOT have made the corner. Penalty for
     overtaking driver.</li>
 </ol>
 
-<P>Very Ambitious Overtake: Penalty 2 Places
+<P>Very Ambitious Overtake: Penalty 2 Places</p>
 <ol>
   <li> The overtaking driver had not achieved any degree of overlap at turn-in.
     The overtaking driver WOULD have made the corner. Penalty for
     overtaking driver.</li>
 </ol>
 
-<P>Simple Ambitious Overtake: Penalty 1 Place
+<P>Simple Ambitious Overtake: Penalty 1 Place</p>
 <ol>
   <li>The overtaking car had NOT achieved a 50% or greater overlap at the
   point of turn-in. There was no loss of control by either driver. Penalty for overtaking
-    driver.</li>
-  <li>The overtaking car HAD achieved a 100% or greater overlap at the
-  point of turn-in. There was no loss of control by either driver. Penalty for overtaken
     driver.</li>
   <li>The overtaking driver had not achieved any degree of overlap at turn-in.
     The overtaken driver did NOT contest the place. The overtaking driver
@@ -48,12 +45,19 @@ driver would have made the corner.</p>
     Contact is made. Penalty for the overtaking driver.</li>
 </ol>
 
-<P>Marginal Ambitious Overtake:  Warning
+<P>Overly Robust Defence: Penalty 1 Place</p>
+<ol>
+  <li>The overtaking car HAD achieved a 100% or greater overlap at the
+  point of turn-in. There was no loss of control by either driver. Contact is made. Penalty for overtaken
+    driver.</li>
+</ol>
+
+<P>Marginal Ambitious Overtake:  Warning</p>
 <ol>
   <li>In a corner, the overtaking car HAD achieved a 100% or greater overlap at the point
   of turn-in but the driver was not in full control but WOULD have made the
     corner.
-  Warning for overtaking car.</li>
+  Warning for overtaking driver.</li>
 </ol>
 
 <p>Contested Overtake: Racing Incident</p>
