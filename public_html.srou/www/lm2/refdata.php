@@ -530,8 +530,10 @@ class Classification extends RefData {
 
 	function show_notes() {
 		$query = lm2_query("
-			SELECT car_class_c, car_class, eg_c.short_desc AS c, eg_e.short_desc AS e
-			, GROUP_CONCAT(DISTINCT CONCAT(manuf_name, ' ', car_name)) AS car
+			SELECT car_class_c, car_class
+			, CONCAT(eg_c.id_event_group, '=', eg_c.short_desc) AS c
+			, CONCAT(eg_e.id_event_group, '=', eg_e.short_desc) AS e
+			, GROUP_CONCAT(DISTINCT CONCAT(id_car, '=', manuf_name, ' ', car_name)) AS car
 			FROM {$this->lm2_db_prefix}event_entries
 			JOIN {$this->lm2_db_prefix}events ON id_event = event
 			JOIN {$this->lm2_db_prefix}event_groups eg_e ON id_event_group = event_group
@@ -1796,7 +1798,7 @@ class SimDrivers extends RefData {
 
 		$filters = array(
 			'u'=>array('name'=>'Unmapped', 'predicate'=>"member = 0"),
-			'g'=>array('name'=>'Guest', 'nested'=>array()),
+			'g'=>array('name'=>'{Unknown}', 'nested'=>array()),
 			's'=>array('name'=>'Sims', 'nested'=>array()),
 			'd'=>array('name'=>'Driver', 'nested'=>array()),
 			'l'=>array('name'=>'UKGPL Historic', 'predicate'=>"member > 10000000"),
@@ -1809,16 +1811,17 @@ class SimDrivers extends RefData {
 			", __FILE__, __LINE__);
 		$filters['g']['nested']["gAny"] = array('name'=>"{Any sim}", 'predicate'=>"member = $guest_member_id");
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {
-			$filters['s']['nested']["s{$row['id']}"] = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
-			$filters['g']['nested']["g{$row['id']}"] = 
-				array('name'=>$row['description'], 'predicate'=>"member = $guest_member_id AND sim = " . sqlString($row['id']));
+			$entry = array('name'=>$row['description'], 'predicate'=>"sim = " . sqlString($row['id']));
+			$filters['s']['nested']["s{$row['id']}"] = $entry;
+			$entry['predicate'] .= " AND member = $guest_member_id";
+			$filters['g']['nested']["g{$row['id']}"] = $entry;
 		}
 		$GLOBALS['smcFunc']['db_free_result']($query);
 
 		$query = lm2_query("
 			SELECT DISTINCT driver_member AS id, CONCAT(driver_name,IF(driver_member > 10000000,' (UKGPL historic)','')) AS description
 			FROM {$this->lm2_db_prefix}drivers
-			WHERE driver_member IN (SELECT member FROM {$this->lm2_db_prefix}sim_drivers)
+			WHERE driver_member IN (SELECT member FROM {$this->lm2_db_prefix}sim_drivers WHERE member <> $guest_member_id)
 			ORDER BY description
 			", __FILE__, __LINE__);
 		while ($row = $GLOBALS['smcFunc']['db_fetch_assoc']($query)) {

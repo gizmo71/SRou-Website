@@ -62,6 +62,7 @@ things: <UL>
 <LI><P>Riding the kerbs is permitted but there must always be at least two wheels within the track boundary at any one time.  If three or four wheels have been placed outside the track boundary then a driver is deemed to have left the track and will subsequently have to perform a rejoin with the necessary caution this dictates.  
 <UL>
 <LI> If you have knowingly overdone the kerb riding or left the track for any other reason in qualifying, please abort the lap in order to not post an illegal lap time.
+<LI> In general the boundary of a track is defined by white lines, this means if the kerbs are outside the white lines they are outside the track boundary. There are tracks, like Mexico, which are exceptions. Where the moderator's have agreed that the surface outside the white lines is within the track boundary, a notice to that effect will be published in the race announcement. The race announcement will define the track boundary. In the case of Mexico, the edge of the grass will be declared to be the track boundary. So unless instructed otherwise, drivers should always assume the white lines, where present, define the track boundary.
 </UL>
 </UL>
 

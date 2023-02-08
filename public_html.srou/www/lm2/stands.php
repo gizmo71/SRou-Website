@@ -324,7 +324,7 @@ class StandingsGenerator {
 			FROM {$this->temp_db_prefix}positions
 			JOIN {$this->temp_db_prefix}composite_points
 			       ON comp_id = id AND championship = target_champ AND id_event_entry = comp_event_entry
-			ON DUPLICATE KEY UPDATE points = points + comp_points
+			ON DUPLICATE KEY UPDATE points = IFNULL(points, 0) + comp_points
 			" , __FILE__, __LINE__);
 
 		echo " done</P>\n";

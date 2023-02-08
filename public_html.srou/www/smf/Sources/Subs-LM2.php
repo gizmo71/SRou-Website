@@ -592,11 +592,13 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		, id_event_group
 		, GROUP_CONCAT(DISTINCT short_desc SEPARATOR '!') AS event_group
 		, AVG(event_date) AS event_date
+		, MAX(DATE(event_date)) < DATE({string:now}) AS in_past
 		, GROUP_CONCAT(DISTINCT $lm2_circuit_html_clause SEPARATOR '!') AS circuit_html
 		, COUNT(id_event_entry) AS entries
 		, MIN(IFNULL(server_starter_override, server_starter)) AS server_starter
 		, GROUP_CONCAT(DISTINCT full_desc SEPARATOR '!') AS event_group_full
 		, GROUP_CONCAT(DISTINCT {$GLOBALS['lm2_db_prefix']}sims.sim_name SEPARATOR '!') AS sim_desc
+		, COUNT(DISTINCT event) = COUNT(DISTINCT id_event) AS all_imported
 		FROM {$GLOBALS['lm2_db_prefix']}events
 		JOIN {$GLOBALS['lm2_db_prefix']}sims ON sim = id_sim
 		JOIN {$GLOBALS['lm2_db_prefix']}sim_circuits ON id_sim_circuit = sim_circuit
@@ -619,10 +621,12 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 			$link_html = substr($link_html, 0, $max_link_len - 1) . '&#133;';
 		}
 		$link = lm2MakeEventLink($row['id_event'], $row['smf_topic']);
-		if (!$row['entries']) {
+		if (!$row['all_imported']) {
 			$cssClass = null;
 			if (in_array($lm2_mods_group, $user_info['groups'])) {
-				if ($row['server_starter'] == $user_info['id']) {
+				if ($row['in_past']) {
+					$cssClass = 'lm2manyYCP';
+				} else if ($row['server_starter'] == $user_info['id']) {
 					$cssClass = 'lm2eventAmStarter';
 				} else if (is_null($row['server_starter'])) {
 					$cssClass = 'lm2eventNoStarter';
@@ -637,7 +641,7 @@ function lm2RecentUpcoming($event = -1, $topic = -1) {
 		}
 		$content .= "<SPAN TITLE='{$row['sim_desc']} - {$row['event_date']} - {$row['event_group_full']}'>$link<NOBR>$link_html</NOBR></A></SPAN>";
 
-		$events[$row['entries'] ? "recent" : "coming"][] = $content;
+		$events[($row['in_past'] || $row['all_imported']) ? 'recent' : 'coming'][] = $content;
 	}
 	$smcFunc['db_free_result']($query);
 
