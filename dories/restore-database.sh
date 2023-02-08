@@ -36,6 +36,9 @@ for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
 			-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g" |
 			mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
 		(
+			if [ $type = 1 -a $db = smf ]; then
+				echo "ALTER TABLE gizmo71_smf.smf_messages PARTITION BY KEY (`ID_MSG`) PARTITIONS 4;"
+			fi
 			echo "FLUSH LOGS;"
 			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 30 MINUTE);"
 		) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
