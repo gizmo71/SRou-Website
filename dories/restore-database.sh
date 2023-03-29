@@ -21,29 +21,37 @@ fi
 ) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}
 
 SSH_DATADUMP="ssh -l gizmo plaice.aquarium.davegymer.org"
-for type in 0 1 2 3 4 5; do for db in smf lm2 ukgpl views; do
-	sort =(${=SSH_DATADUMP} "ls -1 /var/backup/mysql/srou-booby/mysql/gizmo71_${db}-${type}_*.sql.gz") | while read sql; do
-		echo "** Processing $(basename $sql)..."
-		DB_HOST="--host ${SROU_DB_HOST}"
-		${=SSH_DATADUMP} "zcat $sql" </dev/null | sed --regexp-extended -e "s/(DEFAULT CHARSET=|CHARACTER SET )latin1([; ])/\1utf8\2/g" \
-	-e "s/XX(!50001 CREATE ALGORITHM=\S+\s+)/Ignore \1 - stupid bugs in dump and restore of views /g" \
-	-e "s/XX(!50013 DEFINER=\S+@\S+ SQL SECURITY INVOKER)/Ignore \1 - user isn't local /g" \
-			-e "s/(ENGINE=)MyISAM /\1InnoDB /g" \
-			-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
-			-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
-			-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
-			-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g" |
-			mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
-		(
-			if [ $type = 1 -a $db = smf ]; then
-				echo "ALTER TABLE gizmo71_smf.smf_messages PARTITION BY KEY (`ID_MSG`) PARTITIONS 9;"
-			fi
-			if [ $type = 2 ]; then sleep 15; fi # Give replication a chance to work
-			echo "FLUSH LOGS;"
-			echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 30 MINUTE);"
-		) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
+for type in 0 1 2 3 4 5; do
+	for db in smf lm2 ukgpl views; do
+		sort =(${=SSH_DATADUMP} "ls -1 /var/backup/mysql/srou-booby/mysql/gizmo71_${db}-${type}_*.sql.gz") | while read sql; do
+			echo "** Processing $(basename $sql)..."
+			DB_HOST="--host ${SROU_DB_HOST}"
+			${=SSH_DATADUMP} "zcat $sql" </dev/null | sed --regexp-extended -e "s/(DEFAULT CHARSET=|CHARACTER SET )latin1([; ])/\1utf8\2/g" \
+				-e "s/XX(!50001 CREATE ALGORITHM=\S+\s+)/Ignore \1 - stupid bugs in dump and restore of views /g" \
+				-e "s/XX(!50013 DEFINER=\S+@\S+ SQL SECURITY INVOKER)/Ignore \1 - user isn't local /g" \
+				-e "s/(ENGINE=)MyISAM /\1InnoDB /g" \
+				-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
+				-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
+				-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
+				-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g" |
+				mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
+			(
+				if [ $type = 1 ]; then
+					if [ $db = smf ]; then
+						echo "ALTER TABLE gizmo71_smf.smf_messages PARTITION BY KEY (ID_MSG) PARTITIONS 10;"
+						echo "ALTER TABLE gizmo71_smf.smf_personal_messages PARTITION BY KEY (ID_PM) PARTITIONS 4;"
+#					elif [ $db = lm2 ]; then
+#						echo "ALTER TABLE gizmo71_lm2.lm2_event_entries PARTITION BY KEY (id_event_entry) PARTITIONS 10;"
+					fi
+				elif [ $type = 2 ]; then
+					sleep 15 # Give replication a chance to work
+					echo "FLUSH LOGS;"
+					echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 30 MINUTE);"
+				fi
+			) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
+		done
 	done
-done; done
+done
 
 if [ ${SROU_HOST_WWW} = wwwqa.simracing.org.uk ]; then
 (
