@@ -29,7 +29,7 @@ for type in 0 1 2 3 4 5; do
 			${=SSH_DATADUMP} "zcat $sql" </dev/null | sed --regexp-extended -e "s/(DEFAULT CHARSET=|CHARACTER SET )latin1([; ])/\1utf8\2/g" \
 				-e "s/XX(!50001 CREATE ALGORITHM=\S+\s+)/Ignore \1 - stupid bugs in dump and restore of views /g" \
 				-e "s/XX(!50013 DEFINER=\S+@\S+ SQL SECURITY INVOKER)/Ignore \1 - user isn't local /g" \
-				-e "s/(ENGINE=)MyISAM /\1InnoDB /g" \
+				-e "s/(ENGINE=)DISABLED_MyISAM /\1InnoDB /g" \
 				-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
 				-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
 				-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
