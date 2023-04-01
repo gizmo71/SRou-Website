@@ -25,30 +25,32 @@ for type in 0 1 2 3 4 5; do
 	for db in smf lm2 ukgpl views; do
 		sort =(${=SSH_DATADUMP} "ls -1 /var/backup/mysql/srou-booby/mysql/gizmo71_${db}-${type}_*.sql.gz") | while read sql; do
 			echo "** Processing $(basename $sql)..."
-			DB_HOST="--host ${SROU_DB_HOST}"
-			${=SSH_DATADUMP} "zcat $sql" </dev/null | sed --regexp-extended -e "s/(DEFAULT CHARSET=|CHARACTER SET )latin1([; ])/\1utf8\2/g" \
-				-e "s/XX(!50001 CREATE ALGORITHM=\S+\s+)/Ignore \1 - stupid bugs in dump and restore of views /g" \
-				-e "s/XX(!50013 DEFINER=\S+@\S+ SQL SECURITY INVOKER)/Ignore \1 - user isn't local /g" \
-				-e "s/(ENGINE=)DISABLED_MyISAM /\1InnoDB /g" \
-				-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
-				-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
-				-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
-				-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g" |
-				mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
+			DB_HOST="--host=${single_db} --port=${MYSQL_PORT}"
 			(
-				if [ $type = 1 ]; then
+				echo "SET sql_log_bin = 0;"
+				${=SSH_DATADUMP} "zcat $sql" </dev/null | sed --regexp-extended -e "s/(DEFAULT CHARSET=|CHARACTER SET )latin1([; ])/\1utf8\2/g" \
+					-e "s/XX(!50001 CREATE ALGORITHM=\S+\s+)/Ignore \1 - stupid bugs in dump and restore of views /g" \
+					-e "s/XX(!50013 DEFINER=\S+@\S+ SQL SECURITY INVOKER)/Ignore \1 - user isn't local /g" \
+					-e "s/(ENGINE=)DISABLED_MyISAM /\1InnoDB /g" \
+					-e "s%https?://(www\.)simracing\.org\.uk%https://${SROU_HOST_WWW}%g" \
+					-e "s%https?://replays\.simracing\.org\.uk%https://${SROU_HOST_REPLAY}%g" \
+					-e "s%https?://downloads\.simracing\.org\.uk%https://${SROU_HOST_WWW}/downloads%g" \
+					-e "s%https?://(www\.)?ukgpl\.com%https://${SROU_HOST_UKGPL}%g"
+#				if [ $type = 1 ]; then
 #					if [ $db = smf ]; then
 #						echo "ALTER TABLE gizmo71_smf.smf_messages PARTITION BY KEY (ID_MSG) PARTITIONS 10;"
 #						echo "ALTER TABLE gizmo71_smf.smf_personal_messages PARTITION BY KEY (ID_PM) PARTITIONS 4;"
 #					elif [ $db = lm2 ]; then
 #						echo "ALTER TABLE gizmo71_lm2.lm2_event_entries PARTITION BY KEY (id_event_entry) PARTITIONS 10;"
 #					fi
-				elif [ $type = 2 ]; then
-					sleep 15 # Give replication a chance to work
-					echo "FLUSH LOGS;"
-					echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 30 MINUTE);"
-				fi
-			) | mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST}
+#				elif [ $type = 2 ]; then
+#					sleep 15 # Give replication a chance to work
+#					echo "FLUSH LOGS;"
+#					echo "PURGE BINARY LOGS BEFORE (NOW() - INTERVAL 30 MINUTE);"
+#				fi
+			) | tee >(mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} --host=booby.aquarium.davegymer.org --port=${MYSQL_PORT} gizmo71_${db}) \
+			        >(mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN}  --host=tern.aquarium.davegymer.org --port=${MYSQL_PORT} gizmo71_${db}) \
+			        >/dev/null
 		done
 	done
 done
