@@ -37,12 +37,12 @@ for type in 0 1 2 3 4 5; do
 				mysql ${=SHARED_OPTIONS} ${=MIGRATE_LOGIN} ${=DB_HOST} gizmo71_${db}
 			(
 				if [ $type = 1 ]; then
-					if [ $db = smf ]; then
-						echo "ALTER TABLE gizmo71_smf.smf_messages PARTITION BY KEY (ID_MSG) PARTITIONS 10;"
-						echo "ALTER TABLE gizmo71_smf.smf_personal_messages PARTITION BY KEY (ID_PM) PARTITIONS 4;"
+#					if [ $db = smf ]; then
+#						echo "ALTER TABLE gizmo71_smf.smf_messages PARTITION BY KEY (ID_MSG) PARTITIONS 10;"
+#						echo "ALTER TABLE gizmo71_smf.smf_personal_messages PARTITION BY KEY (ID_PM) PARTITIONS 4;"
 #					elif [ $db = lm2 ]; then
 #						echo "ALTER TABLE gizmo71_lm2.lm2_event_entries PARTITION BY KEY (id_event_entry) PARTITIONS 10;"
-					fi
+#					fi
 				elif [ $type = 2 ]; then
 					sleep 15 # Give replication a chance to work
 					echo "FLUSH LOGS;"
