@@ -33,8 +33,7 @@ function makeSrouLayoutHeader() {
 </form>
 		</TD>" : "") . "
 	<TD ALIGN='RIGHT' VALIGN='MIDDLE' WIDTH='1'>
-		<A HREF='$boardurl/index.php?topic=754.0'><IMG SRC='/lm2/donations.php?balance=$balance' WIDTH='80' HEIGHT='43' BORDER='0' />
-		<SMALL><BR/><NOBR>Quarterly&nbsp;cost: &#163;220</NOBR></SMALL></A>
+		<A HREF='$boardurl/index.php?topic=754.0'><IMG SRC='/lm2/donations.php?balance=$balance' WIDTH='80' HEIGHT='43' BORDER='0' /></A>
 	</TD>
 		";
 	} else if ($theme['ads'] !== false) {
