@@ -6,7 +6,24 @@
 
 <P>This is the home page of UKGPL, a United Kingdom based online racing league for fans of Grand Prix Legends.</P>
 
-<H1><IMG WIDTH="800" HEIGHT="487" SRC="/images/S41_65F1_Ingliston.jpg"></H1>
+<div class="mySlides">
+	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplc55.jpg">
+</div>
+<div class="mySlides">
+	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplc65.jpg">
+</div>
+<div class="mySlides">
+	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplc66.jpg">
+</div>
+<div class="mySlides">
+	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplc67.jpg">
+</div>
+<div class="mySlides">
+	<img WIDTH="800" HEIGHT="450" src="/images/slides/gple68.jpg">
+</div>
+<div class="mySlides">
+	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplx69.jpg">
+</div>
 
 <H1>Registration for Season 42 is OPEN!<br></H1>
 <H2>This season we will be running the 1955 GP machines, the 1965 F1, 1967 F1 and 1969 F1 open wheel single seaters.
@@ -101,5 +118,23 @@ on-line there are some invaluable hints and tips in our <A HREF='//www.simracing
 
 <P><SMALL>Disclaimer: Grand Prix Legends is copyright Sierra Sports and Papyrus.
 <BR/>Any files on this site are the property of their author, no works may be duplicated or distributed without the express permission of the author.</SMALL></P>
+
+<script>
+// Automatic Slideshow - change image every 4 seconds
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";  
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}    
+    x[myIndex-1].style.display = "block";  
+    setTimeout(carousel, 4000);    
+}
+</script>
 
 </DIV>
