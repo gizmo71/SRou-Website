@@ -19,40 +19,28 @@
 	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplc67.jpg">
 </div>
 <div class="mySlides">
-	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplcf2.jpg">
-</div>
-<div class="mySlides">
 	<img WIDTH="800" HEIGHT="450" src="/images/slides/gple68.jpg">
 </div>
 <div class="mySlides">
 	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplx69.jpg">
 </div>
-<div class="mySlides">
-	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplm66.jpg">
-</div>
-<div class="mySlides">
-	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplaSC.jpg">
-</div>
-<div class="mySlides">
-	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplm71.jpg">
-</div>
 
-<H1>Registration for Season 44 is OPEN!<br></H1>
-<H2>This season we will be running the original 1967 F1, the 1955 GP and the 1967 F2 open-wheel classes. We will also be running the closed-wheel 1966 Can-Am cars.
-An overview of Season 44 is available in
-<A HREF="https://www.simracing.org.uk/smf/index.php?action=LM2R&group=2301&theme=6">English</A>,
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668652#msg668652">French</A>,  
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668662#msg668662">Portugese</A>, 
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668672#msg668672">Italian</A>, 
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668682#msg668682">Spanish</A> and 
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668692#msg668692">German</A>.
+<H1>Registration for Season 43 is OPEN!<br></H1>
+<H2>This season we will be running the original 1967 F1 cars, the 1955 GP machines and an open wheel single seat championship featuring the 1965, 1966 and 1968 F1 cars. We will also be running the 1971 Can-Am cars.
+An overview of Season 43 is available in
+<A HREF="https://www.simracing.org.uk/smf/index.php?action=LM2R&group=2241&theme=6">English</A>,
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=34611.msg653501#msg653501">French</A>,  
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=34611.msg653511#msg653511">Portugese</A>, 
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=34611.msg653521#msg653521">Italian</A>, 
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=34611.msg653531#msg653531">Spanish</A> and 
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=34611.msg653532#msg653532">German</A>.
 </H2>
 
 <P align="justify">
 The league is still going strong despite the advent of dozens of new sims. Grand Prix Legends models some of the best cars from the fifties, sixties and early seventies and does it exceptionally well. Despite having been around since 1998, Grand Prix Legends still attracts a loyal following and UKGPL offers the opportunity to race open wheel cars from the original 1967 season and cars from the 1955, 1965, 1966, 1968 and 1969 seasons. The 67 Sports Cars, 66 Can-Ams and 71 Can-Ams provide an additional challenge.</p>
 
 <P align="justify">
-UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. UKGPL will also run championships for the 1955 GP, 1967 F2 cars and the 1966 Can-Am cars. Our aim is simply to have some fun racing the 50s and 60s machines.</p>
+UKGPL is founded around our 1967 format championship which represents the pinnacle of achievement and this season we will be running two divisions for the 1967 F1 cars. UKGPL will also run championships for the 1955 GP, Mixed Open Wheel (1965, 1966 and 1968 F1 cars) and the 1971 Can-Am cars. Our aim is simply to have some fun racing the 50s and 60s machines.</p>
 
 <P align="justify">
 We are now an international league having drivers from many countries. A summary of our rules are available in 
@@ -60,7 +48,7 @@ We are now an international league having drivers from many countries. A summary
 <A HREF="//www.simracing.org.uk/smf/index.php?topic=29341.msg562781#msg562781">Portugese</A>, 
 <A HREF="//www.simracing.org.uk/smf/index.php?topic=29331.msg562771#msg562771">Italian</A>, 
 <A HREF="//www.simracing.org.uk/smf/index.php?topic=29351.msg562791#msg562791">Spanish</A> and 
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=29321.msg562761#msg562761">German</A>. Our 1967 F1 championship will again be a joint venture with GPL Brazil. We will be using the UKGPL token system for the 1967 F1 "Works" and "Privateer" races with the tracks chosen by GPL Brazil.
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=29321.msg562761#msg562761">German</A>. Our 1967 F1 championship will again be a joint venture with GPL Brazil. We will be using the UKGPL token system for the 1967 F1 "Works" and "Privateer" races with the tracks chosen by UKGPL.
 </P>
 
 <P align="justify">
@@ -71,21 +59,22 @@ In order to allow drivers to plan their sim racing activities, we have adopted a
 
 <P align="justify">
 <H1>The provisional dates for future events are:</H1>
+<H2>Season 44: Start 14th January 2024 - Finish 14th June 2024</H2>
 <H2>Joe Shaw Memorial Races: 7th April 2024 and 9th April 2024</H2>
-<P align="center">Summer Break: Start 12th June 2024 - Finish 2nd September 2024</p>
-<H2>Season 45: Start 3rd September 2024 - Finish 15th December 2024</H2>
+<P align="center">Summer Break: Start 15th June 2024 - Finish 31st August 2024</p>
+<H2>Season 45: Start 1st September 2024 - Finish 20th December 2024</H2>
 </p>
 <P align="justify"><p>
 
 <P align="justify">
-<H1>To sign-up for Season 44, click on these links:</H1>	
+<H1>To sign-up for Season 43, click on these links:</H1>	
 <p>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=35311.0">1967 Formula 1 - (Works)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=35321.0">1967 Formula 1 - (Privateers)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=35291.0">1955 Grand Prix (Works)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=35301.0">1955 Grand Prix (Privateers)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=35331.0">1967 F2</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=35341.0">1966 Can-Am</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=34581.0">1967 Formula 1 - (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=34591.0">1967 Formula 1 - (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=34562.0">1955 Grand Prix (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=34571.0">1955 Grand Prix (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=34601.0">Mixed Open Wheel</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=34592.0">1971 Can-Am</A><br>
 </P>
 
 <P align="justify">
