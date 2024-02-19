@@ -22,7 +22,7 @@
 
 <P>Finally, you need a <B>good quality connection</B>. The central driving force behind the creation of UKGPL was the idea that by restricting the series to UK-based drivers and using a UK-based server, we could keep connection quality up and latency down to enjoy high quality racing, greatly reducing the warping and clock smashes which characterize GPL internet play.   However with the faster connection speeds afforded by modern broadband facilites we can now welcome drivers worldwide but the race times will be best suited to UK based drivers.</P>
 
-<H3>Trouble Shooting</H3>
+<H3 id="troubleShooting">Trouble Shooting</H3>
 
 <P>If after following all the guidelines in the <A HREF="https://www.simracing.org.uk/smf/index.php?topic=6787.msg118356#msg118356">New Drivers</A> thread you are experiencing problems, there is help available from the other UKGPL Members via the <A HREF="https://www.simracing.org.uk/smf/index.php#6">forums</A>. Typical areas where drivers experience problems and specific help is available are:
 <UL>

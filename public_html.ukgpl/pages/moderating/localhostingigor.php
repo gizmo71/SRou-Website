@@ -1,67 +1,86 @@
 <?php include("pages/moderating/index.php"); ?>
 
-<H1 ALIGN="CENTER">IGOR</H1>
+<H1 ALIGN="CENTER">Local Hosting Using IGOR</H1>
 
-<p>These instructions show how to set up a 66mod race at Monaco on UKGPL__4. The passwords have been omitted for obvious reasons. Other servers used by UKGPL can be started in the same way but the IP Address and possibly the port number will be different.</p>
+<H2>GEM</H2>
 
-<p>1. Open up IGOR and press the &quot;Host&quot; button on the toolbar:</p>
+<P>The GEM interface should always be used to start iGOR. The necessary patches should be enabled via the GEM interface:</P>
+<p>1. Open up GEM and select the appropriate 60fps patch for the mod being hosted. Also select the Track Gap Freeze Fix Patch:</p>
 <blockquote>
   <blockquote>
     <blockquote>
-      <p><img border="0" src="/images/igor/start_main_window.JPG" width="714" height="226"></p>
+      <p><img border="0" src="/images/igor/GEM_Options.jpg" width="714" height="489"></p>
+      <p></p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+<p>2. Press the &quot;IGOR&quot; button:</p>
+<blockquote>
+  <blockquote>
+    <blockquote>
+      <p><img border="0" src="/images/igor/GEM_iGOR_button.jpg" width="714" height="464"></p>
       <p></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>2. The &quot;Hosting Choices &quot; popup menu will appear. Press the &quot;Remote&quot; button:</p>
+<H2>iGOR</H2>
+
+<p>1. On the main IGOR window, press the &quot;Host&quot; button on the toolbar:</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/hosting_choices.JPG" width="192" height="157"></p>
+      <p><img border="0" src="/images/igor/iGOR_LocalHost.jpg" width="500" height="197"></p>
+      <p></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>3. Next enter the IP Address and Port Number for the server. Type in the password and press the &quot;Connect&quot; button.</p>
+<p>2. The &quot;Hosting Choices &quot; popup menu will appear. Press the &quot;Local&quot; button:</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/connect_to_remote_host.JPG" width="350" height="344"></p>
+    <p><img border="0" src="/images/igor/igorLocalOption.jpg" width="200" height="162"></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-
-<p>4. When the main window pops up go to the &quot;Host&quot; tab. Enter appropriate comments in the &quot;Host comments&quot;, &quot;Connection type&quot; and &quot;Server location&quot; fields. Select the following options:</p>
+<p>3. The main window pops up at the &quot;Host&quot; tab. Enter appropriate comments in the &quot;Host comments&quot;, &quot;Connection type&quot; and &quot;Server location&quot; fields. Select the following options:</p>
 <p>Note:  Please ensure the &quot;Full-Screen&quot; option is NOT selected as it can cause server problems.</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/hosting_host.JPG" width="636" height="488"></p>
+    <p><img border="0" src="/images/igor/igorLocalHostPane.jpg" width="700" height="535"></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>5. In the &quot;Network/Server&quot; tab select the following options.  This should ensure the bandwidth is comparable with that provided by VROC and hence consistent with VROC hosted UKGPL races.  This should ensure a reasonable balance between a decent framerate and the number of cars visible ahead and behind.</p>
+<p>4. In the &quot;Network/Server&quot; tab, override the core.ini settings. For a FTTP (Fibre To The Premises) or 
+FTTC (Fibre To The Cabinet) broadband connection the server should be able to provide a stable connection with 
+the following bandwidth settings. Pre and Post race scripts are available <a href="/files/iGOR_Scripts.zip">here</a>
+ and can be used by saving them in the scripts folder in the iGOR installation (default location is C:\GPLSecrets\iGOR\scripts). 
+ The default port for iGOR is 32766. In order to use a different port, the tick box should be checked and the desired port 
+ number entered into the text box. Unfortunately the standard distribution of iGOR (Release 1.6) does not support 
+ different ports. However there is a patched version available <a href="/files/iGOR_v1p6_Patched.zip">here</a> that does support 
+ different ports.</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/hosting_network_server.JPG" width="636" height="488"></p>
+    <p><img border="0" src="/images/igor/igorLocalNetworkPane.jpg" width="700" height="534"></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>6. In the &quot;Security&quot; tab select the following options and enter the appropriate passwords.</p>
+<p>5. In the &quot;Security&quot; tab select the following options and enter the appropriate passwords.</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/hosting_security.JPG" width="646" height="492"></p>
+    <p><img border="0" src="/images/igor/igorLocalSecurityPane.jpg" width="700" height="535"></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>7. For races with restrictions on chassis use (e.g. 2 litre 66 mods cars only) it is usefull to restrict the chassis the drivers may select when they join.  Sometimes the full name of the car will not be visible when hosting a race.  As a guide the following screen shots show the full car names as they appear to the drivers when joining the server.</p>
+<p>6. For races with restrictions on chassis use (e.g. 2 litre 66 mods cars only) it is usefull to restrict the chassis the drivers may select when they join.  Sometimes the full name of the car will not be visible when hosting a race.  As a guide the following screen shots show the full car names as they appear to the drivers when joining the server.</p>
 <blockquote>
   <blockquote>
     <blockquote>
@@ -147,23 +166,16 @@
   </blockquote>
 </blockquote>
 
-<p>8. Finally in the &quot;Event List&quot; tab select the track, practice time and event type.  For a single race the &quot;Repeat event list&quot; should be set to 1.</p>
+<p>7. Finally in the &quot;Event List&quot; tab select the track, practice time and event type.  For a single race the &quot;Repeat event list&quot; should be set to 1.</p>
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/hosting_event.JPG" width="636" height="488"></p>
+    <p><img border="0" src="/images/igor/igorLocalEventPane.jpg" width="700" height="535"></p>
     </blockquote>
   </blockquote>
 </blockquote>
 
-<p>9. Once the passwords have been inputted the &quot;Host&quot; button will become active and the server can be started. A popup should appear confirming that the server has started. This popup can be cancelled by the OK button.</p>
-<blockquote>
-  <blockquote>
-    <blockquote>
-    <p><img border="0" src="/images/igor/success_confirmation.JPG" width="379" height="110"></p>
-    </blockquote>
-  </blockquote>
-</blockquote>
+<p>8. Once the passwords have been inputted the &quot;Host&quot; button will become active and the server can be started. 
 
 <p>Notes:</p>
 

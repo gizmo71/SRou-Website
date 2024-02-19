@@ -45,24 +45,21 @@ echo "
 
 echo lm2_table_open($block_title, 'LEFT') . $contents . lm2_table_close();
 if ($inc_file == $default_inc_file) {
-	echo lm2_table_open("Announcements");
+	echo lm2_table_open("Announcements") ;
 	ssi_boardNews(48, 2, null, 150); // UKGPL Announcements board
 	echo lm2_table_close();
 	echo lm2_table_open("Race Announcements");
 	ssi_boardNews(53, 2, null, 150); // UKGPL Race Announcements board
 	echo lm2_table_close();
-	//	echo lm2_table_open("Recent Posts");
-	//	ssi_boardNews(39/*47*/, 2, null, 150); //XXX: 47 = Main UKGPL board
-	//	echo lm2_table_close();
 }
+echo lm2_table_open("Staff") . "<TABLE>" . lm2Staff(true, $lm2_mods_group_ukgpl) . "</TABLE>" . lm2_table_close();
+echo lm2_table_open("Former Staff") . "<TABLE>" . lm2Staff(true, 89, false) . "</TABLE>" . lm2_table_close();	
 
 echo "</TD>
 	<TD VALIGN='TOP'>" . format_event_rows($events["recent"], "Recent Events", 'left') . "
 	" . format_event_rows($events["coming"], 'Forthcoming Events', 'right') . "</TD>
-</TR></TABLE>\n";
-
-echo lm2_table_open("Staff") . "<TABLE>" . lm2Staff(true, $lm2_mods_group_ukgpl) . "</TABLE>" . lm2_table_close();
-echo lm2_table_open("Former Staff") . "<TABLE>" . lm2Staff(true, 89, false) . "</TABLE>" . lm2_table_close();
+    </TR>";
+echo "</TABLE>\n";
 
 function list_seasons() {
 	global $lm2_db_prefix;
