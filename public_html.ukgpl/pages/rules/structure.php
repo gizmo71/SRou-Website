@@ -2,9 +2,9 @@
 
 <H1 ALIGN="CENTER">Structure</H1>
 
-<H2>General</H2>
+<a id="general"><H2>General</H2></a>
 
-<UL>
+<OL>
 
 <LI><P>UKGPL will be run as a series of championships.  Each championship may use the original 1967 carset or
 any of the modified carsets.</P>
@@ -21,36 +21,36 @@ that division and a fresh score-sheet made for the new division.)
 <B>NB.</B> This is not a right and will only be considered in
 exceptional circumstances.</P>
 
-</UL>
+</OL>
 
 <H2>Handicapping and Chassis Levelling</H2>
 
 <P>In order to promote closer racing or to discourage single chassis races, the moderators may employ a handicapping or chassis levelling scheme.  Where such a scheme is used the details are given on the championship page for the division.</P>
 
-<H3>Handicapping</H3>
-<UL>
+<a id="handicapping"><H3>Handicapping</H3></a>
+<OL>
 <LI><P>Handicapping is used to encourage closer racing by limiting the faster drivers to the slower cars.</P>
 <LI><P>Common handicapping schemes are:</P>
-<UL>
+<OL>
 <LI><P>Chassis Allocation - The moderator assesses the ability of a driver and allocates a single chassis to them for the season.</P>
 <LI><P>Championship Position - The drivers at the top of the championship are limited to the slower chassis.  Numerous permutations of this scheme are possible .</P>
-</UL>
-</UL>
+</OL>
+</OL>
 
-<H3>Chassis Levelling</H3>
-<UL>
+<a id="chassis"><H3>Chassis Levelling</H3></a>
+<OL>
 <LI><P>Chassis Levelling is used to encourage the use of the slower cars without a driver incurring a disadvantage over another driver using a faster chassis.</P>
 <LI><P>Common Chassis Levelling schemes are:</P>
-<UL>
+<OL>
 <LI><P>Tokens - Each driver receives an allocation of tokens for the season. Each driver receives the same number of tokens and each chassis costs a different number of tokens.  The faster cars are more expensive.  Whilst a driver in a slower cheaper car will be at a disadvantage for a particular race, over the course of a season the advantages and disadvantages even out. So every driver has an equal chance of winning the championship.</P>
 
 <LI><P><a href="pitstops">Pit Stops</a> - The drivers are free to pick any chassis but the faster chassis are subject to a timed pit stop.  The faster the car, the longer the pit stop. In theory all drivers, no matter what chassis they choose, will have an equal chance of winning the race.  Having a equal chance to win each race also means the drivers have an equal chance of winning the championship.</P>
-</UL>
-</UL>
+</OL>
+</OL>
 
-<H2>Moderation</H2>
+<a id="moderation"><H2>Moderation</H2></a>
 
-<UL>
+<OL>
 <LI><P>All championship races will be moderated and action will be taken against drivers who contravene the rules.</P>
 
 <LI><P>The severity of the offence will dictate the action taken against
@@ -108,4 +108,4 @@ as a general rule, loss of control (related to your level of ability)
 is not penalised, but poor decisions (optimistic passing attempts etc)
 are.</BLOCKQUOTE>
 
-</UL>
+</OL>

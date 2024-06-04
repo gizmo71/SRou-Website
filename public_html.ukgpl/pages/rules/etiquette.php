@@ -2,9 +2,9 @@
 
 <H1 ALIGN=CENTER>Racing Etiquette</H1>
 
-<H2>General</H2>
+<a id="general"><H2>General</H2></a>
 
-<UL>
+<OL>
 <LI><P>Repeated poor driving standards will not be tolerated. Racing
 accidents can and will happen, it is aggressive driving incidents
 which can be avoided that will be penalised. The final decision is up
@@ -49,28 +49,28 @@ sensible approach in enforcing this; the idea is to stop blatant
 centre line driving, not penalise every possible case. For most
 drivers this rule should make racing safer as well as more fun.</P>
 
-<LI><P>Sometimes GPL will mistakenly show a driver a black flag. For example,
+<LI>Sometimes GPL will mistakenly show a driver a black flag. For example,
 a warp may cause the server to believe that the driver has cut the course. A
 driver being shown a black flag by mistake is permitted to do one of two
-things: <UL>
-  <LI> Take the stop and go penalty.
+things: 
+<UL><LI> Take the stop and go penalty.
   <LI> Carry on racing. The server will mark the driver as disqualified.
        The driver should then contact their divisional moderator after the
        race, who will examine the replay and reinstate the driver in their
        correct finishing place.
 </UL>
-<LI><P>Riding the kerbs is permitted but there must always be at least two wheels within the track boundary at any one time.  If three or four wheels have been placed outside the track boundary then a driver is deemed to have left the track and will subsequently have to perform a rejoin with the necessary caution this dictates.  
+<P><LI>Riding the kerbs is permitted but there must always be at least two wheels within the track boundary at any one time.  If three or four wheels have been placed outside the track boundary then a driver is deemed to have left the track and will subsequently have to perform a rejoin with the necessary caution this dictates.  
 <UL>
 <LI> If you have knowingly overdone the kerb riding or left the track for any other reason in qualifying, please abort the lap in order to not post an illegal lap time.
 <LI> In general the boundary of a track is defined by white lines, this means if the kerbs are outside the white lines they are outside the track boundary. There are tracks, like Mexico, which are exceptions. Where the moderator's have agreed that the surface outside the white lines is within the track boundary, a notice to that effect will be published in the race announcement. The race announcement will define the track boundary. In the case of Mexico, the edge of the grass will be declared to be the track boundary. So unless instructed otherwise, drivers should always assume the white lines, where present, define the track boundary.
 </UL>
-</UL>
+</OL>
 
 <HR WIDTH="50%">
 
-<H2>Incidents involving other cars</H2>
+<a id="incidents"><H2>Incidents involving other cars</H2></a>
 
-<UL>
+<OL>
 
 <LI><P>If a driver is involved in an incident with another car, they
 must report the incident to the division moderator; failure to do so
@@ -86,13 +86,13 @@ does not hinder the rest of the field. The perpetrator should find a
 safe place to move off the racing line in order for the victim to regain 
 their position. The incident may still be investigated after the race.</P>
 
-</UL>
+</OL>
 
 <HR WIDTH="50%">
 
-<H2>Shift-R (resetting the car)</H2>
+<a id="shift-r"><H2>Shift-R (resetting the car)</H2></a>
 
-<UL>
+<OL>
 
 <LI><P>Shift-R is allowed <I>only</I> in a race, not in practice.</P>
 
@@ -113,13 +113,13 @@ passed before using Shift-R.</P>
 Shift-R, causes another car to crash or take severe avoiding action
 will be penalised.</BLOCKQUOTE>
 
-</UL>
+</OL>
 
 <HR WIDTH="50%">
 
-<H2>Rejoining the race after an incident</H2>
+<a id="rejoining"><H2>Rejoining the race after an incident</H2></a>
 
-<UL>
+<OL>
 
 <LI><P>It is the responsibility of any driver who is returning to the track
 to make sure they do not interfere with other drivers.</P>
@@ -131,13 +131,13 @@ until they are fully up to speed. Any driver who rejoins a race and,
 owing to negligence, causes another car to crash or take severe avoiding
 action, will be penalised.</BLOCKQUOTE>
 
-</UL>
+</OL>
 
 <HR WIDTH="50%">
 
-<H2>Lapping</H2>
+<a id="lapping"><H2>Lapping</H2></a>
 
-<UL>
+<OL>
 <LI><P>Any driver who is about to be lapped may not deliberately
 block or race the lapping driver, and must allow the lapping driver to
 pass at the first safe opportunity.</P>
@@ -154,7 +154,7 @@ laps ahead may be penalised.</P>
 <LI><P>Any driver not showing adequate care when following or passing a
 slower car they intend to lap may be penalised.</P>
 
-</UL>
+</OL>
 
 <H3>Advice for the lapped driver</H3>
 
@@ -237,22 +237,22 @@ showing a lack of care in this situation will be penalised.</P>
 
 <HR WIDTH="50%">
 
-<H2>Flags and Pit Signals</H2>
+<a id="flags"><H2>Flags and Pit Signals</H2></a>
 
 <H3>Deserved Black Flags</H3>
 
-<UL>
+<OL>
 
 <LI><P>A driver being shown the black flag and a "pit in" board for a
 genuine offence, such as jumping the start, must enter the pits and take the
 penalty. Failure to do so will result in the disqualification of that
 driver.</P>
 
-</UL>
+</OL>
 
 <H3>Yellow and Green Flags</H3>
 
-<UL>
+<OL>
 
 <LI><P>Drivers have a duty to drive safely and well within their limits when
 they have passed a yellow flag. Stay on the racing line unless it is
@@ -263,24 +263,24 @@ yellow flag is shown when a car loses and then quickly regains control, so
 the green flag may be gone by the time the driver passes the next
 marshall).</P>
 
-</UL>
+</OL>
 
 <H3>Red Flag Situations</H3>
 
-<UL>
+<OL>
 
-<LI>A race may be red flagged on lap one at the moderator's discretion. This could be due to network 
+<LI><P>A race may be red flagged on lap one at the moderator's discretion. This could be due to network 
 issues or a mass pile-up, it will be very difficult for the moderator to ascertain at the 
 time. A reduced qualifying period would be needed for the restarted race. If there is not 
 enough time to re-run the race it would have to be rescheduled. The restarted race will 
-not be red flagged on lap one under any circumstances.</LI>
+not be red flagged on lap one under any circumstances.</P>
 
 <LI>In the event of a mass disconnection or other server problem occurring after lap one. The
-moderator may:<UL>
+moderator may:<OL>
   <LI> Reconstruct the result based on the replay.
   <LI> Declare the race to be red flagged at the end of the preceding
     lap and take the final results from that lap.
   <LI> Declare the race null and void and arrange for it to be run again.
-</UL></LI>
+</OL>
 
-</UL>
+</OL>

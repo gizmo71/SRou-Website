@@ -2,9 +2,9 @@
 
 <H1 ALIGN=CENTER>On-Line</H1>
 
-<H2>General</H2>
+<a id="general"><H2>General</H2></a>
 
-<UL>
+<OL>
 
 <LI><P>When joining a race, please use a driver name which is easily
 recognisable so that we can keep the score sheet accurate, eg. Marc
@@ -23,11 +23,11 @@ correct car.</P>
 penalized. Please see the <a HREF="contravene_online">Penalty
   Guidelines</a> for more details.</BLOCKQUOTE>
 
-</UL>
+</OL>
 
-<H2>In-game chat</H2>
+<a id="chat"><H2>In-game chat</H2></a>
 
-<UL>
+<OL>
 
 <LI><P>As a general rule, chat is <B>not</B> allowed during league
 races, except after all drivers on track have passed the chequered
@@ -44,15 +44,15 @@ finished their race it will usually be another minute or two before
 all the other drivers have finished theirs, so they should not start
 chatting before everyone has finished.</BLOCKQUOTE>
 
-</UL>
+</OL>
 
-<H2>Timing and scoring mistakes caused by network problems</H2>
+<a id="network"><H2>Timing and scoring mistakes caused by network problems</H2></a>
 
 This section is intended to ensure that no driver is
 unnecessarily penalized by internet problems such as warp and clock
 smashes.
 
-<UL>
+<OL>
 
 <LI><P>If a driver gains pole position (or another artificially high
 grid slot) because of a warp, they are not required to forfeit this
@@ -75,4 +75,4 @@ their lap boards, nor be shown blue flags if they are being lapped,
 and should adjust their expectations of other drivers' behaviour
 towards them accordingly.</BLOCKQUOTE>
 
-</UL>
+</OL>

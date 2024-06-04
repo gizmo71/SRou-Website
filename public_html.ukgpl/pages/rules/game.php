@@ -2,9 +2,9 @@
 
 <H1 ALIGN=CENTER>Game</H1>
 
-<H2>General</H2>
+<a id="general"><H2>General</H2></a>
 
-<UL>
+<OL>
 <LI>Drivers must use Grand Prix Legends version 1.2.0.2 The use of the DiscoFix patch is strongly encouraged.</LI>
 <BR/>
 <LI>Championship races and most other league races will use bandwidth
@@ -42,16 +42,16 @@
 	as this severely compromises the car's performance and introduces a
 	performance gap to unassisted cars which is both hazardous and not in
 	keeping with UKGPL's aim of close racing.</LI>
-</UL>
+</OL>
 
-<H2>Cars</H2>
+<a id="cars"><H2>Cars</H2></a>
 
-<UL>
+<OL>
 
 <LI>Drivers must use the standard 1967 cars as supplied as part of GPL or an official add-on carset where decreed by the moderator.</LI>
 <BR/>
-<LI>Changing the performance or handling characteristics of any car, other than by means of the car setup, is forbidden.</LI>
-<LI>Prohibited changes include, but are not limited to, the following:<UL>
+<LI>Changing the performance or handling characteristics of any car, other than by means of the car setup, is forbidden.
+Prohibited changes include, but are not limited to, the following:</LI><UL>
 	  <LI> changing an engine's power characteristics or weight
 	  <LI> changing an engine's fuel consumption
 	  <LI> changing which engine each car uses
@@ -60,14 +60,14 @@
 	  <LI> changing a car's basic suspension characteristics
 	  <LI> changing the grip or temperature characteristics of the tyres
 	</UL></LI>
-
+<BR/>
 <LI>A driver may change a car's setup parameters outside of the range of values permitted by GPL 1.2's built-in setup editor using one of the
 	publicly available setup tools such as GPL Race Engineer.</LI>
-</UL>
+</OL>
 
-<H2>Tracks</H2>
+<a id="tracks"><H2>Tracks</H2></a>
 
-<UL>
+<OL>
 <LI>Modifying the graphics of a track is permitted without restriction. This includes the creation of additional brake markers.</LI>
 <BR/>
 <LI>Modification of the physical characteristics of the track is not permitted. Forbidden modifications include, but are not limited to, the following:<UL>
@@ -78,4 +78,4 @@
 	</UL></LI>
 <BR/>
 <LI>Where an add-on track is being used, if there are multiple versions of a track with different physical layouts, the race moderator will state which version must be used.</LI>
-</UL>
+</OL>
