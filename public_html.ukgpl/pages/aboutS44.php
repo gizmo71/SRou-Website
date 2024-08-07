@@ -37,15 +37,15 @@
 	<img WIDTH="800" HEIGHT="450" src="/images/slides/gplm71.jpg">
 </div>
 
-<H1>Registration for Season 45 is OPEN!<br></H1>
-<H2>This season we will be running the original 1967 F1, the 1955 GP and the 1965 F1 open-wheel classes. We will also be running the closed-wheel 1967 Sports Cars.
-An overview of Season 45 is available in
-<A HREF="https://www.simracing.org.uk/smf/index.php?action=LM2R&group=2392&theme=6">English</A>,
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=36511.msg693511#msg693511">French</A>,  
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=36511.msg693521#msg693521">Portugese</A>, 
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=36511.msg693531#msg693531">Italian</A>, 
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=36511.msg693541#msg693541">Spanish</A> and 
-<A HREF="https://www.simracing.org.uk/smf/index.php?topic=36511.msg693551#msg693551">German</A>.
+<H1>Registration for Season 44 is OPEN!<br></H1>
+<H2>This season we will be running the original 1967 F1, the 1955 GP and the 1967 F2 open-wheel classes. We will also be running the closed-wheel 1966 Can-Am cars.
+An overview of Season 44 is available in
+<A HREF="https://www.simracing.org.uk/smf/index.php?action=LM2R&group=2301&theme=6">English</A>,
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668652#msg668652">French</A>,  
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668662#msg668662">Portugese</A>, 
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668672#msg668672">Italian</A>, 
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668682#msg668682">Spanish</A> and 
+<A HREF="https://www.simracing.org.uk/smf/index.php?topic=35342.msg668692#msg668692">German</A>.
 </H2>
 
 <P>
@@ -60,7 +60,7 @@ We are now an international league having drivers from many countries. A summary
 <A HREF="//www.simracing.org.uk/smf/index.php?topic=29341.msg562781#msg562781">Portugese</A>, 
 <A HREF="//www.simracing.org.uk/smf/index.php?topic=29331.msg562771#msg562771">Italian</A>, 
 <A HREF="//www.simracing.org.uk/smf/index.php?topic=29351.msg562791#msg562791">Spanish</A> and 
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=29321.msg562761#msg562761">German</A>. Our 1967 F1 championship will again be a joint venture with GPL Brazil. We will be using the token system for the 1967 F1 "Works" and "Privateer" races with the tracks chosen by UKGPL.
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=29321.msg562761#msg562761">German</A>. Our 1967 F1 championship will again be a joint venture with GPL Brazil. We will be using the UKGPL token system for the 1967 F1 "Works" and "Privateer" races with the tracks chosen by GPL Brazil.
 </P>
 
 <P>
@@ -71,23 +71,21 @@ In order to allow drivers to plan their sim racing activities, we have adopted a
 
 <P>
 <H1>The provisional dates for future events are:</H1>
-<H2>Season 46: Start 12th January 2025 - Finish 13th June 2025</H2>
-<H2>Joe Shaw Memorial Races: 27th April 2025 and 29th April 2025</H2>
-<P align="center">Summer Break: Start 14th June 2025 - Finish 1st September 2025</p>
-<H2>Season 47: Start 2nd September 2025 - Finish 21st December 2025</H2>
+<H2>Joe Shaw Memorial Races: 7th April 2024 and 9th April 2024</H2>
+<P align="center">Summer Break: Start 12th June 2024 - Finish 2nd September 2024</p>
+<H2>Season 45: Start 3rd September 2024 - Finish 15th December 2024</H2>
 </p>
 <P><p>
 
 <P>
-<H1>To sign-up for Season 45, click on these links:</H1>	
+<H1>To sign-up for Season 44, click on these links:</H1>	
 <p>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36441.0">1967 Formula 1 - (Works)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36451.0">1967 Formula 1 - (Privateers)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36461.0">1955 Grand Prix (Works)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36471.0">1955 Grand Prix (Privateers)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36481.0">1965 F1 - (Professionals)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36491.0">1965 F1 - (Amateurs)</A><br>
-<A HREF="//www.simracing.org.uk/smf/index.php?topic=36501.0">1967 Sports Cars</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=35311.0">1967 Formula 1 - (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=35321.0">1967 Formula 1 - (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=35291.0">1955 Grand Prix (Works)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=35301.0">1955 Grand Prix (Privateers)</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=35331.0">1967 F2</A><br>
+<A HREF="//www.simracing.org.uk/smf/index.php?topic=35341.0">1966 Can-Am</A><br>
 </P>
 
 <P>
@@ -141,8 +139,6 @@ on-line there are some invaluable hints and tips in our <A HREF='//www.simracing
 <BIG><A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=8711">Pete Bennett</A></BIG> (UKGPL07)
 <BR/>
 <BIG><A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=1942">phspok</A></BIG> (UKGPL13, UKGPL14, UKGPL15)
-<BR/>
-<BIG><A HREF="//www.simracing.org.uk/smf/index.php?action=profile;u=145">Bully</A></BIG> (UKGPL03)
 </P>
 
 
