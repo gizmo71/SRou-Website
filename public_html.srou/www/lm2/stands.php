@@ -739,7 +739,8 @@ class StandingsGenerator {
 		while ($row = mysql_fetch_assoc($query)) {
 			if ($eventId != $row['id_event']) {
 				$eventId = $row['id_event'];
-//**/				echo "<BR/><B>Round " . ++$eventIndex . "</B>";
+				++$eventIndex;
+//**/				echo "<BR/><B>Round " . $eventIndex . "</B>";
 			}
 
 			if (!array_key_exists($row['member'], $balances)) {
