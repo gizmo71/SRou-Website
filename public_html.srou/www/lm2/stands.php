@@ -744,7 +744,7 @@ class StandingsGenerator {
 			}
 
 			if (!array_key_exists($row['member'], $balances)) {
-				$balances[$row['member']] = -$row['max_tokens'] * ($eventIndex < $events / 2 ? 2 : 1); // Initial allocation
+				$balances[$row['member']] = -$row['max_tokens'] * ($eventIndex <= $events / 2 ? 2 : 1); // Initial allocation
 			}
 $row['preBALANCE'] = $balances[$row['member']];
 			$balances[$row['member']] += 10; // Starting bonus.
