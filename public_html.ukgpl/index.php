@@ -1,5 +1,6 @@
 <?php
 $ssi_theme = 6;
+$ssi_guest_access = true;
 require_once(dirname(dirname(__FILE__)) . "/public_html.srou/www/smf/SSI.php");
 require_once("$sourcedir/Subs-LM2.php");
 
