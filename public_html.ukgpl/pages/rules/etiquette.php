@@ -73,7 +73,8 @@ things:
 <OL>
 
 <LI><P>If a driver is involved in an incident with another car, they
-must report the incident to the division moderator; failure to do so
+must report the incident to the division moderator (see the <A HREF="../moderating/court">court</A> 
+for instructions on how to submit a report); failure to do so
 will leave the driver with no appeal against any penalty assessed. The
 driver should try to save a replay of the incident if possible, as
 this will help their case.  The other moderators will then hold a

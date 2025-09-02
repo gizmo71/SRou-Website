@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<!DOCTYPE GrandPrixLegends[
+  <!ELEMENT GrandPrixLegends (File)*>
+  <!ELEMENT File (#PCDATA)>
+]>
+<GrandPrixLegends>
+  <File>gpl</File>
+  <File>gplc65</File>
+  <File>gplc66</File>
+  <File>gplc67</File>
+  <File>gplcf2</File>
+  <File>gplcgt</File>
+  <File>gplctc</File>
+  <File>gplm71</File>
+  <File>gplx69</File>
+  <File>gplc69</File>
+  <File>gplc68</File>
+  <File>gplh67</File>  
+  <File>gplc37</File>
+  <File>gplc51</File>
+  <File>gplc55</File>
+  <File>gple68</File>
+  <File>gpll68</File>
+  <File>gplcat</File>
+  <File>gplcct</File>
+  <File>gplccm</File>
+  <File>gplccx</File>
+  <File>gplcrx</File>
+  <File>gplctm</File>
+  <File>gpln65</File>
+  <File>gpln67</File>
+  <File>gplm66</File>
+  <File>gplm71</File>
+  <File>gplc55</File>  
+  <File>gpl167</File>
+  <File>gpl267</File>
+  <File>gpl367</File>
+  <File>gpl467</File>
+  <File>gpl567</File>
+  <File>gpl667</File>
+  <File>gpl767</File>
+</GrandPrixLegends>

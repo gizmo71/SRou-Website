@@ -20,9 +20,9 @@
 	(compared to drivers using a copy of GPL without the modification) or the modification overcomes a bug in the original game (or add-on carset).  
 	The following modifications are not considered to give an unfair performance advantage and therefore can be used in UKGPL League races:</LI>
 <BR/>
-	<BLOCKQUOTE/><H3>GPL Shift</H3>   In order to use a H-Shifter with GPL (for example the Logitech G25 or G27 shifter) the executables must be modified using  
-	<A HREF="http://www.gplshift.dk/GPLshift/index.htm"> GPL Shift</A>.  Whilst the use of GPL Shift is permitted, recommendations on how it should be configured are 
-	<A HREF="hshifter">here</A>.</BLOCKQUOTE>
+	<BLOCKQUOTE/><H3>H-Shifters</H3>   The use of H-Shifters is permissible but in order to use them, the GPL executable needs to be modified or used in conjunction with an external application. 
+	The modifications/applications that are permitted and how they should be configured are <A HREF="hshifter">here</A>.
+	</BLOCKQUOTE>
 	<BLOCKQUOTE/><H3>Pit Stop Patch</H3>   The Pit Stop Patch (<A HREF="http://srmz.net/index.php?showtopic=10007">v1.0</A> and <A HREF="http://srmz.net/index.php?showtopic=13367&hl=%2Bpit+%2Bstop+%2Bpatch">v2.0</A>), developed by <A HREF="http://gplmotorworks.gplworld.de/">Lee Bowden</A>, 
 	allows refuelling during a race. There is also a custom patch (<A HREF="/files/77C Pit Stop v2.02.zip">v2.02</A>) which has been specially produced for UKGPL. Refuelling is not instantaneous and care is needed in order for a driver to come to rest exactly in their pit box. Consequently refuelling 
 	takes time and tends to offset any advantage gained in faster lap times due to a lighter fuel load. Whether or not a tangible advantage can be gained over a race distance will depend on 

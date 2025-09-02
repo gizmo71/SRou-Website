@@ -1,5 +1,15 @@
 <?php include("pages/moderating/index.php"); ?>
 
+<STYLE TYPE="text/css">
+<!--
+.indented
+   {
+   padding-left: 50pt;
+   padding-right: 50pt;
+   }
+-->
+</STYLE>
+
 <H1 ALIGN="CENTER">IGOR</H1>
 
 <p>These instructions show how to set up a 66mod race at Monaco on UKGPL__4. The passwords have been omitted for obvious reasons. Other servers used by UKGPL can be started in the same way but the IP Address and possibly the port number will be different.</p>
@@ -34,7 +44,87 @@
 
 
 <p>4. When the main window pops up go to the &quot;Host&quot; tab. Enter appropriate comments in the &quot;Host comments&quot;, &quot;Connection type&quot; and &quot;Server location&quot; fields. Select the following options:</p>
-<p>Note:  Please ensure the &quot;Full-Screen&quot; option is NOT selected as it can cause server problems.</p>
+<p>Note 1:  Ensure the &quot;Full-Screen&quot; option is NOT selected as it can cause server problems.</p>
+<p>Note 2:  Fairshift uses the number of gears of the host car when configuring the driver's H-Shifter. Consequently the host car must be one of the cars with the largest number of gears in the mod.</p>
+
+<DIV CLASS="indented">
+<table x:str border=2 cellpadding=0 cellspacing=0 width=605 style='border-collapse:collapse;table-layout:fixed;width:454pt'>
+ <col width=75 style='mso-width-source:userset;mso-width-alt:2742;width:56pt'>
+ <col width=100 style='mso-width-source:userset;mso-width-alt:4973;width:60pt'>
+ <col width=142 style='mso-width-source:userset;mso-width-alt:5193;width:107pt'>
+  <tr height=17 style='height:12.75pt' align=center>
+    <th>Mod</th>
+    <th>Max Gears</th>
+    <th>Host Car</th>
+  </tr>
+  <tr align=center>
+    <td>1955 GP</td>
+    <td>5</td>
+    <td>Mercedes-Benz W196 SL</td>
+  </tr>
+  <tr align=center>
+    <td>1965 F1</td>
+    <td>6</td>
+    <td>BRM P261</td>
+  </tr>
+  <tr align=center>
+    <td>1966 F1 (2L)</td>
+    <td>6</td>
+    <td>Lotus 33 BRM</td>
+  </tr>
+  <tr align=center>
+    <td>1966 F1 (3L)</td>
+    <td>6</td>
+    <td>Lotus 43 BRM</td>
+  </tr>
+  <tr align=center>
+    <td>1967 F1</td>
+    <td>6</td>
+    <td>BRM P115</td>
+  </tr>
+  <tr align=center>
+    <td>1967 F2</td>
+    <td>5</td>
+    <td>Ferrari 166</td>
+  </tr>
+  <tr align=center>
+    <td>1968 Early</td>
+    <td>5</td>
+    <td>Ferrari 312</td>
+  </tr>
+  <tr align=center>
+    <td>1968 Late</td>
+    <td>6</td>
+    <td>BRM P261 V8</td>
+  </tr>
+  <tr align=center>
+    <td>1969 Extra</td>
+    <td>5</td>
+    <td>Ferrari 312</td>
+  </tr>
+  <tr align=center>
+    <td>1966 CanAm</td>
+    <td>5</td>
+    <td>Lola T70 MkII Ford 305</td>
+  </tr>
+  <tr align=center>
+    <td>1967 Sports Cars</td>
+    <td>6</td>
+    <td>Alfa Romeo T33</td>
+  </tr>
+  <tr align=center>
+    <td>1971 CanAm</td>
+    <td>5</td>
+    <td>Porsche 917/10</td>
+  </tr>
+  <tr align=center>
+    <td>Caterhams</td>
+    <td>6</td>
+    <td>620R</td>
+  </tr>
+ </table>
+</DIV>
+
 <blockquote>
   <blockquote>
     <blockquote>
@@ -114,13 +204,6 @@
 <blockquote>
   <blockquote>
     <blockquote>
-    <p><img border="0" src="/images/igor/igor_69_cars.jpg" width="551" height="612"></p>
-    </blockquote>
-  </blockquote>
-</blockquote>
-<blockquote>
-  <blockquote>
-    <blockquote>
     <p><img border="0" src="/images/igor/igor_69x_cars.jpg" width="552" height="617"></p>
     </blockquote>
   </blockquote>
@@ -146,6 +229,14 @@
     </blockquote>
   </blockquote>
 </blockquote>
+<blockquote>
+  <blockquote>
+    <blockquote>
+    <p><img border="0" src="/images/igor/igor_CT_cars.jpg" width="552" height="619"></p>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
 
 <p>8. Finally in the &quot;Event List&quot; tab select the track, practice time and event type.  For a single race the &quot;Repeat event list&quot; should be set to 1.</p>
 <blockquote>

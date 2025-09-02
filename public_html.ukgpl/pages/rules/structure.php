@@ -87,7 +87,7 @@ submitted an incident report.  So if you cause an incident or think it may
 go against you it is just as important that you submit your side of
 the story as it is for the victim.</BLOCKQUOTE>
 
-<BLOCKQUOTE>Use the court system when submitting an incident report to your divisional
+<BLOCKQUOTE>Use the <A HREF="../moderating/court">court</A> system when submitting an incident report to your divisional
 moderator.  There is always a link below the race results table for this purpose. If you think warp or the number of cars visible ahead/behind was a factor please make sure you attach a zipped clip of
 the incident from your personal replay. If you forgot to save the
 replay, the mod can't see the points in your favour so it is in your
