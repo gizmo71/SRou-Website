@@ -100,21 +100,22 @@ echo lm2_table_open("Announcements");
 ssi_boardNews(2, 2, null, 150);
 echo lm2_table_close();
 
-echo lm2_table_open("UKGTL Announcements");
-ssi_boardNews(79, 2, null, 150);
-echo lm2_table_close();
+#echo lm2_table_open("UKGTL Announcements");
+#ssi_boardNews(79, 2, null, 150);
+#echo lm2_table_close();
 
-echo lm2_table_open("UK Assetto Corsa Announcements");
-ssi_boardNews(98, 2, null, 150);
-echo lm2_table_close();
+#echo lm2_table_open("UK Assetto Corsa Announcements");
+#ssi_boardNews(98, 2, null, 150);
+#echo lm2_table_close();
 
-echo lm2_table_open("UK Race Room Experience Announcements");
-ssi_boardNews(101, 2, null, 150);
-echo lm2_table_close();
+#echo lm2_table_open("UK Race Room Experience Announcements");
+#ssi_boardNews(101, 2, null, 150);
+#echo lm2_table_close();
 
-echo lm2_table_open("Recent Event Moderation Reports");
-ssi_boardNews(39, 2, null, 150);
-echo lm2_table_close();
+# We can't even show this one because it doesn't allow guests.
+#echo lm2_table_open("Recent Event Moderation Reports");
+#ssi_boardNews(39, 2, null, 150);
+#echo lm2_table_close();
 
 echo lm2_table_open("Staff") . "<TABLE>" . lm2Staff(true, $lm2_mods_group) . "</TABLE>" . lm2_table_close();
 echo lm2_table_open("Incident Moderators") . "<TABLE>" . lm2Staff(true, $lm2_mods_group_court, false) . "</TABLE>" . lm2_table_close();
