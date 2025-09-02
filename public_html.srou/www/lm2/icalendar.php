@@ -1,4 +1,7 @@
-<?php require("../smf/SSI.php"); ?>
+<?php
+$ssi_guest_access = true;
+require("../smf/SSI.php");
+?>
 <?php
 // LM2 iCalendar "feed"
 

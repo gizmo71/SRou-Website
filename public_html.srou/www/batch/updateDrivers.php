@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: text/plain');
 
+$ssi_guest_access = true;
 require('../smf/SSI.php');
 require("$boarddir/../lm2/include.php");
 

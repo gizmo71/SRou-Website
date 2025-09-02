@@ -1,4 +1,5 @@
 <?php
+$ssi_guest_access = true;
 require_once('../smf/SSI.php');
 
 header('Content-Type: text/plain');
